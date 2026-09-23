@@ -11,7 +11,7 @@
 | **Metrics** (`/metrics`) | For a range and an optional project: the total, hours per person, per project and per task, and week over week. Admins see everything; members see the projects they belong to |
 | **Admin → Members** | Invite by Google email (optionally with the projects the person joins, as tracker or viewer), approve or reject access requests, switch roles |
 | **Admin → Projects** | Create, rename, recolor and archive projects; drag people onto them or use "Assign" |
-| **Settings** | Four palettes × dark and light, saved to your account. The logo and the browser tab's icon take the palette's accent |
+| **Settings** | Eight palettes (Lima, Salvia, Cielo, Índigo, Orquídea, Coral, Ámbar and Grafito, the grey one) × dark and light, saved to your account. The logo and the browser tab's icon take the palette's accent |
 | **Help** (the ? in the header) | A guided tour that points at what to touch on each screen. It starts on the first visit, can be skipped and resumed where it was left, and adapts to trackers, observers and admins |
 
 The rules that keep hours honest: one running timer per person, no overlapping blocks for the same person, no blocks in the future, and every manual creation or edit is flagged.

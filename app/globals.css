@@ -28,15 +28,18 @@
       (`poster`) shouts the titles and the big numbers. Shapes stay soft:
       rounded corners, soft shadows, no rules.
 
-   Four palettes × two modes, selected by attributes on <html>:
-   data-palette="salvia|indigo|lima|ambar" and data-theme="dark|light".
-   The @theme block holds the default (Lima, dark); the blocks below
-   reassign the same tokens. Neutrals are tinted toward each accent hue.
+   Eight palettes × two modes, selected by attributes on <html>:
+   data-palette="lima|salvia|cielo|indigo|orquidea|coral|ambar|grafito" and
+   data-theme="dark|light". The @theme block holds the default (Lima, dark);
+   the blocks below reassign the same tokens. Neutrals are tinted toward each
+   accent hue, except Grafito's: it's the grey one. Every palette climbs the
+   same lightness ladder (in OKLCH), so a palette changes hue, never contrast.
 
    Every palette passes WCAG AA (4.5:1) for ink / ink-muted / ink-dim on
    surface and raised, accent on ground and surface, on-accent on accent, and
    warn on surface, in both modes. Ratios were measured on the raw tokens; the
    grain shifts composited values by ~1% — re-measure if an alpha changes.
+   lib/theme.test.ts checks every pair, so a new palette can't skip this.
    ========================================================================== */
 
 @theme {
@@ -79,7 +82,7 @@
 
 /* --- Project colors (dark steps) ------------------------------------------
    Categorical identity for projects in charts and dots. Order and values
-   come from the dataviz reference palette, re-validated on this app's eight
+   come from the dataviz reference palette, re-validated on this app's sixteen
    surfaces: every check passes in dark mode. Keys match lib/project-colors.ts.
    Light steps are below, under [data-theme].
 
@@ -252,6 +255,115 @@
   --color-accent: #95560a;
   --color-on-accent: #ffffff;
   --color-warn: #b3362a;
+}
+
+/* Cielo: sky blue on bluish greys. */
+[data-palette="cielo"][data-theme="dark"] {
+  --color-ground: #12171a;
+  --color-surface: #1b2125;
+  --color-raised: #252c30;
+  --color-tile: #3b454b;
+  --color-ink: #f2f6f9;
+  --color-ink-muted: #9ea9b0;
+  --color-ink-dim: #8e9aa1;
+  --color-accent: #62caff;
+  --color-on-accent: #041824;
+  --color-warn: #e5a83c;
+}
+
+[data-palette="cielo"][data-theme="light"] {
+  --color-ground: #e7eff4;
+  --color-surface: #f1f6fa;
+  --color-raised: #ffffff;
+  --color-tile: #d8e3ea;
+  --color-ink: #171e22;
+  --color-ink-muted: #4e5b63;
+  --color-ink-dim: #5d6b73;
+  --color-accent: #0068a7;
+  --color-on-accent: #ffffff;
+  --color-warn: #8a5a0f;
+}
+
+/* Orquídea: orchid pink on mauve greys. */
+[data-palette="orquidea"][data-theme="dark"] {
+  --color-ground: #191518;
+  --color-surface: #241e22;
+  --color-raised: #2f292d;
+  --color-tile: #494046;
+  --color-ink: #f8f4f7;
+  --color-ink-muted: #ada3aa;
+  --color-ink-dim: #9f949b;
+  --color-accent: #f187d0;
+  --color-on-accent: #20101a;
+  --color-warn: #e5a83c;
+}
+
+[data-palette="orquidea"][data-theme="light"] {
+  --color-ground: #f3ebf0;
+  --color-surface: #f9f4f7;
+  --color-raised: #ffffff;
+  --color-tile: #e8dee4;
+  --color-ink: #201a1e;
+  --color-ink-muted: #60555c;
+  --color-ink-dim: #71656c;
+  --color-accent: #a32a7a;
+  --color-on-accent: #ffffff;
+  --color-warn: #8a5a0f;
+}
+
+/* Coral: coral on rosy greys. Warn stays amber: the accent owns coral. */
+[data-palette="coral"][data-theme="dark"] {
+  --color-ground: #1a1514;
+  --color-surface: #251f1d;
+  --color-raised: #302927;
+  --color-tile: #4b403f;
+  --color-ink: #f9f4f4;
+  --color-ink-muted: #b0a4a1;
+  --color-ink-dim: #a19592;
+  --color-accent: #ff7f6c;
+  --color-on-accent: #23100d;
+  --color-warn: #e5a83c;
+}
+
+[data-palette="coral"][data-theme="light"] {
+  --color-ground: #f4ebea;
+  --color-surface: #faf4f3;
+  --color-raised: #ffffff;
+  --color-tile: #eadedc;
+  --color-ink: #221a19;
+  --color-ink-muted: #635553;
+  --color-ink-dim: #736562;
+  --color-accent: #b6341f;
+  --color-on-accent: #ffffff;
+  --color-warn: #8a5a0f;
+}
+
+/* Grafito: the grey one. Pure neutrals with a silver accent in the dark and a
+   charcoal one on paper; only warn keeps a hue, so it still stands out. */
+[data-palette="grafito"][data-theme="dark"] {
+  --color-ground: #161616;
+  --color-surface: #202020;
+  --color-raised: #2b2b2b;
+  --color-tile: #434343;
+  --color-ink: #f6f6f6;
+  --color-ink-muted: #a7a7a7;
+  --color-ink-dim: #989898;
+  --color-accent: #d4d4d4;
+  --color-on-accent: #161616;
+  --color-warn: #e5a83c;
+}
+
+[data-palette="grafito"][data-theme="light"] {
+  --color-ground: #eeeeee;
+  --color-surface: #f5f5f5;
+  --color-raised: #ffffff;
+  --color-tile: #e1e1e1;
+  --color-ink: #1c1c1c;
+  --color-ink-muted: #595959;
+  --color-ink-dim: #686868;
+  --color-accent: #333333;
+  --color-on-accent: #ffffff;
+  --color-warn: #8a5a0f;
 }
 
 /* ==========================================================================

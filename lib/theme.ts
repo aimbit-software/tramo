@@ -7,7 +7,8 @@
  * is validated here and falls back to the default on its own.
  */
 
-export const PALETTES = ["salvia", "indigo", "lima", "ambar"] as const;
+/** In hue order, as the picker shows them, with the grey one last. */
+export const PALETTES = ["lima", "salvia", "cielo", "indigo", "orquidea", "coral", "ambar", "grafito"] as const;
 export const MODES = ["dark", "light"] as const;
 
 export type Palette = (typeof PALETTES)[number];
@@ -23,10 +24,14 @@ export const THEME_COOKIES = { palette: "palette", mode: "mode" } as const;
  * outside CSS: the favicon. A copy of app/globals.css, kept honest by a test.
  */
 export const THEME_ACCENTS: Record<Palette, Record<Mode, { accent: string; onAccent: string }>> = {
-  salvia: { dark: { accent: "#5ee0a0", onAccent: "#0c1510" }, light: { accent: "#19754e", onAccent: "#ffffff" } },
-  indigo: { dark: { accent: "#9092ff", onAccent: "#13132a" }, light: { accent: "#4b44d6", onAccent: "#ffffff" } },
   lima: { dark: { accent: "#c5ef5a", onAccent: "#171a0c" }, light: { accent: "#44710b", onAccent: "#ffffff" } },
+  salvia: { dark: { accent: "#5ee0a0", onAccent: "#0c1510" }, light: { accent: "#19754e", onAccent: "#ffffff" } },
+  cielo: { dark: { accent: "#62caff", onAccent: "#041824" }, light: { accent: "#0068a7", onAccent: "#ffffff" } },
+  indigo: { dark: { accent: "#9092ff", onAccent: "#13132a" }, light: { accent: "#4b44d6", onAccent: "#ffffff" } },
+  orquidea: { dark: { accent: "#f187d0", onAccent: "#20101a" }, light: { accent: "#a32a7a", onAccent: "#ffffff" } },
+  coral: { dark: { accent: "#ff7f6c", onAccent: "#23100d" }, light: { accent: "#b6341f", onAccent: "#ffffff" } },
   ambar: { dark: { accent: "#ffb547", onAccent: "#1c1405" }, light: { accent: "#95560a", onAccent: "#ffffff" } },
+  grafito: { dark: { accent: "#d4d4d4", onAccent: "#161616" }, light: { accent: "#333333", onAccent: "#ffffff" } },
 };
 
 /**

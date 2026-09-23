@@ -5,7 +5,7 @@
  *
  * The ORDER is the colorblind-safety mechanism: adjacent slots were validated
  * for CVD and normal-vision separation (dataviz skill, reference categorical
- * palette), on this app's eight surfaces. New projects take slots in this
+ * palette), on this app's sixteen surfaces. New projects take slots in this
  * order. The actual values live in app/globals.css (`--color-project-*`),
  * with a stepped set per mode.
  */

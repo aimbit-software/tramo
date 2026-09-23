@@ -126,10 +126,11 @@ Additions this app needs that Fragua doesn't have:
 
 ### Themes
 
-**Decided:** the app ships several themes and each user picks their own. There are 4 palettes (Salvia, Índigo, Lima, Ámbar), each with a dark and a light mode.
+**Decided:** the app ships several themes and each user picks their own. There are 8 palettes, each with a dark and a light mode: it launched with 4 (Salvia, Índigo, Lima, Ámbar), and the owner asked for more options, a grey one among them, which added Cielo, Orquídea, Coral and Grafito (the grey one). The picker shows them in hue order.
 
 - The preference is stored in the user's account, so it follows them across devices. It's also mirrored in a cookie so the server renders the right theme with no flash.
-- Theme state lives on `<html>` as `data-palette="salvia|indigo|lima|ambar"` plus `data-theme="dark|light"`. This mirrors Fragua's attribute-plus-pre-hydration-script approach.
+- Theme state lives on `<html>` as `data-palette="lima|salvia|cielo|indigo|orquidea|coral|ambar|grafito"` plus `data-theme="dark|light"`. This mirrors Fragua's attribute-plus-pre-hydration-script approach.
+- Every palette climbs one lightness ladder, measured in OKLCH on the first four, so a palette changes hue, never contrast. A unit test holds every palette to WCAG AA.
 - Default for new users: Lima, dark (it was Salvia until the first week of use).
 - The theme picker is itself a custom control: an accessible radio group of swatches.
 
