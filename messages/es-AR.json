@@ -3,15 +3,106 @@
     "name": "Horas",
     "description": "Registro de horas por proyecto, simple y ordenado."
   },
+  "common": {
+    "cancel": "Cancelar",
+    "processing": "Procesando…"
+  },
+  "nav": {
+    "appName": "Horas",
+    "label": "Navegación principal",
+    "admin": "Admin",
+    "settings": "Ajustes",
+    "signOut": "Cerrar sesión"
+  },
+  "members": {
+    "title": "Miembros",
+    "subtitle": "Invitá gente, aprobá pedidos y definí quién administra el espacio.",
+    "roles": {
+      "ADMIN": "Admin",
+      "MEMBER": "Miembro"
+    },
+    "invite": {
+      "title": "Invitar",
+      "email": "Mail de Google",
+      "emailPlaceholder": "nombre@gmail.com",
+      "hint": "No se manda ningún mail: cuando esa persona entre con Google, va a tener acceso directo.",
+      "role": "Rol",
+      "submit": "Invitar",
+      "submitting": "Invitando…",
+      "success": "Listo: cuando {email} entre con Google, va a tener acceso."
+    },
+    "pending": {
+      "title": "Pedidos pendientes",
+      "requested": "pidió acceso {date}",
+      "approve": "Aprobar",
+      "reject": "Rechazar"
+    },
+    "active": {
+      "title": "Miembros activos",
+      "you": "vos",
+      "roleLabel": "Rol de {name}",
+      "removeAccess": "Quitar acceso",
+      "removeTitle": "¿Quitarle el acceso a {name}?",
+      "removeBody": "Deja de ver el espacio en su próxima acción. Sus horas quedan guardadas y podés devolverle el acceso cuando quieras.",
+      "removeConfirm": "Quitar acceso"
+    },
+    "invitations": {
+      "title": "Invitaciones abiertas",
+      "invitedAs": "Invitado como {role}",
+      "revoke": "Revocar",
+      "revokeTitle": "¿Revocar la invitación a {email}?",
+      "revokeBody": "Solo borra la aprobación previa. Si esa persona ya entró, su acceso no cambia.",
+      "revokeConfirm": "Revocar"
+    },
+    "rejected": {
+      "title": "Sin acceso",
+      "restore": "Devolver acceso"
+    },
+    "errors": {
+      "invalidEmail": "Escribí un mail válido.",
+      "invalidRole": "Elegí un rol válido.",
+      "alreadyMember": "Esa persona ya es miembro activo.",
+      "lastAdmin": "El espacio necesita al menos un admin activo.",
+      "self": "No podés quitarte el acceso a vos mismo.",
+      "notFound": "Ese registro ya no existe o cambió. Recargá la página.",
+      "generic": "Algo salió mal. Probá de nuevo."
+    }
+  },
+  "signIn": {
+    "title": "Horas",
+    "subtitle": "Registrá en qué se va el tiempo de cada proyecto.",
+    "continueWithGoogle": "Continuar con Google",
+    "redirecting": "Redirigiendo…",
+    "errors": {
+      "cancelled": "Cancelaste el inicio de sesión con Google. Probá de nuevo cuando quieras.",
+      "generic": "No se pudo iniciar sesión con Google. Probá de nuevo."
+    }
+  },
+  "pending": {
+    "pending": {
+      "title": "Tu acceso está pendiente",
+      "body": "Un admin tiene que aprobar tu ingreso con {email}. Cuando lo haga, vas a poder entrar desde acá."
+    },
+    "rejected": {
+      "title": "Tu solicitud fue rechazada",
+      "body": "Un admin rechazó el acceso de {email}. Si creés que fue un error, podés pedirlo de nuevo."
+    },
+    "none": {
+      "title": "Todavía no hay un espacio de trabajo",
+      "body": "Entraste como {email}, pero ningún admin creó el espacio todavía. Cuando exista, pedí acceso desde acá."
+    },
+    "requestAgain": "Pedir acceso",
+    "signOut": "Cerrar sesión"
+  },
   "home": {
-    "eyebrow": "VISTA PREVIA",
-    "title": "¿En qué estás trabajando?",
-    "notice": "Esta pantalla muestra el sistema de diseño y se reemplaza en la próxima etapa.",
-    "mockProject": "Proyecto demo",
-    "mockTask": "Diseño de la landing",
-    "pause": "Pausar timer",
-    "thisWeek": "Esta semana",
-    "weekTotal": "32 h 15 min"
+    "greeting": "Hola, {name}",
+    "roleAdmin": "Admin",
+    "roleMember": "Miembro",
+    "comingSoon": "Acá va a vivir el timer. Llega en la próxima etapa."
+  },
+  "settings": {
+    "title": "Ajustes",
+    "themeHint": "Elegí la paleta y el modo. El cambio se aplica al instante y se guarda."
   },
   "theme": {
     "palette": "Paleta",

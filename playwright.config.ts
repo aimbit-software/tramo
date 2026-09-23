@@ -9,6 +9,11 @@
 // Browsers are not bundled: run `pnpm exec playwright install chromium` once.
 
 import { defineConfig, devices } from "@playwright/test";
+import { config } from "dotenv";
+
+// Playwright doesn't read env files on its own; the app it boots needs the
+// database and auth variables. Same precedence as Next: .env.local first.
+config({ path: [".env.local", ".env"], quiet: true });
 
 const PORT = Number(process.env.PORT ?? 3000);
 const baseURL = `http://localhost:${PORT}`;
