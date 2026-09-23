@@ -27,6 +27,9 @@ export async function AppHeader({ userName, workspaceName, isAdmin = false }: Ap
         <span className="hidden truncate text-sm text-ink-dim sm:inline">{workspaceName}</span>
 
         <nav aria-label={t("label")} className="ml-auto flex items-center gap-1">
+          <Link href="/week" className={NAV_LINK}>
+            {t("week")}
+          </Link>
           {isAdmin && (
             <Link href="/admin/members" className={NAV_LINK}>
               {t("admin")}

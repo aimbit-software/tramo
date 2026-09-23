@@ -10,6 +10,7 @@
   "nav": {
     "appName": "Horas",
     "label": "Navegación principal",
+    "week": "Semana",
     "admin": "Admin",
     "settings": "Ajustes",
     "signOut": "Cerrar sesión"
@@ -179,6 +180,19 @@
     "requestAgain": "Pedir acceso",
     "signOut": "Cerrar sesión"
   },
+  "week": {
+    "thisWeek": "Esta semana",
+    "week": "Semana",
+    "navigation": "Cambiar de semana",
+    "previous": "Semana anterior",
+    "next": "Semana siguiente",
+    "backToThisWeek": "Volver a esta semana",
+    "total": "Total",
+    "project": "Proyecto",
+    "caption": "Horas por proyecto y por día, semana del {week}",
+    "blocks": "Registros",
+    "empty": "No hay horas registradas en esta semana."
+  },
   "dateField": {
     "placeholder": "dd/mm/aaaa",
     "openCalendar": "Abrir el calendario",
@@ -258,7 +272,9 @@
       "title": "Últimos registros",
       "empty": "Todavía no registraste horas. Elegí un proyecto y dale play.",
       "noDescription": "Sin descripción",
-      "edited": "editado"
+      "edited": "editado",
+      "now": "ahora",
+      "running": "En curso"
     },
     "errors": {
       "cannotTrack": "No podés registrar horas en ese proyecto.",
