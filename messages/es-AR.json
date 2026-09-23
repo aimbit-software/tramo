@@ -134,9 +134,13 @@
       "emailPlaceholder": "nombre@gmail.com",
       "hint": "No se manda ningún mail: cuando esa persona entre con Google, va a tener acceso directo.",
       "role": "Rol",
+      "projects": "Proyectos",
+      "projectsHint": "Opcional. Cuando entre con Google, va a estar directo en los proyectos que elijas, con ese rol.",
+      "projectRole": "Rol en {project}",
+      "notInProject": "No",
       "submit": "Invitar",
       "submitting": "Invitando…",
-      "success": "Listo: cuando {email} entre con Google, va a tener acceso."
+      "success": "Listo: cuando {email} entre con Google, va a tener acceso{projects, plural, =0 {} one { y va a estar en # proyecto} other { y va a estar en # proyectos}}."
     },
     "pending": {
       "title": "Pedidos pendientes",
@@ -156,6 +160,8 @@
     "invitations": {
       "title": "Invitaciones abiertas",
       "invitedAs": "Invitado como {role}",
+      "projects": "Proyectos de la invitación",
+      "projectAs": "{project} · {role}",
       "revoke": "Revocar",
       "revokeTitle": "¿Revocar la invitación a {email}?",
       "revokeBody": "Solo borra la aprobación previa. Si esa persona ya entró, su acceso no cambia.",
@@ -168,6 +174,7 @@
     "errors": {
       "invalidEmail": "Escribí un mail válido.",
       "invalidRole": "Elegí un rol válido.",
+      "invalidProjects": "Revisá los proyectos elegidos y probá de nuevo.",
       "alreadyMember": "Esa persona ya es miembro activo.",
       "lastAdmin": "El espacio necesita al menos un admin activo.",
       "self": "No podés quitarte el acceso a vos mismo.",

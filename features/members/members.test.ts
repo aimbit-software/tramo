@@ -42,6 +42,20 @@ async function requestAccess(email: string) {
 const adminMember = () =>
   db.prisma.workspaceMember.findFirstOrThrow({ where: { userId: adminId } });
 
+function createProject(name: string, options: { workspaceId?: string; archivedAt?: Date } = {}) {
+  return db.prisma.project.create({
+    data: { workspaceId: options.workspaceId ?? workspaceId, name, color: "blue", archivedAt: options.archivedAt },
+  });
+}
+
+const invitedProjects = () =>
+  db.prisma.invitationProject.findMany({ select: { projectId: true, role: true }, orderBy: { role: "asc" } });
+
+type InvitedProject = { projectId: string; role: "TRACKER" | "VIEWER" };
+
+const invite = (email: string, projects: InvitedProject[]) =>
+  inviteToWorkspace(db.prisma, { workspaceId, invitedById: adminId, email, role: "MEMBER", adminEmails: ADMINS, projects });
+
 describe("approveMember / rejectMember", () => {
   it("approves a pending request", async () => {
     const { member } = await requestAccess("carla@test.dev");
@@ -129,6 +143,62 @@ describe("inviteToWorkspace", () => {
     });
 
     expect(result).toEqual({ ok: false, reason: "alreadyMember" });
+  });
+
+  it("stores the projects picked for the person, with their roles", async () => {
+    const web = await createProject("Web");
+    const app = await createProject("App");
+
+    await invite("nuevo@test.dev", [
+      { projectId: web.id, role: "TRACKER" },
+      { projectId: app.id, role: "VIEWER" },
+    ]);
+
+    expect(await invitedProjects()).toEqual([
+      { projectId: web.id, role: "TRACKER" },
+      { projectId: app.id, role: "VIEWER" },
+    ]);
+  });
+
+  it("skips archived projects and projects outside the workspace", async () => {
+    const web = await createProject("Web");
+    const old = await createProject("Old", { archivedAt: new Date() });
+    const other = await db.prisma.workspace.create({ data: { name: "Other" } });
+    const foreign = await createProject("Foreign", { workspaceId: other.id });
+
+    await invite("nuevo@test.dev", [
+      { projectId: web.id, role: "TRACKER" },
+      { projectId: old.id, role: "TRACKER" },
+      { projectId: foreign.id, role: "TRACKER" },
+      { projectId: "missing", role: "VIEWER" },
+    ]);
+
+    expect(await invitedProjects()).toEqual([{ projectId: web.id, role: "TRACKER" }]);
+  });
+
+  it("replaces the projects when the same email is invited again", async () => {
+    const web = await createProject("Web");
+    const app = await createProject("App");
+
+    await invite("nuevo@test.dev", [{ projectId: web.id, role: "TRACKER" }]);
+    // A repeated project keeps the last role picked.
+    await invite("nuevo@test.dev", [
+      { projectId: app.id, role: "VIEWER" },
+      { projectId: app.id, role: "TRACKER" },
+    ]);
+
+    expect(await invitedProjects()).toEqual([{ projectId: app.id, role: "TRACKER" }]);
+  });
+
+  it("puts someone who already asked for access straight into the projects", async () => {
+    const web = await createProject("Web");
+    const { user } = await requestAccess("carla@test.dev");
+
+    await invite("carla@test.dev", [{ projectId: web.id, role: "VIEWER" }]);
+
+    expect(
+      await db.prisma.projectMember.findMany({ where: { userId: user.id }, select: { projectId: true, role: true } }),
+    ).toEqual([{ projectId: web.id, role: "VIEWER" }]);
   });
 });
 

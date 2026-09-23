@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { PrismaClient } from "@/generated/prisma/client";
-import type { WorkspaceRole } from "@/generated/prisma/enums";
+import type { ProjectRole, WorkspaceRole } from "@/generated/prisma/enums";
 import { reconcileAccess } from "@/lib/access/onboarding";
 import { normalizeEmail } from "@/lib/email";
 
@@ -92,9 +92,13 @@ export async function setMemberRole(
 }
 
 /**
- * Pre-approves a Google email. If that person already signed in (typically
- * with a pending request), their access is reconciled right away instead of
- * waiting for their next sign-in.
+ * Pre-approves a Google email, optionally with the projects the person joins
+ * and their role on each. If that person already signed in (typically with a
+ * pending request), their access is reconciled right away instead of waiting
+ * for their next sign-in.
+ *
+ * Inviting the same email again replaces the invitation, projects included.
+ * Projects that are archived or belong to another workspace are skipped.
  */
 export async function inviteToWorkspace(
   db: PrismaClient,
@@ -104,6 +108,7 @@ export async function inviteToWorkspace(
     email: string;
     role: WorkspaceRole;
     adminEmails: Set<string>;
+    projects?: { projectId: string; role: ProjectRole }[];
   },
 ): Promise<MemberResult> {
   const email = normalizeEmail(input.email);
@@ -114,10 +119,24 @@ export async function inviteToWorkspace(
   });
   if (activeMember) return fail("alreadyMember");
 
-  await db.invitation.upsert({
-    where: { workspaceId_email: { workspaceId: input.workspaceId, email } },
-    create: { workspaceId: input.workspaceId, email, role: input.role, invitedById: input.invitedById },
-    update: { role: input.role, invitedById: input.invitedById, acceptedAt: null },
+  // One role per project: when a project repeats, the last pick wins.
+  const picked = new Map((input.projects ?? []).map(({ projectId, role }) => [projectId, role]));
+  const assignable = await db.project.findMany({
+    where: { id: { in: [...picked.keys()] }, workspaceId: input.workspaceId, archivedAt: null },
+    select: { id: true },
+  });
+
+  await db.$transaction(async (tx) => {
+    const invitation = await tx.invitation.upsert({
+      where: { workspaceId_email: { workspaceId: input.workspaceId, email } },
+      create: { workspaceId: input.workspaceId, email, role: input.role, invitedById: input.invitedById },
+      update: { role: input.role, invitedById: input.invitedById, acceptedAt: null },
+      select: { id: true },
+    });
+    await tx.invitationProject.deleteMany({ where: { invitationId: invitation.id } });
+    await tx.invitationProject.createMany({
+      data: assignable.map(({ id }) => ({ invitationId: invitation.id, projectId: id, role: picked.get(id) })),
+    });
   });
 
   const existingUser = await db.user.findUnique({ where: { email }, select: { id: true, email: true } });

@@ -10,7 +10,7 @@ import {
   RestoreAction,
   RevokeInvitation,
 } from "@/features/members/components/member-actions";
-import { listMembers, listOpenInvitations } from "@/features/members/queries";
+import { listInvitableProjects, listMembers, listOpenInvitations } from "@/features/members/queries";
 import { requireAdmin } from "@/lib/dal";
 
 function Section({ title, count, children }: { title: string; count: number; children: ReactNode }) {
@@ -24,12 +24,15 @@ function Section({ title, count, children }: { title: string; count: number; chi
   );
 }
 
-function Row({ primary, secondary, actions }: { primary: ReactNode; secondary: ReactNode; actions: ReactNode }) {
+type RowProps = { primary: ReactNode; secondary: ReactNode; actions: ReactNode; details?: ReactNode };
+
+function Row({ primary, secondary, actions, details }: RowProps) {
   return (
     <li className="flex flex-col gap-3 px-4 py-3.5 not-first:hairline-t sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-col">
         <span className="truncate text-sm">{primary}</span>
         <span className="truncate text-xs text-ink-dim">{secondary}</span>
+        {details}
       </div>
       {actions}
     </li>
@@ -38,11 +41,13 @@ function Row({ primary, secondary, actions }: { primary: ReactNode; secondary: R
 
 export default async function MembersPage() {
   const { user, workspace } = await requireAdmin();
-  const [t, format, members, invitations] = await Promise.all([
+  const [t, tProjectRoles, format, members, invitations, projects] = await Promise.all([
     getTranslations("members"),
+    getTranslations("projects.roles"),
     getFormatter(),
     listMembers(workspace.id),
     listOpenInvitations(workspace.id),
+    listInvitableProjects(workspace.id),
   ]);
 
   const pending = members.filter((member) => member.status === "PENDING");
@@ -59,7 +64,7 @@ export default async function MembersPage() {
           <p className="text-sm text-ink-muted">{t("subtitle")}</p>
         </header>
 
-        <InviteForm />
+        <InviteForm projects={projects} />
 
         {pending.length > 0 && (
           <Section title={t("pending.title")} count={pending.length}>
@@ -100,6 +105,22 @@ export default async function MembersPage() {
                 key={invitation.id}
                 primary={invitation.email}
                 secondary={t("invitations.invitedAs", { role: t(`roles.${invitation.role}`) })}
+                details={
+                  invitation.projects.length > 0 && (
+                    <ul aria-label={t("invitations.projects")} className="mt-2 flex flex-wrap gap-1.5">
+                      {invitation.projects.map(({ project, role }) => (
+                        <li key={project.id} className="inline-flex items-center gap-1.5 rounded-pill bg-tile px-2.5 py-1 text-xs">
+                          <span
+                            aria-hidden
+                            className="size-2 flex-none rounded-full"
+                            style={{ backgroundColor: `var(--color-project-${project.color})` }}
+                          />
+                          {t("invitations.projectAs", { project: project.name, role: tProjectRoles(role) })}
+                        </li>
+                      ))}
+                    </ul>
+                  )
+                }
                 actions={<RevokeInvitation invitationId={invitation.id} email={invitation.email} />}
               />
             ))}

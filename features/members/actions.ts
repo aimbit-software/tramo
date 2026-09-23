@@ -53,6 +53,7 @@ export async function inviteMemberAction(formData: FormData): Promise<ActionResu
     invitedById: user.id,
     email: parsed.data.email,
     role: parsed.data.role,
+    projects: parsed.data.projects,
     adminEmails: parseEmailList(process.env.ADMIN_EMAILS),
   });
   // The only expected failure belongs to the email field.

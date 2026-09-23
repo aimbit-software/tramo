@@ -72,17 +72,32 @@ async function applyStep(tx: Tx, userId: string, step: AccessStep): Promise<void
       });
       return;
 
-    case "acceptInvitation":
+    case "acceptInvitation": {
       await tx.workspaceMember.upsert({
         where: { workspaceId_userId: { workspaceId: step.workspaceId, userId } },
         create: { workspaceId: step.workspaceId, userId, role: step.role, status: "ACTIVE" },
         update: { role: step.role, status: "ACTIVE" },
       });
+      // The projects picked on the invitation, so the person lands straight in
+      // them. Only here, once: accepting marks the invitation, and a later
+      // sign-in never undoes what an admin changed on the board since.
+      const projects = await tx.invitationProject.findMany({
+        where: { invitationId: step.invitationId },
+        select: { projectId: true, role: true },
+      });
+      for (const { projectId, role } of projects) {
+        await tx.projectMember.upsert({
+          where: { projectId_userId: { projectId, userId } },
+          create: { projectId, userId, role },
+          update: { role },
+        });
+      }
       await tx.invitation.update({
         where: { id: step.invitationId },
         data: { acceptedAt: new Date() },
       });
       return;
+    }
 
     case "requestAccess":
       await tx.workspaceMember.create({

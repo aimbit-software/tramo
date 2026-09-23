@@ -9,7 +9,7 @@ A minimalist web app to track how much time each person spends on each project: 
 | **Home** (`/`) | The timer: pick a project, describe the task (autocomplete from your past tasks), press play. A floating always-on-top window where the browser supports it (Chrome, Edge, Firefox on desktop). An 8-hour "did you forget it?" prompt. Your latest blocks, editable |
 | **Week** (`/week`) | Your week in your time zone: total, a projects × days table, and every block by day. Add time you forgot to track; fix or delete your own blocks |
 | **Metrics** (`/metrics`) | For a range and an optional project: the total, hours per person, per project and per task, and week over week. Admins see everything; members see the projects they belong to |
-| **Admin → Members** | Invite by Google email, approve or reject access requests, switch roles |
+| **Admin → Members** | Invite by Google email (optionally with the projects the person joins, as tracker or viewer), approve or reject access requests, switch roles |
 | **Admin → Projects** | Create, rename, recolor and archive projects; drag people onto them or use "Assign" |
 | **Settings** | Four palettes × dark and light, saved to your account |
 
@@ -29,7 +29,7 @@ The rules that keep hours honest: one running timer per person, no overlapping b
 | Who | What happens on sign-in |
 | --- | --- |
 | Email in `ADMIN_EMAILS` | Active admin of the workspace (created by the first one to sign in) |
-| Email invited from **Admin → Members** | Active member with the invited role, immediately |
+| Email invited from **Admin → Members** | Active member with the invited role, immediately, already inside the projects picked on the invitation |
 | Anyone else | A pending request. They see nothing until an admin approves it |
 
 Access is checked on the server for every request (`lib/dal.ts`), never only in the UI.
