@@ -27,6 +27,7 @@ export async function getTimerPageData(userId: string, workspaceId: string) {
       take: 8,
       select: {
         id: true,
+        projectId: true,
         description: true,
         startedAt: true,
         endedAt: true,

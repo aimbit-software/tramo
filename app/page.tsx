@@ -7,6 +7,7 @@ import { AppHeader } from "@/components/global/app-header";
 import { RecentEntries } from "@/features/time/components/recent-entries";
 import { TimerBar } from "@/features/time/components/timer-bar";
 import { getTimerPageData } from "@/features/time/queries";
+import { DEFAULT_TIME_ZONE } from "@/i18n/config";
 import { requireMember } from "@/lib/dal";
 
 /** Home: the timer and the latest blocks. */
@@ -46,7 +47,12 @@ export default async function HomePage() {
           />
         )}
 
-        <RecentEntries entries={data.recent} />
+        <RecentEntries
+          entries={data.recent}
+          projects={data.projects}
+          suggestions={data.suggestions}
+          timeZone={user.timeZone ?? DEFAULT_TIME_ZONE}
+        />
       </main>
     </>
   );
