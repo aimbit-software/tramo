@@ -175,7 +175,7 @@ These override any recommendation in `exploration.md` that conflicts with them.
 | Drag and drop | **dnd-kit**, the one justified behavior-only dependency. Every drag action also has a single-pointer alternative (tap a user chip to open a custom project and role picker), per WCAG 2.5.7 |
 | Forgotten-timer threshold | **8 hours** |
 | Editing past entries | **No time limit.** Everyone can edit their own entries anytime, and admins can edit anyone's. Every manual creation or edit is flagged |
-| Manual time input | **Smart free-text field.** It accepts "14:30", "1h30", "90m" and similar, with a live preview of how it was parsed. Restyled text input with a pure parse/format function and a shared Zod schema |
+| Manual time input | **Time selectors** (changed from a smart free-text field after the first week of use: typing "18:00 o 1h30" didn't convince the owner). Start and end are picked from lists on a quarter-hour grid, like a calendar; each end option shows the resulting duration, an end before the start means the next day, and changing the start keeps the duration. Typing still jumps to a time ("930", "18"). The server keeps parsing "HH:MM", so the contract didn't change |
 | Multiple workspaces | **Allowed by the data model from day 1.** A user can belong to several workspaces. The workspace switcher UI stays hidden until a user has more than one |
 
 **Defaults set by the orchestrator** (the owner can correct them during the proposal review):
