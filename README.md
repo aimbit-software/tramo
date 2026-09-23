@@ -2,14 +2,26 @@
 
 A minimalist web app to track how much time each person spends on each project: a timer that floats over your other apps, weekly views, and metrics. It's built for a small team running several projects in parallel.
 
-> **Status:** batch 1 of 4 (foundation). Auth, the database, the timer, and metrics land in the next batches.
+> **Status:** batch 2 of 4 (sign-in, workspace access, admin panel). The timer, weekly view and metrics land in the next batches.
 
 ## Quick path
 
 1. Install dependencies: `pnpm install`.
-2. Create `.env.local` from the [template below](#environment-variables).
-3. Start the app: `pnpm dev`, then open <http://localhost:3000>.
-4. Verify: `pnpm lint && pnpm typecheck && pnpm test`.
+2. Create a free [Neon](https://neon.com) project in **AWS US East 1**, next to Vercel's default region. Copy the pooled and direct connection strings.
+3. Create `.env.local` from the [template below](#environment-variables).
+4. Create the tables: `pnpm db:migrate`.
+5. Start the app: `pnpm dev`, then open <http://localhost:3000> and continue with Google. The people listed in `ADMIN_EMAILS` enter as admins; the first one creates the workspace.
+6. Verify: `pnpm lint && pnpm typecheck && pnpm test`.
+
+## How access works
+
+| Who | What happens on sign-in |
+| --- | --- |
+| Email in `ADMIN_EMAILS` | Active admin of the workspace (created by the first one to sign in) |
+| Email invited from **Admin → Members** | Active member with the invited role, immediately |
+| Anyone else | A pending request. They see nothing until an admin approves it |
+
+Access is checked on the server for every request (`lib/dal.ts`), never only in the UI.
 
 ## Stack
 
@@ -20,7 +32,8 @@ A minimalist web app to track how much time each person spends on each project: 
 | i18n | next-intl, a single locale (`es-AR`) with no URL prefix |
 | Icons | lucide-react |
 | Tests | Vitest (unit) and Playwright (end-to-end) |
-| Coming next | PostgreSQL (Neon) + Prisma 7, Better Auth with Google |
+| Data | PostgreSQL on Neon, Prisma 7 with the Neon driver adapter |
+| Auth | Better Auth with Google, sessions in the database |
 
 ## Scripts
 
@@ -32,6 +45,9 @@ A minimalist web app to track how much time each person spends on each project: 
 | `pnpm typecheck` | Generates route types, then runs `tsc --noEmit` |
 | `pnpm test` / `pnpm test:watch` | Vitest unit tests |
 | `pnpm test:e2e` | Playwright end-to-end tests |
+| `pnpm db:migrate` | Applies pending migrations to the database in `.env.local` |
+| `pnpm db:migrate:dev` | Creates a new migration from `prisma/schema.prisma` (development) |
+| `pnpm db:studio` | Opens Prisma Studio |
 | `pnpm noise` | Rebuilds the grain textures in `public/` |
 
 ## Environment variables

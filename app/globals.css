@@ -60,6 +60,35 @@
   /* --- Motion -------------------------------------------------------------
      The system's single easing curve. `ease-signature` in class names. */
   --ease-signature: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* --- Project colors (dark steps) ----------------------------------------
+     Categorical identity for projects in charts and dots. Order and values
+     come from the dataviz reference palette, re-validated on this app's
+     eight surfaces: every check passes in dark mode. Keys match
+     lib/project-colors.ts. Light steps are below, under [data-theme]. */
+  --color-project-blue: #3987e5;
+  --color-project-orange: #d95926;
+  --color-project-aqua: #199e70;
+  --color-project-yellow: #c98500;
+  --color-project-magenta: #d55181;
+  --color-project-green: #008300;
+  --color-project-violet: #9085e9;
+  --color-project-red: #e66767;
+}
+
+/* Light steps of the project colors. Orange, aqua, yellow and magenta sit
+   under 3:1 against the paper surfaces, so every chart ships visible labels
+   and a table view (the dataviz "relief rule"): color never carries identity
+   alone. */
+[data-theme="light"] {
+  --color-project-blue: #2a78d6;
+  --color-project-orange: #eb6834;
+  --color-project-aqua: #1baf7a;
+  --color-project-yellow: #eda100;
+  --color-project-magenta: #e87ba4;
+  --color-project-green: #008300;
+  --color-project-violet: #4a3aa7;
+  --color-project-red: #e34948;
 }
 
 :root {

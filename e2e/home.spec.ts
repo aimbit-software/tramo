@@ -1,33 +1,38 @@
 import { expect, test } from "@playwright/test";
 
-test("renders the design preview with the default theme", async ({ page }) => {
+test("sends anonymous visitors to sign in", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(page).toHaveURL(/\/sign-in$/);
+  await expect(page.getByRole("button", { name: "Continuar con Google" })).toBeVisible();
+});
+
+test("renders the stored theme on the server", async ({ page, context, baseURL }) => {
+  await context.addCookies([
+    { name: "palette", value: "indigo", url: baseURL },
+    { name: "mode", value: "light", url: baseURL },
+  ]);
+
+  await page.goto("/sign-in");
+
+  await expect(page.locator("html")).toHaveAttribute("data-palette", "indigo");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+});
+
+test("ignores tampered theme cookies", async ({ page, context, baseURL }) => {
+  await context.addCookies([
+    { name: "palette", value: "<script>", url: baseURL },
+    { name: "mode", value: "neon", url: baseURL },
+  ]);
+
+  await page.goto("/sign-in");
+
   await expect(page.locator("html")).toHaveAttribute("data-palette", "salvia");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
 });
 
-test("switches and remembers the theme", async ({ page }) => {
-  await page.goto("/");
+test("maps sign-in errors to a known message", async ({ page }) => {
+  await page.goto("/sign-in?error=%3Cb%3Ehacked%3C%2Fb%3E");
 
-  await page.getByRole("radio", { name: "Índigo" }).click();
-  await page.getByRole("radio", { name: "Claro" }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-palette", "indigo");
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-
-  // The server renders the stored choice on a fresh load.
-  await page.reload();
-  await expect(page.locator("html")).toHaveAttribute("data-palette", "indigo");
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-});
-
-test("moves through palettes with the keyboard", async ({ page }) => {
-  await page.goto("/");
-
-  await page.getByRole("radio", { name: "Salvia" }).focus();
-  await page.keyboard.press("ArrowRight");
-
-  await expect(page.getByRole("radio", { name: "Índigo" })).toBeFocused();
-  await expect(page.getByRole("radio", { name: "Índigo" })).toHaveAttribute("aria-checked", "true");
+  await expect(page.getByRole("alert")).toHaveText("No se pudo iniciar sesión con Google. Probá de nuevo.");
 });

@@ -1,0 +1,110 @@
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+
+import { reconcileAccess } from "@/lib/access/onboarding";
+import { createTestDb, createUser, type TestDb } from "@/lib/testing/db";
+
+let db: TestDb;
+
+beforeAll(async () => {
+  db = await createTestDb();
+});
+
+afterAll(async () => {
+  await db.close();
+});
+
+beforeEach(async () => {
+  await db.reset();
+});
+
+const ADMINS = new Set(["ana@test.dev", "beto@test.dev"]);
+
+async function membershipsOf(userId: string) {
+  return db.prisma.workspaceMember.findMany({
+    where: { userId },
+    select: { workspaceId: true, role: true, status: true },
+  });
+}
+
+describe("reconcileAccess", () => {
+  it("lets the first bootstrap admin create the workspace", async () => {
+    const ana = await createUser(db, "Ana@Test.dev");
+
+    await reconcileAccess(db.prisma, ana, ADMINS);
+
+    expect(await db.prisma.workspace.count()).toBe(1);
+    expect(await membershipsOf(ana.id)).toEqual([
+      expect.objectContaining({ role: "ADMIN", status: "ACTIVE" }),
+    ]);
+  });
+
+  it("adds later bootstrap admins to the same workspace", async () => {
+    const ana = await createUser(db, "ana@test.dev");
+    const beto = await createUser(db, "beto@test.dev");
+
+    await reconcileAccess(db.prisma, ana, ADMINS);
+    await reconcileAccess(db.prisma, beto, ADMINS);
+
+    expect(await db.prisma.workspace.count()).toBe(1);
+    expect(await membershipsOf(beto.id)).toEqual([
+      expect.objectContaining({ role: "ADMIN", status: "ACTIVE" }),
+    ]);
+  });
+
+  it("turns a stranger's first sign-in into a pending request", async () => {
+    const ana = await createUser(db, "ana@test.dev");
+    const carla = await createUser(db, "carla@test.dev");
+    await reconcileAccess(db.prisma, ana, ADMINS);
+
+    await reconcileAccess(db.prisma, carla, ADMINS);
+    await reconcileAccess(db.prisma, carla, ADMINS);
+
+    expect(await membershipsOf(carla.id)).toEqual([
+      expect.objectContaining({ role: "MEMBER", status: "PENDING" }),
+    ]);
+  });
+
+  it("activates an invited person with the invited role", async () => {
+    const ana = await createUser(db, "ana@test.dev");
+    await reconcileAccess(db.prisma, ana, ADMINS);
+    const workspace = await db.prisma.workspace.findFirstOrThrow();
+    await db.prisma.invitation.create({
+      data: { workspaceId: workspace.id, email: "dario@test.dev", role: "MEMBER" },
+    });
+
+    const dario = await createUser(db, "Dario@Test.dev");
+    await reconcileAccess(db.prisma, dario, ADMINS);
+
+    expect(await membershipsOf(dario.id)).toEqual([
+      expect.objectContaining({ role: "MEMBER", status: "ACTIVE" }),
+    ]);
+    const invitation = await db.prisma.invitation.findFirstOrThrow();
+    expect(invitation.acceptedAt).toBeInstanceOf(Date);
+  });
+
+  it("activates a pending person once an admin invites them", async () => {
+    const ana = await createUser(db, "ana@test.dev");
+    const eva = await createUser(db, "eva@test.dev");
+    await reconcileAccess(db.prisma, ana, ADMINS);
+    await reconcileAccess(db.prisma, eva, ADMINS);
+    const workspace = await db.prisma.workspace.findFirstOrThrow();
+    await db.prisma.invitation.create({
+      data: { workspaceId: workspace.id, email: "eva@test.dev", role: "MEMBER" },
+    });
+
+    await reconcileAccess(db.prisma, eva, ADMINS);
+
+    expect(await membershipsOf(eva.id)).toEqual([
+      expect.objectContaining({ role: "MEMBER", status: "ACTIVE" }),
+    ]);
+  });
+
+  it("does nothing for strangers before any workspace exists", async () => {
+    const carla = await createUser(db, "carla@test.dev");
+
+    await reconcileAccess(db.prisma, carla, ADMINS);
+
+    expect(await db.prisma.workspace.count()).toBe(0);
+    expect(await membershipsOf(carla.id)).toEqual([]);
+  });
+});
