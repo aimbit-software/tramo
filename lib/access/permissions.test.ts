@@ -5,6 +5,8 @@ import {
   canTrack,
   canViewProject,
   isAdmin,
+  projectPersona,
+  visibleProjectsWhere,
 } from "@/lib/access/permissions";
 
 describe("isAdmin", () => {
@@ -55,5 +57,32 @@ describe("accessStatus", () => {
   it("reports rejected, then none", () => {
     expect(accessStatus(["REJECTED"])).toBe("rejected");
     expect(accessStatus([])).toBe("none");
+  });
+});
+
+describe("projectPersona", () => {
+  it("is a tracker with at least one project to log time in", () => {
+    expect(projectPersona(["VIEWER", "TRACKER"])).toBe("tracker");
+  });
+
+  it("is an observer when every project is read-only", () => {
+    expect(projectPersona(["VIEWER", "VIEWER"])).toBe("observer");
+  });
+
+  it("is unassigned without projects", () => {
+    expect(projectPersona([])).toBe("unassigned");
+  });
+});
+
+describe("visibleProjectsWhere", () => {
+  it("gives admins every project of the workspace", () => {
+    expect(visibleProjectsWhere({ workspaceId: "w1", userId: "u1", isAdmin: true })).toEqual({ workspaceId: "w1" });
+  });
+
+  it("gives everyone else the projects they belong to, in any role", () => {
+    expect(visibleProjectsWhere({ workspaceId: "w1", userId: "u1", isAdmin: false })).toEqual({
+      workspaceId: "w1",
+      members: { some: { userId: "u1" } },
+    });
   });
 });

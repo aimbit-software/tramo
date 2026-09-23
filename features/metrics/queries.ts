@@ -2,6 +2,7 @@ import "server-only";
 
 import { minutesByPeriod, minutesByPerson, minutesByProject, topTasks } from "@/features/metrics/aggregate";
 import { resolveRange } from "@/features/metrics/range";
+import { visibleProjectsWhere } from "@/lib/access/permissions";
 import { prisma } from "@/lib/db";
 
 /** Past this many projects, the rest fold into "Other": the palette has eight slots, never a ninth. */
@@ -14,7 +15,7 @@ const MAX_SERIES = 7;
  */
 function visibleProjects(userId: string, workspaceId: string, isAdmin: boolean) {
   return prisma.project.findMany({
-    where: { workspaceId, ...(isAdmin ? {} : { members: { some: { userId } } }) },
+    where: visibleProjectsWhere({ workspaceId, userId, isAdmin }),
     orderBy: [{ archivedAt: { sort: "asc", nulls: "first" } }, { name: "asc" }],
     select: { id: true, name: true, color: true, archivedAt: true },
   });

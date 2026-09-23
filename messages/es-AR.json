@@ -274,7 +274,25 @@
     "project": "Proyecto",
     "caption": "Horas por proyecto y por día, semana del {week}",
     "blocks": "Registros",
-    "empty": "No hay horas registradas en esta semana."
+    "empty": "No hay horas registradas en esta semana.",
+    "whose": "De quién es la semana",
+    "mine": "Mías",
+    "team": "Equipo",
+    "teamTotal": "Total del equipo",
+    "person": "Persona",
+    "teamCaption": "Horas por persona y por día, semana del {week}",
+    "teamBlocks": "Registros del equipo",
+    "teamEmpty": "Nadie registró horas en esta semana."
+  },
+  "observer": {
+    "title": "Estás como observador",
+    "body": "Ves las horas que registra el equipo en estos proyectos, con el detalle de cada tarea. Vos no registrás horas.",
+    "projects": "Proyectos que observás",
+    "teamWeek": "Ver la semana del equipo",
+    "metrics": "Ver métricas",
+    "needToTrack": "¿Tenés que registrar horas? Pedile a un admin que te pase a “Registra” en ese proyecto.",
+    "thisWeek": "Esta semana en tus proyectos",
+    "quietWeek": "Todavía nadie registró horas esta semana."
   },
   "dateField": {
     "placeholder": "dd/mm/aaaa",

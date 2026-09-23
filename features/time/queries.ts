@@ -1,5 +1,6 @@
 import "server-only";
 
+import { listTeamEntries } from "@/features/time/team";
 import { recentDescriptions } from "@/features/time/timer";
 import { bucketWeek, resolveWeek } from "@/features/time/week";
 import { prisma } from "@/lib/db";
@@ -107,3 +108,39 @@ export async function getWeekData(
 }
 
 export type WeekData = Awaited<ReturnType<typeof getWeekData>>;
+
+/**
+ * The team's week: every block in the projects this person can see, logged by
+ * anyone, with hours per person and per day. What observers see instead of a
+ * week of their own, and what trackers see under "Equipo".
+ */
+export async function getTeamWeekData(input: {
+  userId: string;
+  workspaceId: string;
+  isAdmin: boolean;
+  weekParam: string | string[] | undefined;
+  timeZone: string;
+}) {
+  const now = new Date();
+  const week = resolveWeek(input.weekParam, input.timeZone, now);
+  const range = weekRange(week, input.timeZone);
+  const entries = await listTeamEntries(prisma, { ...input, start: range.start, end: range.end });
+  const buckets = bucketWeek(entries, range.days, input.timeZone, now, (entry) => entry.user.id);
+
+  // People by hours this week, most first; the table and the list follow this order.
+  const people = [...new Map(entries.map((entry) => [entry.user.id, entry.user])).values()];
+  const minutesOf = (id: string) => (buckets.byKey.get(id) ?? []).reduce((sum, value) => sum + value, 0);
+  people.sort((a, b) => minutesOf(b.id) - minutesOf(a.id) || a.name.localeCompare(b.name));
+
+  return {
+    week,
+    range,
+    today: zonedDateKey(now, input.timeZone),
+    currentWeek: resolveWeek(undefined, input.timeZone, now),
+    entries,
+    buckets,
+    people,
+  };
+}
+
+export type TeamWeekData = Awaited<ReturnType<typeof getTeamWeekData>>;

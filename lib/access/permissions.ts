@@ -26,6 +26,29 @@ export function canViewProject(member: Member, projectRole: ProjectRole | null):
   return member.role === "ADMIN" || projectRole !== null;
 }
 
+export type ProjectPersona = "tracker" | "observer" | "unassigned";
+
+/**
+ * How someone takes part in a workspace's projects, which shapes their home,
+ * their week and their tour: a tracker logs time in at least one project; an
+ * observer only reads (VIEWER everywhere); unassigned means no project yet.
+ */
+export function projectPersona(roles: ProjectRole[]): ProjectPersona {
+  if (roles.includes("TRACKER")) return "tracker";
+  return roles.length > 0 ? "observer" : "unassigned";
+}
+
+/**
+ * The projects someone may see, as a Prisma filter: the same transparency per
+ * project as canViewProject, for queries. Admins get every project of the
+ * workspace; everyone else, the ones they belong to in any role.
+ */
+export function visibleProjectsWhere(input: { workspaceId: string; userId: string; isAdmin: boolean }) {
+  return input.isAdmin
+    ? { workspaceId: input.workspaceId }
+    : { workspaceId: input.workspaceId, members: { some: { userId: input.userId } } };
+}
+
 export type AccessStatus = "active" | "pending" | "rejected" | "none";
 
 /** One word for where a person stands, across all their memberships. */

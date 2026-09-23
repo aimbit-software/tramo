@@ -26,8 +26,8 @@ describe("bucketWeek", () => {
       now,
     );
 
-    expect(week.byProject.get("a")).toEqual([150, 60, 0, 0, 0, 0, 0]);
-    expect(week.byProject.get("b")).toEqual([0, 45, 0, 0, 0, 0, 0]);
+    expect(week.byKey.get("a")).toEqual([150, 60, 0, 0, 0, 0, 0]);
+    expect(week.byKey.get("b")).toEqual([0, 45, 0, 0, 0, 0, 0]);
     expect(week.dayTotals).toEqual([150, 105, 0, 0, 0, 0, 0]);
     expect(week.total).toBe(255);
   });
@@ -36,13 +36,26 @@ describe("bucketWeek", () => {
     // Monday 22:00 to Tuesday 02:00 local.
     const week = bucketWeek([entry("a", "2026-09-22T01:00:00Z", "2026-09-22T05:00:00Z")], days, AR, now);
 
-    expect(week.byProject.get("a")).toEqual([240, 0, 0, 0, 0, 0, 0]);
+    expect(week.byKey.get("a")).toEqual([240, 0, 0, 0, 0, 0, 0]);
   });
 
   it("counts a running block up to now", () => {
     const week = bucketWeek([entry("a", "2026-09-24T14:00:00Z", null)], days, AR, now);
 
     expect(week.dayTotals[3]).toBe(60);
+  });
+
+  it("groups by any key, such as the person, for the team's week", () => {
+    const byPerson = [
+      { ...entry("a", "2026-09-21T12:00:00Z", "2026-09-21T13:00:00Z"), userId: "ana" },
+      { ...entry("b", "2026-09-21T14:00:00Z", "2026-09-21T14:30:00Z"), userId: "ana" },
+      { ...entry("a", "2026-09-23T12:00:00Z", "2026-09-23T14:00:00Z"), userId: "beto" },
+    ];
+    const week = bucketWeek(byPerson, days, AR, now, (block) => block.userId);
+
+    expect(week.byKey.get("ana")).toEqual([90, 0, 0, 0, 0, 0, 0]);
+    expect(week.byKey.get("beto")).toEqual([0, 0, 120, 0, 0, 0, 0]);
+    expect(week.total).toBe(210);
   });
 });
 

@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
 
-import { accessStatus, isAdmin } from "@/lib/access/permissions";
+import { accessStatus, isAdmin, projectPersona } from "@/lib/access/permissions";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 
@@ -76,3 +76,20 @@ export async function requireAdmin() {
   if (!context.isAdmin) notFound();
   return context;
 }
+
+/**
+ * How this person takes part in the workspace's active projects: their persona
+ * (tracker, observer, unassigned), which shapes the home, the week and the
+ * tour, and the projects they observe. Once per request, whoever asks.
+ */
+export const getProjectAccess = cache(async (userId: string, workspaceId: string) => {
+  const memberships = await prisma.projectMember.findMany({
+    where: { userId, project: { workspaceId, archivedAt: null } },
+    orderBy: { project: { name: "asc" } },
+    select: { role: true, project: { select: { id: true, name: true, color: true } } },
+  });
+  return {
+    persona: projectPersona(memberships.map((membership) => membership.role)),
+    observed: memberships.filter((membership) => membership.role === "VIEWER").map((membership) => membership.project),
+  };
+});
