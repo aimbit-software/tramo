@@ -60,6 +60,8 @@ A minimalist, orderly web app to track time per person, per project, and per tas
 - **Decided: the server is the source of truth.** The running entry stores `startedAt`. Elapsed time is always `now - startedAt`, never a client-side counter. Closing the window or tab never stops or loses time. A timer started on the phone can be stopped on the computer.
 - **Business rule:** at most one running timer per user. Starting a new one stops the previous one.
 - Play, pause, and resume at will.
+  - **Decided (2026-09-24):** pausing is a real pause. The clock stops where it is and resuming goes on from there; a separate "finish" ends the task and takes the clock back to zero. Blocks stay the truth (a pause still closes the running block, a resume opens a new one); a per-person `TimerSession` only remembers the task and the seconds it added up.
+  - **Decided:** the clock reads in solid blocks, hours / minutes / seconds, each named below (like a flip clock); the floating window stands upright unless it's very flat.
 - Each entry has who, project, a free-text task description, start, and end.
   - **Decided:** the task description is free text, with autocomplete from the user's own past descriptions (per project). This keeps "fix login" and "Fix Login" from splitting the metrics.
 - **Decided (v1): manual entry and editing.** People can add or fix time when they forgot the timer. Manually created or edited entries are flagged, so the metrics stay honest.
@@ -188,3 +190,12 @@ These override any recommendation in `exploration.md` that conflicts with them.
 | Rejected users | They can request access again later, and the admin sees a new pending request |
 | Pause/resume model | Separate closed time entries, one per segment. A Postgres partial unique index enforces one running timer per user |
 | Week and time zone | Weeks start on Monday (ISO). Each user has an IANA time zone, default `America/Argentina/Buenos_Aires`. Aggregation happens in SQL with `AT TIME ZONE` |
+
+## Brand and look (decided 2026-09-24)
+
+- **Name: Tramo.** Tagline: *Tu trabajo, tramo a tramo.* Each block of work is a *tramo*, and the UI calls them so. Chosen from four candidates (Temple, Tramo, Destajo, Concreto); Lapso and Gnomon were dropped because time-tracking apps already use them.
+- **Logo:** Lucide's hourglass inside Lucide's hexagon, on a solid block of the theme's accent, so it changes with the palette. The favicon is the same drawing per theme (`/brand-icon/<palette>-<mode>`), and follows the theme live.
+- **Brutalist direction** (owner's request, with award-winning references: the Awwwards brutalism collection and its honorable mentions such as *Brutalism* by MAGWAI and *Brutally Human* by BeCurious; Gumroad's neo-brutalist redesign as the product-UI reference; NN/g's guidance on keeping neobrutalism usable):
+  - square corners everywhere, a visible 1px rule on every panel, hard offset shadows on what floats or presses;
+  - poster numbers: Big Shoulders (ultra-condensed, heavy) for titles and the big numbers, after the owner's reference of number posters; Plex Mono for labels and buttons, Plex Sans for reading;
+  - the accent used as solid blocks (the logo, the clock, primary buttons), and Lucide icons in the navigation.

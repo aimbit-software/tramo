@@ -353,7 +353,6 @@
     "elapsed": "Tiempo transcurrido",
     "idle": "Elegí un proyecto y dale play.",
     "start": "Iniciar el timer",
-    "stop": "Pausar el timer",
     "switch": "Cambiar el timer a esta tarea",
     "popOut": "Abrir el timer en una ventana flotante",
     "closePopOut": "Cerrar la ventana flotante",
@@ -367,7 +366,7 @@
       "title": "¿Te olvidaste el timer?",
       "body": "Lleva {hours, plural, one {# hora} other {# horas}} corriendo en {project}.",
       "keep": "Sigo trabajando",
-      "stop": "Pararlo ahora"
+      "stop": "Terminarla ahora"
     },
     "recent": {
       "title": "Últimos tramos",
@@ -381,7 +380,17 @@
       "cannotTrack": "No podés registrar horas en ese proyecto.",
       "conflict": "Se inició otro timer al mismo tiempo en otro dispositivo. Ya actualizamos la pantalla.",
       "invalid": "Revisá el proyecto y la descripción.",
-      "generic": "Algo salió mal. Probá de nuevo."
+      "generic": "Algo salió mal. Probá de nuevo.",
+      "nothingPaused": "No hay ninguna tarea en pausa. Recargá la página."
+    },
+    "pause": "Pausar",
+    "resume": "Reanudar",
+    "finish": "Terminar la tarea",
+    "paused": "En pausa",
+    "units": {
+      "hours": "Horas",
+      "minutes": "Minutos",
+      "seconds": "Segundos"
     }
   },
   "settings": {
@@ -439,7 +448,7 @@
       },
       "timer": {
         "title": "Elegí, escribí y dale play",
-        "body": "Elegí el proyecto, escribí en qué vas a trabajar y tocá play. Lo pausás y lo retomás cuando quieras; sigue corriendo aunque cierres la pestaña."
+        "body": "Elegí el proyecto, escribí en qué vas a trabajar y dale play. Pausalo y reanudalo cuando quieras: el reloj sigue desde donde quedó. Con el cuadrado terminás la tarea."
       },
       "popOut": {
         "title": "El reloj, siempre a la vista",

@@ -1,6 +1,6 @@
 "use client";
 
-import { Pause, PictureInPicture2, Play } from "lucide-react";
+import { Pause, PictureInPicture2, Play, Square } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useOptimistic, useRef, useState, useTransition } from "react";
 import { createPortal } from "react-dom";
@@ -9,45 +9,31 @@ import { Autocomplete } from "@/components/common/autocomplete";
 import { Dropdown } from "@/components/common/dropdown";
 import { FIELD } from "@/components/common/field";
 import { Modal } from "@/components/common/modal";
-import { startTimerAction, stopTimerAction } from "@/features/time/actions";
+import { finishTimerAction, pauseTimerAction, resumeTimerAction, startTimerAction } from "@/features/time/actions";
+import { ClockTiles } from "@/features/time/components/clock-tiles";
 import { PipTimer } from "@/features/time/components/pip-timer";
 import { useDocumentPip } from "@/features/time/components/use-document-pip";
 import type { TimerPageData } from "@/features/time/queries";
 import { DESCRIPTION_MAX } from "@/features/time/schema";
+import { elapsedMs, type TimerState } from "@/features/time/timer-state";
 import { formatClock, isForgotten } from "@/lib/duration";
-
-type Running = NonNullable<TimerPageData["running"]>;
 
 type TimerBarProps = {
   projects: TimerPageData["projects"];
-  running: TimerPageData["running"];
+  timer: TimerPageData["timer"];
   suggestions: TimerPageData["suggestions"];
   serverNow: number;
 };
 
 function ProjectDot({ color, className = "size-2.5" }: { color: string; className?: string }) {
-  return (
-    <span
-      aria-hidden
-      className={`flex-none rounded-full ${className}`}
-      style={{ backgroundColor: `var(--color-project-${color})` }}
-    />
-  );
+  return <span aria-hidden className={`flex-none ${className}`} style={{ backgroundColor: `var(--color-project-${color})` }} />;
 }
 
-const ROUND_BUTTON =
-  "flex flex-none items-center justify-center rounded-full transition-[transform,opacity] duration-150 ease-signature hover:scale-105 aria-disabled:cursor-wait aria-disabled:opacity-60 motion-reduce:transition-none motion-reduce:hover:scale-100";
-
-type PrimaryButtonProps = {
-  showsPause: boolean;
-  label: string;
-  disabled: boolean;
-  onClick: () => void;
-};
+type Action = { label: string; disabled: boolean; onClick: () => void };
 
 // Declared outside TimerBar on purpose: the clock re-renders every second, and
 // a component defined inside render would remount each time, dropping focus.
-function PrimaryButton({ showsPause, label, disabled, onClick }: PrimaryButtonProps) {
+function PrimaryButton({ showsPause, label, disabled, onClick }: Action & { showsPause: boolean }) {
   const Icon = showsPause ? Pause : Play;
   return (
     <button
@@ -55,24 +41,42 @@ function PrimaryButton({ showsPause, label, disabled, onClick }: PrimaryButtonPr
       onClick={onClick}
       aria-disabled={disabled}
       aria-label={label}
-      className={`${ROUND_BUTTON} size-12 bg-accent text-on-accent`}
+      className="pressable flex size-16 flex-none items-center justify-center bg-accent text-on-accent aria-disabled:cursor-wait aria-disabled:opacity-60"
     >
-      <Icon className="icon size-5" aria-hidden />
+      <Icon className="icon size-7" aria-hidden />
+    </button>
+  );
+}
+
+function FinishButton({ label, disabled, onClick }: Action) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-disabled={disabled}
+      aria-label={label}
+      className="flex size-12 flex-none items-center justify-center border-2 border-edge text-ink transition-colors duration-150 ease-signature hover:bg-raised aria-disabled:cursor-wait aria-disabled:opacity-60 motion-reduce:transition-none"
+    >
+      <Square className="icon size-5" aria-hidden />
     </button>
   );
 }
 
 /**
- * The timer: project, task, a running clock and one button. The server owns
- * the truth (an entry with no end); this component only shows it, starting
- * the clock optimistically so the click feels instant.
+ * The timer: project, task, a clock in blocks and its buttons. Play starts the
+ * task in the fields; pause stops the clock where it is, and play resumes it
+ * from there; the square finishes the task and takes the clock back to zero.
+ *
+ * The server owns the truth (the running block and the task's session); this
+ * component only shows it, changing optimistically so every click feels
+ * instant.
  */
-export function TimerBar({ projects, running, suggestions, serverNow }: TimerBarProps) {
+export function TimerBar({ projects, timer, suggestions, serverNow }: TimerBarProps) {
   const t = useTranslations("timer");
-  const [current, setCurrent] = useOptimistic<Running | null>(running);
+  const [current, setCurrent] = useOptimistic<TimerState | null>(timer);
   const [pending, startTransition] = useTransition();
-  const [projectId, setProjectId] = useState(running?.projectId ?? projects[0]?.id ?? "");
-  const [description, setDescription] = useState(running?.description ?? "");
+  const [projectId, setProjectId] = useState(timer?.projectId ?? projects[0]?.id ?? "");
+  const [description, setDescription] = useState(timer?.description ?? "");
   const [error, setError] = useState<string | null>(null);
   const [forgottenDismissed, setForgottenDismissed] = useState(false);
   // `now` is the server's clock: the first render uses the server's value, then
@@ -86,21 +90,25 @@ export function TimerBar({ projects, running, suggestions, serverNow }: TimerBar
     offset.current = serverNow - Date.now();
   }, [serverNow]);
 
-  const elapsed = current ? now - new Date(current.startedAt).getTime() : 0;
+  const running = current?.state === "running";
+  const elapsed = elapsedMs(current, now);
   const clock = formatClock(elapsed);
+  const clockState = current?.state ?? "idle";
 
   useEffect(() => {
-    if (!current) return;
+    if (!running) return;
     const id = window.setInterval(() => setNow(Date.now() + offset.current), 1000);
     return () => window.clearInterval(id);
-  }, [current]);
+  }, [running]);
 
   // While running, the tab title is the clock: visible even with the tab in
   // the background, which covers browsers without the floating window.
   useEffect(() => {
     originalTitle.current ??= document.title;
-    document.title = current ? `${clock} · ${current.projectName}` : originalTitle.current;
-  }, [current, clock]);
+    document.title = current
+      ? `${running ? clock : `${t("paused")} · ${clock}`} · ${current.projectName}`
+      : originalTitle.current;
+  }, [current, running, clock, t]);
 
   useEffect(
     () => () => {
@@ -111,51 +119,92 @@ export function TimerBar({ projects, running, suggestions, serverNow }: TimerBar
 
   const selectedProject = projects.find((project) => project.id === projectId);
   const normalizedDescription = description.replace(/\s+/g, " ").trim();
-  const isSameAsRunning =
+  const isCurrentTask =
     current !== null && current.projectId === projectId && current.description === normalizedDescription;
+  const serverNowIso = () => new Date(Date.now() + offset.current).toISOString();
 
-  function start() {
-    if (!selectedProject || isSameAsRunning) return;
+  function run(change: () => Promise<{ error?: string } | undefined>) {
     setError(null);
     startTransition(async () => {
+      const result = await change();
+      if (result?.error) setError(result.error);
+    });
+  }
+
+  // A new task: the one in the fields, from zero.
+  function start() {
+    if (!selectedProject) return;
+    run(async () => {
       setCurrent({
+        state: "running",
         projectId: selectedProject.id,
         description: normalizedDescription,
-        startedAt: new Date(Date.now() + offset.current).toISOString(),
+        startedAt: serverNowIso(),
+        doneSeconds: 0,
         projectName: selectedProject.name,
         projectColor: selectedProject.color,
       });
       setForgottenDismissed(false);
-      const result = await startTimerAction(selectedProject.id, normalizedDescription);
-      if (result?.error) setError(result.error);
+      return startTimerAction(selectedProject.id, normalizedDescription);
     });
   }
 
-  function stop() {
-    setError(null);
-    startTransition(async () => {
+  function pause() {
+    if (!current) return;
+    run(async () => {
+      const doneSeconds = Math.floor(elapsedMs(current, Date.now() + offset.current) / 1000);
+      setCurrent({ ...current, state: "paused", startedAt: null, doneSeconds });
+      return pauseTimerAction();
+    });
+  }
+
+  function resume() {
+    if (!current) return;
+    run(async () => {
+      setCurrent({ ...current, state: "running", startedAt: serverNowIso() });
+      setForgottenDismissed(false);
+      return resumeTimerAction();
+    });
+  }
+
+  function finish() {
+    run(async () => {
       setCurrent(null);
-      const result = await stopTimerAction();
-      if (result?.error) setError(result.error);
+      return finishTimerAction();
     });
   }
 
-  const showsPause = current !== null && isSameAsRunning;
-  const primaryLabel = showsPause ? t("stop") : current ? t("switch") : t("start");
-  const onPrimary = showsPause ? stop : start;
+  // Play and pause share one button: it pauses the task that runs, resumes the
+  // one that's paused, and otherwise starts what the fields say (a new task).
+  const primary =
+    running && isCurrentTask
+      ? { showsPause: true, label: t("pause"), onClick: pause }
+      : current?.state === "paused" && isCurrentTask
+        ? { showsPause: false, label: t("resume"), onClick: resume }
+        : { showsPause: false, label: current ? t("switch") : t("start"), onClick: start };
+  const primaryAction = { ...primary, disabled: pending || !selectedProject };
+  const finishAction = current ? { label: t("finish"), disabled: pending, onClick: finish } : null;
 
   const forgotten =
-    current !== null && !forgottenDismissed && isForgotten(new Date(current.startedAt), new Date(now));
+    running && current.startedAt !== null && !forgottenDismissed && isForgotten(new Date(current.startedAt), new Date(now));
 
-  const primary = {
-    showsPause,
-    label: primaryLabel,
-    disabled: pending || !selectedProject,
-    onClick: onPrimary,
-  };
+  const units = { hours: t("units.hours"), minutes: t("units.minutes"), seconds: t("units.seconds") };
+
+  const detail = current ? (
+    <>
+      <ProjectDot color={current.projectColor} className="size-[0.7em]" />
+      <span className="truncate">
+        {current.state === "paused" && `${t("paused")} · `}
+        {current.projectName}
+        {current.description ? ` · ${current.description}` : ""}
+      </span>
+    </>
+  ) : (
+    <span className="truncate">{t("idle")}</span>
+  );
 
   return (
-    <section aria-label={t("title")} data-tour="timer" className="panel grain flex flex-col gap-4 p-4 sm:p-5">
+    <section aria-label={t("title")} data-tour="timer" className="panel grain flex flex-col gap-5 p-4 sm:p-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
         <Dropdown
           label={t("project")}
@@ -181,42 +230,34 @@ export function TimerBar({ projects, running, suggestions, serverNow }: TimerBar
         />
       </div>
 
-      <div className="flex items-center gap-4">
-        <div className="flex min-w-0 flex-col">
-          <span role="timer" aria-label={t("elapsed")} className="digits text-3xl leading-tight sm:text-4xl">
-            {clock}
-          </span>
-          <span className="flex min-w-0 items-center gap-2 text-sm text-ink-dim">
-            {current ? (
-              <>
-                <ProjectDot color={current.projectColor} className="size-2" />
-                <span className="truncate">
-                  {current.projectName}
-                  {current.description ? ` · ${current.description}` : ""}
-                </span>
-              </>
-            ) : (
-              t("idle")
-            )}
-          </span>
-        </div>
+      <div className="flex flex-wrap items-end gap-x-6 gap-y-4">
+        <ClockTiles
+          ms={elapsed}
+          state={clockState}
+          label={t("elapsed")}
+          units={units}
+          className="text-[clamp(3.5rem,17vw,6.5rem)]"
+        />
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-2 pb-6">
           {pip.supported && (
             <button
               type="button"
               data-tour="timer-pop-out"
               aria-label={pip.pipWindow ? t("closePopOut") : t("popOut")}
               aria-pressed={pip.pipWindow !== null}
-              onClick={() => (pip.pipWindow ? pip.close() : pip.open({ width: 360, height: 128 }))}
-              className="flex size-10 items-center justify-center rounded-full text-ink-muted transition-colors duration-150 ease-signature hover:bg-raised hover:text-ink aria-pressed:bg-raised aria-pressed:text-accent motion-reduce:transition-none"
+              onClick={() => (pip.pipWindow ? pip.close() : pip.open({ width: 280, height: 320 }))}
+              className="flex size-12 items-center justify-center text-ink-muted transition-colors duration-150 ease-signature hover:bg-raised hover:text-ink aria-pressed:bg-raised aria-pressed:text-accent motion-reduce:transition-none"
             >
               <PictureInPicture2 className="icon size-5" aria-hidden />
             </button>
           )}
-          <PrimaryButton {...primary} />
+          {finishAction && <FinishButton {...finishAction} />}
+          <PrimaryButton {...primaryAction} />
         </div>
       </div>
+
+      <p className="flex min-w-0 items-center gap-2 text-sm text-ink-dim">{detail}</p>
 
       {error && (
         <p role="alert" className="text-sm text-warn">
@@ -243,9 +284,9 @@ export function TimerBar({ projects, running, suggestions, serverNow }: TimerBar
             type="button"
             onClick={() => {
               setForgottenDismissed(true);
-              stop();
+              finish();
             }}
-            className="rounded-tile bg-accent px-4 py-2.5 font-display text-sm font-medium text-on-accent transition-opacity duration-150 ease-signature hover:opacity-90 motion-reduce:transition-none"
+            className="rounded-tile bg-accent pressable px-4 py-2.5 font-display text-sm font-medium text-on-accent"
           >
             {t("forgotten.stop")}
           </button>
@@ -255,22 +296,13 @@ export function TimerBar({ projects, running, suggestions, serverNow }: TimerBar
       {pip.pipWindow &&
         createPortal(
           <PipTimer
-            clock={clock}
+            ms={elapsed}
+            state={clockState}
             clockLabel={t("elapsed")}
-            button={primary}
-            detail={
-              current ? (
-                <>
-                  <ProjectDot color={current.projectColor} className="size-[0.7em]" />
-                  <span className="truncate">
-                    {current.projectName}
-                    {current.description ? ` · ${current.description}` : ""}
-                  </span>
-                </>
-              ) : (
-                <span className="truncate">{selectedProject?.name ?? t("idle")}</span>
-              )
-            }
+            units={units}
+            detail={detail}
+            primary={primaryAction}
+            finish={finishAction}
           />,
           pip.pipWindow.document.body,
         )}

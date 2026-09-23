@@ -24,7 +24,7 @@ export default async function HomePage() {
     getProjectAccess(user.id, workspace.id),
   ]);
 
-  const canTrack = data.projects.length > 0 || data.running !== null;
+  const canTrack = data.projects.length > 0 || data.timer !== null;
   const observing = !canTrack && access.persona === "observer";
   const teamWeek = observing
     ? await getTeamWeekData({ userId: user.id, workspaceId: workspace.id, isAdmin, weekParam: undefined, timeZone })
@@ -39,7 +39,7 @@ export default async function HomePage() {
         {canTrack ? (
           <TimerBar
             projects={data.projects}
-            running={data.running}
+            timer={data.timer}
             suggestions={data.suggestions}
             serverNow={data.serverNow}
           />
@@ -55,7 +55,7 @@ export default async function HomePage() {
             {isAdmin && (
               <Link
                 href="/admin/projects"
-                className="rounded-tile bg-accent px-4 py-2.5 font-display text-sm font-medium text-on-accent transition-opacity duration-150 ease-signature hover:opacity-90 motion-reduce:transition-none"
+                className="rounded-tile bg-accent pressable px-4 py-2.5 font-display text-sm font-medium text-on-accent duration-150 ease-signature hover:opacity-90 motion-reduce:transition-none"
               >
                 {t("noProjects.adminCta")}
               </Link>
