@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
+import { Logo } from "@/components/global/logo";
 import { GoogleSignInButton } from "@/features/auth/components/google-sign-in-button";
 import { signInErrorKey } from "@/features/auth/errors";
 import { getSession } from "@/lib/dal";
@@ -13,8 +14,10 @@ export default async function SignInPage({ searchParams }: PageProps<"/sign-in">
 
   return (
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-8 px-4 py-16">
-      <header className="flex flex-col gap-2">
-        <h1 className="font-display text-2xl font-medium">{t("title")}</h1>
+      <header className="flex flex-col gap-4">
+        <h1>
+          <Logo name={t("title")} size="lg" />
+        </h1>
         <p className="text-sm text-ink-muted">{t("subtitle")}</p>
       </header>
 

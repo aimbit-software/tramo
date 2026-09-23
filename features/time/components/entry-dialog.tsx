@@ -161,7 +161,7 @@ function EntryForm({ onClose, entry, projects, suggestions, timeZone }: EntryDia
             icon: (
               <span
                 aria-hidden
-                className="size-2.5 flex-none rounded-full"
+                className="size-2.5 flex-none"
                 style={{ backgroundColor: `var(--color-project-${project.color})` }}
               />
             ),
@@ -278,7 +278,7 @@ function EntryForm({ onClose, entry, projects, suggestions, timeZone }: EntryDia
         <button
           type="submit"
           aria-disabled={pending}
-          className="rounded-tile bg-accent px-4 py-2.5 font-display text-sm font-medium text-on-accent transition-opacity duration-150 ease-signature hover:opacity-90 aria-disabled:cursor-wait aria-disabled:opacity-60 motion-reduce:transition-none"
+          className="rounded-tile bg-accent pressable px-4 py-2.5 font-display text-sm font-medium text-on-accent duration-150 ease-signature hover:opacity-90 aria-disabled:cursor-wait aria-disabled:opacity-60 motion-reduce:transition-none"
         >
           {pending ? t("saving") : t("save")}
         </button>

@@ -38,7 +38,7 @@ export function HelpDialog({ open, onClose, steps, status, resumeAt, onStart }: 
               onClick={() => onStart(index)}
               className="flex w-full items-center gap-3 rounded-tile px-2 py-2 text-left text-sm transition-colors duration-150 ease-signature hover:bg-raised motion-reduce:transition-none"
             >
-              <span className="digits flex size-6 flex-none items-center justify-center rounded-full bg-tile text-xs">
+              <span className="digits flex size-6 flex-none items-center justify-center bg-tile text-xs">
                 {index + 1}
               </span>
               <span className="min-w-0 flex-1">{tSteps(`${step.id}.title`)}</span>
@@ -68,7 +68,7 @@ export function HelpDialog({ open, onClose, steps, status, resumeAt, onStart }: 
         <button
           type="button"
           onClick={() => onStart(paused ? resumeAt : 0)}
-          className="rounded-tile bg-accent px-4 py-2.5 font-display text-sm font-medium text-on-accent transition-opacity duration-150 ease-signature hover:opacity-90 motion-reduce:transition-none"
+          className="rounded-tile bg-accent pressable px-4 py-2.5 font-display text-sm font-medium text-on-accent duration-150 ease-signature hover:opacity-90 motion-reduce:transition-none"
         >
           {paused ? t("resume", { step: resumeAt + 1, total: steps.length }) : status === "done" ? t("again") : t("start")}
         </button>

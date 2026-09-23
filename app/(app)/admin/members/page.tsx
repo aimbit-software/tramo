@@ -57,7 +57,7 @@ export default async function MembersPage() {
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-10">
       <AdminNav current="members" />
       <header className="flex flex-col gap-1">
-        <h1 className="font-display text-2xl font-medium">{t("title")}</h1>
+        <h1 className="poster text-6xl uppercase sm:text-7xl">{t("title")}</h1>
         <p className="text-sm text-ink-muted">{t("subtitle")}</p>
       </header>
 
@@ -109,7 +109,7 @@ export default async function MembersPage() {
                       <li key={project.id} className="inline-flex items-center gap-1.5 rounded-pill bg-tile px-2.5 py-1 text-xs">
                         <span
                           aria-hidden
-                          className="size-2 flex-none rounded-full"
+                          className="size-2 flex-none"
                           style={{ backgroundColor: `var(--color-project-${project.color})` }}
                         />
                         {t("invitations.projectAs", { project: project.name, role: tProjectRoles(role) })}

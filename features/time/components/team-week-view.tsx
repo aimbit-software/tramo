@@ -25,7 +25,7 @@ async function TeamEntryRow({ entry }: { entry: TeamEntry }) {
           <span aria-hidden>·</span>
           <span
             aria-hidden
-            className="size-2 flex-none rounded-full"
+            className="size-2 flex-none"
             style={{ backgroundColor: `var(--color-project-${entry.project.color})` }}
           />
           <span className="truncate">{entry.project.name}</span>
@@ -73,7 +73,7 @@ export async function TeamWeekView({ data, timeZone, tabs }: { data: TeamWeekDat
 
       <section className="panel-accent flex items-center justify-between p-5">
         <h2 className="text-sm text-ink-muted">{t("teamTotal")}</h2>
-        <span className="digits text-2xl text-accent">{formatHours(buckets.total)}</span>
+        <span className="poster text-7xl text-accent">{formatHours(buckets.total)}</span>
       </section>
 
       {entries.length > 0 && (

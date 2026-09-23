@@ -1,12 +1,17 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
+
 import { describe, expect, it } from "vitest";
 
 import {
+  brandIconHref,
   DEFAULT_THEME,
   MODES,
   PALETTES,
   isMode,
   isPalette,
   resolveTheme,
+  THEME_ACCENTS,
 } from "@/lib/theme";
 
 describe("theme catalog", () => {
@@ -77,5 +82,31 @@ describe("resolveTheme", () => {
       palette: "lima",
       mode: "light",
     });
+  });
+});
+
+describe("THEME_ACCENTS", () => {
+  // The favicon is drawn outside CSS, so it carries its own copy of the accent
+  // pairs. This keeps that copy honest against app/globals.css.
+  const css = readFileSync(path.resolve(process.cwd(), "app/globals.css"), "utf8");
+
+  it("matches every palette and mode in globals.css", () => {
+    for (const palette of PALETTES) {
+      for (const mode of MODES) {
+        const start = css.indexOf(`[data-palette="${palette}"][data-theme="${mode}"] {`);
+        const block = start === -1 ? "" : css.slice(start, css.indexOf("}", start));
+        const token = (name: string) => block.match(new RegExp(`--color-${name}: (#[0-9a-f]{6});`, "i"))?.[1];
+        expect(THEME_ACCENTS[palette][mode], `${palette}-${mode}`).toEqual({
+          accent: token("accent"),
+          onAccent: token("on-accent"),
+        });
+      }
+    }
+  });
+});
+
+describe("brandIconHref", () => {
+  it("points at the favicon drawn for the theme", () => {
+    expect(brandIconHref({ palette: "lima", mode: "dark" })).toBe("/brand-icon/lima-dark");
   });
 });

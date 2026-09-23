@@ -5,7 +5,7 @@ import { getFormatter, getTranslations } from "next-intl/server";
 import { shiftIsoDate, zonedInstant } from "@/lib/zoned";
 
 const NAV_BUTTON =
-  "flex size-9 items-center justify-center rounded-full text-ink-muted transition-colors duration-150 ease-signature hover:bg-raised hover:text-ink motion-reduce:transition-none";
+  "flex size-9 items-center justify-center text-ink-muted transition-colors duration-150 ease-signature hover:bg-raised hover:text-ink motion-reduce:transition-none";
 
 export type WeekViewKind = "mine" | "team";
 
@@ -49,7 +49,7 @@ export async function WeekHeader({ week, currentWeek, days, timeZone, view, tabs
           <p className="font-display text-xs tracking-widest text-ink-dim uppercase">
             {isCurrent ? t("thisWeek") : t("week")}
           </p>
-          <h1 className="font-display text-2xl font-medium">{title}</h1>
+          <h1 className="poster text-5xl uppercase sm:text-7xl">{title}</h1>
         </div>
         <nav aria-label={t("navigation")} className="ml-auto flex items-center gap-1">
           <Link href={href({ week: shiftIsoDate(week, -7), view })} aria-label={t("previous")} className={NAV_BUTTON}>
@@ -76,7 +76,7 @@ export async function WeekHeader({ week, currentWeek, days, timeZone, view, tabs
               key={option}
               href={href({ week, view: option })}
               aria-current={view === option ? "page" : undefined}
-              className="rounded-[6px] px-3 py-1.5 font-display text-sm text-ink-muted transition-colors duration-150 ease-signature hover:text-ink aria-[current=page]:bg-tile aria-[current=page]:text-ink motion-reduce:transition-none"
+              className="px-3 py-1.5 font-display text-sm text-ink-muted transition-colors duration-150 ease-signature hover:text-ink aria-[current=page]:bg-tile aria-[current=page]:text-ink motion-reduce:transition-none"
             >
               {t(option)}
             </Link>

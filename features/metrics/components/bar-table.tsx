@@ -46,7 +46,7 @@ export function BarTable({ caption, nameHeader, hoursHeader, rows }: BarTablePro
                   {row.color && (
                     <span
                       aria-hidden
-                      className="size-2.5 flex-none rounded-full"
+                      className="size-2.5 flex-none"
                       style={{ backgroundColor: `var(--color-project-${row.color})` }}
                     />
                   )}

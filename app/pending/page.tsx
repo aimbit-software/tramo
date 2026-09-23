@@ -21,7 +21,7 @@ export default async function PendingPage() {
         <span className="tile size-10" aria-hidden>
           <Icon className="icon size-5 text-accent" />
         </span>
-        <h1 className="font-display text-xl font-medium">{t(`${state}.title`)}</h1>
+        <h1 className="poster text-5xl uppercase">{t(`${state}.title`)}</h1>
         <p className="text-sm text-ink-muted">{t(`${state}.body`, { email: access.user.email })}</p>
 
         <div className="flex flex-wrap gap-2 pt-2">
@@ -29,7 +29,7 @@ export default async function PendingPage() {
             <form action={requestAccessAgain}>
               <button
                 type="submit"
-                className="rounded-tile bg-accent px-4 py-2.5 font-display text-sm font-medium text-on-accent transition-opacity duration-150 ease-signature hover:opacity-90 motion-reduce:transition-none"
+                className="rounded-tile bg-accent pressable px-4 py-2.5 font-display text-sm font-medium text-on-accent duration-150 ease-signature hover:opacity-90 motion-reduce:transition-none"
               >
                 {t("requestAgain")}
               </button>

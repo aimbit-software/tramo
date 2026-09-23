@@ -6,7 +6,7 @@ import { useState, useTransition } from "react";
 
 import { RadioGroup } from "@/components/common/radio-group";
 import { saveTheme } from "@/features/theme/actions";
-import { MODES, PALETTES, type Theme } from "@/lib/theme";
+import { brandIconHref, MODES, PALETTES, type Theme } from "@/lib/theme";
 
 const optionClass = (checked: boolean) =>
   `flex items-center gap-3 rounded-tile px-3 py-2.5 text-left text-sm transition-colors duration-150 ease-signature motion-reduce:transition-none ${
@@ -31,6 +31,10 @@ export function ThemeSwitcher({ initial }: { initial: Theme }) {
     setTheme(next);
     document.documentElement.dataset.palette = next.palette;
     document.documentElement.dataset.theme = next.mode;
+    // The tab's icon wears the palette too.
+    for (const link of document.querySelectorAll<HTMLLinkElement>("link[rel~='icon']")) {
+      link.href = brandIconHref(next);
+    }
     startTransition(async () => {
       await saveTheme(next.palette, next.mode);
     });
@@ -58,9 +62,9 @@ export function ThemeSwitcher({ initial }: { initial: Theme }) {
                 data-palette={option.value}
                 data-theme={theme.mode}
                 aria-hidden
-                className="flex size-6 flex-none items-center justify-center rounded-full bg-ground"
+                className="flex size-6 flex-none items-center justify-center bg-ground"
               >
-                <span className="size-3 rounded-full bg-accent" />
+                <span className="size-3 bg-accent" />
               </span>
               <span>{option.label}</span>
               {checkMark(checked)}
@@ -86,9 +90,9 @@ export function ThemeSwitcher({ initial }: { initial: Theme }) {
                 data-palette={theme.palette}
                 data-theme={option.value}
                 aria-hidden
-                className="flex size-6 flex-none items-center justify-center rounded-full bg-surface"
+                className="flex size-6 flex-none items-center justify-center bg-surface"
               >
-                <span className="size-3 rounded-full bg-ink" />
+                <span className="size-3 bg-ink" />
               </span>
               <span>{option.label}</span>
               {checkMark(checked)}

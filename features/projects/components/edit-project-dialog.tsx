@@ -76,7 +76,7 @@ export function EditProjectDialog({ open, onClose, project }: EditProjectDialogP
               <>
                 <span
                   aria-hidden
-                  className="size-3 flex-none rounded-full"
+                  className="size-3 flex-none"
                   style={{ backgroundColor: `var(--color-project-${option.value})` }}
                 />
                 <span className="truncate">{option.label}</span>

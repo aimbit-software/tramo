@@ -18,6 +18,22 @@ export const DEFAULT_THEME: Theme = { palette: "lima", mode: "dark" };
 
 export const THEME_COOKIES = { palette: "palette", mode: "mode" } as const;
 
+/**
+ * Each theme's accent and the color that reads on it, for what's drawn
+ * outside CSS: the favicon. A copy of app/globals.css, kept honest by a test.
+ */
+export const THEME_ACCENTS: Record<Palette, Record<Mode, { accent: string; onAccent: string }>> = {
+  salvia: { dark: { accent: "#5ee0a0", onAccent: "#0c1510" }, light: { accent: "#19754e", onAccent: "#ffffff" } },
+  indigo: { dark: { accent: "#9092ff", onAccent: "#13132a" }, light: { accent: "#4b44d6", onAccent: "#ffffff" } },
+  lima: { dark: { accent: "#c5ef5a", onAccent: "#171a0c" }, light: { accent: "#44710b", onAccent: "#ffffff" } },
+  ambar: { dark: { accent: "#ffb547", onAccent: "#1c1405" }, light: { accent: "#95560a", onAccent: "#ffffff" } },
+};
+
+/** The favicon drawn for a theme (app/brand-icon/[theme]/route.ts). */
+export function brandIconHref(theme: Theme) {
+  return `/brand-icon/${theme.palette}-${theme.mode}`;
+}
+
 /** One year: the preference should outlive any session. */
 export const THEME_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
