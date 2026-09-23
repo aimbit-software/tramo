@@ -18,7 +18,9 @@ export default async function ProjectsAdminPage() {
         <p className="text-sm text-ink-muted">{t("subtitle")}</p>
       </header>
       <CreateProjectForm />
-      <ProjectsBoard projects={board.projects} people={board.people} />
+      <div data-tour="projects-board">
+        <ProjectsBoard projects={board.projects} people={board.people} />
+      </div>
     </main>
   );
 }

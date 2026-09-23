@@ -32,6 +32,11 @@ model User {
   palette   String?
   themeMode String?
 
+  // Where the person left the guided tour (features/guide/tour.ts). Null means
+  // they never touched it, so it starts on its own on the home page; past the
+  // last step means finished.
+  tourStep Int?
+
   sessions           Session[]
   accounts           Account[]
   memberships        WorkspaceMember[]

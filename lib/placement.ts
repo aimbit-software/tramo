@@ -24,3 +24,27 @@ export function placeNextTo(anchor: Box, panel: Size, viewport: Size, gap = 8, m
   const left = Math.max(margin, Math.min(anchor.left, viewport.width - panel.width - margin));
   return { top, left, side };
 }
+
+/** Below this width a floating card can't sit next to anything: it docks instead. */
+const NARROW = 640;
+
+/**
+ * Where a guided-tour card goes. Centered when there's nothing to point at;
+ * next to its target on a wide screen; on a phone, docked across the bottom,
+ * or across the top when the target is in the lower half, so it never covers
+ * what it talks about.
+ */
+export function placeCard(target: Box | null, card: Size, viewport: Size, margin = 16) {
+  if (!target) {
+    return { top: (viewport.height - card.height) / 2, left: (viewport.width - card.width) / 2 };
+  }
+  if (viewport.width < NARROW) {
+    const lowerHalf = target.top + target.height / 2 > viewport.height / 2;
+    return {
+      top: lowerHalf ? margin : viewport.height - card.height - margin,
+      left: (viewport.width - card.width) / 2,
+    };
+  }
+  const { top, left } = placeNextTo(target, card, viewport, margin, margin);
+  return { top, left };
+}

@@ -401,5 +401,90 @@
       "dark": "Oscuro",
       "light": "Claro"
     }
+  },
+  "help": {
+    "button": "Ayuda",
+    "title": "Cómo se usa Horas",
+    "intro": "Un tour corto te muestra qué tocar en cada pantalla. Podés saltearlo cuando quieras y retomarlo desde acá, donde lo dejaste.",
+    "steps": "Qué vas a ver",
+    "leftHere": "Lo dejaste acá",
+    "start": "Empezar el tour",
+    "resume": "Retomar (paso {step} de {total})",
+    "restart": "Empezar de nuevo",
+    "again": "Ver el tour de nuevo",
+    "close": "Cerrar"
+  },
+  "tour": {
+    "progress": "Paso {current} de {total}",
+    "next": "Siguiente",
+    "back": "Atrás",
+    "skip": "Saltear",
+    "done": "Listo",
+    "steps": {
+      "welcome": {
+        "title": "Te muestro cómo se usa",
+        "body": "Un recorrido corto por lo que vas a usar todos los días. Podés saltearlo y retomarlo cuando quieras desde el botón de ayuda."
+      },
+      "welcomeObserver": {
+        "title": "Estás como observador",
+        "body": "No vas a registrar horas: vas a ver las del equipo, con el detalle de cada tarea. Te muestro dónde está cada cosa."
+      },
+      "welcomeUnassigned": {
+        "title": "Te damos la bienvenida",
+        "body": "Todavía no estás en ningún proyecto. Cuando un admin te sume, vas a poder registrar horas o verlas. Mientras, te muestro lo básico."
+      },
+      "welcomeAdmin": {
+        "title": "Armemos tu espacio",
+        "body": "Como admin, primero invitás al equipo y creás los proyectos. Te muestro dónde se hace cada cosa."
+      },
+      "timer": {
+        "title": "Elegí, escribí y dale play",
+        "body": "Elegí el proyecto, escribí en qué vas a trabajar y tocá play. Lo pausás y lo retomás cuando quieras; sigue corriendo aunque cierres la pestaña."
+      },
+      "popOut": {
+        "title": "El reloj, siempre a la vista",
+        "body": "Abrilo en una ventanita que queda arriba de todo, para pausarlo sin volver a esta pestaña. Funciona en Chrome y Edge de escritorio."
+      },
+      "recent": {
+        "title": "Tus últimos registros",
+        "body": "Acá quedan tus bloques de trabajo. Con el lápiz corregís uno; con el tacho lo borrás."
+      },
+      "weekAdd": {
+        "title": "¿Te olvidaste de darle play?",
+        "body": "Cargá las horas a mano: elegí el proyecto, el día y las horas de inicio y fin."
+      },
+      "weekTeam": {
+        "title": "Tu semana y la del equipo",
+        "body": "En Mías ves tus horas día por día. En Equipo, cada tarea que registró el resto en tus proyectos."
+      },
+      "observerHome": {
+        "title": "Lo que seguís",
+        "body": "Estos son los proyectos que observás. Desde acá vas a la semana del equipo o a las métricas."
+      },
+      "teamWeek": {
+        "title": "Todo el detalle",
+        "body": "Cada tarea que registró el equipo: quién la hizo, en qué proyecto y a qué hora. Con las flechas cambiás de semana."
+      },
+      "metrics": {
+        "title": "Métricas",
+        "body": "Horas por persona, por proyecto y por tarea. Cambiá el período o filtrá por proyecto acá arriba."
+      },
+      "invite": {
+        "title": "Sumá gente",
+        "body": "Invitá con su mail de Google y elegí de antemano sus proyectos y si registra horas u observa."
+      },
+      "board": {
+        "title": "Proyectos y equipos",
+        "body": "Creá proyectos y arrastrá a cada persona al suyo. Si preferís, usá Asignar en cada proyecto."
+      },
+      "settings": {
+        "title": "A tu gusto",
+        "body": "Elegí la paleta y el modo claro u oscuro. Queda guardado en tu cuenta."
+      },
+      "help": {
+        "title": "Siempre a mano",
+        "body": "Si querés repasar algo, tocá el botón de ayuda y retomás el tour donde lo dejaste. En el celular está dentro del menú."
+      }
+    }
   }
 }

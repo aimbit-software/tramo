@@ -181,6 +181,7 @@ export function AppNav({ links, workspaceName, actions }: AppNavProps) {
 
         <button
           type="button"
+          data-tour="nav-menu"
           onClick={openSheet}
           aria-label={t("openMenu")}
           aria-haspopup="dialog"

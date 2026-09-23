@@ -1,5 +1,6 @@
 import { LogOut } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import type { ReactNode } from "react";
 
 import { Avatar } from "@/components/common/avatar";
 import { AppNav, type NavLink } from "@/components/global/app-nav";
@@ -10,10 +11,12 @@ type AppHeaderProps = {
   workspaceName: string;
   /** Shows the admin entry. Navigation only: every admin page checks access itself. */
   isAdmin?: boolean;
+  /** The help button, which belongs to the guide feature. */
+  help?: ReactNode;
 };
 
 /** The app chrome: links for this person, plus who's signed in and the way out. */
-export async function AppHeader({ userName, workspaceName, isAdmin = false }: AppHeaderProps) {
+export async function AppHeader({ userName, workspaceName, isAdmin = false, help }: AppHeaderProps) {
   const t = await getTranslations("nav");
 
   const links: NavLink[] = [
@@ -34,6 +37,7 @@ export async function AppHeader({ userName, workspaceName, isAdmin = false }: Ap
             <Avatar name={userName} />
             <span className="truncate text-sm md:hidden">{userName}</span>
           </span>
+          {help}
           <form action={signOut}>
             <button
               type="submit"

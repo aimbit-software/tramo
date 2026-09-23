@@ -47,7 +47,7 @@ export function MetricsFilters({ range, project, projects }: MetricsFiltersProps
   }
 
   return (
-    <div aria-busy={pending} className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div aria-busy={pending} data-tour="metrics-filters" className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <RadioGroup
         label={t("range")}
         value={shown.range}

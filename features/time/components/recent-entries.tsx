@@ -17,7 +17,7 @@ export async function RecentEntries({ entries, projects, suggestions, timeZone }
   const shared = { projects, suggestions, timeZone };
 
   return (
-    <section className="flex flex-col gap-3">
+    <section data-tour="recent-entries" className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-3">
         <h2 className="font-display text-xs tracking-widest text-ink-dim uppercase">{t("title")}</h2>
         <AddEntryButton {...shared} />

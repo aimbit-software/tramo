@@ -87,7 +87,7 @@ export function InviteForm({ projects }: { projects: InvitableProject[] }) {
   ];
 
   return (
-    <form noValidate onSubmit={submit} className="panel grain flex flex-col gap-5 p-5">
+    <form noValidate onSubmit={submit} data-tour="invite-form" className="panel grain flex flex-col gap-5 p-5">
       <h2 className="font-display text-base font-medium">{t("invite.title")}</h2>
 
       <Field label={t("invite.email")} error={errorText(errors.email)} required hint={t("invite.hint")}>

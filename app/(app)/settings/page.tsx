@@ -14,7 +14,9 @@ export default async function SettingsPage() {
         <h1 className="font-display text-2xl font-medium">{t("title")}</h1>
         <p className="text-sm text-ink-muted">{t("themeHint")}</p>
       </header>
-      <ThemeSwitcher initial={theme} />
+      <div data-tour="theme-picker">
+        <ThemeSwitcher initial={theme} />
+      </div>
     </main>
   );
 }
