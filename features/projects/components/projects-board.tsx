@@ -77,7 +77,7 @@ export function ProjectsBoard({ projects, people }: { projects: BoardProjectStat
   const t = useTranslations("projects");
   const dndId = useId();
   const [optimistic, applyOptimistic] = useOptimistic(projects, applyBoardChange);
-  const [, startTransition] = useTransition();
+  const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [dragging, setDragging] = useState<BoardPerson | null>(null);
 
@@ -201,6 +201,7 @@ export function ProjectsBoard({ projects, people }: { projects: BoardProjectStat
                   <span className="min-w-0 flex-1 truncate text-sm text-ink-muted">{project.name}</span>
                   <button
                     type="button"
+                    aria-disabled={pending}
                     className={BUTTON_GHOST}
                     onClick={() =>
                       startTransition(async () => {

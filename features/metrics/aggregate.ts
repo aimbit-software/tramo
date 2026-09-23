@@ -63,12 +63,18 @@ export async function topTasks(db: PrismaClient, scope: MetricsScope, limit: num
   );
 }
 
-/** Minutes per project per local week, the week being its Monday (ISO date). */
-export async function minutesByWeek(db: PrismaClient, scope: MetricsScope & { timeZone: string }) {
+/**
+ * Minutes per project per local day or week, each bucket named by its first
+ * day (ISO date): a week is its Monday.
+ */
+export async function minutesByPeriod(
+  db: PrismaClient,
+  scope: MetricsScope & { timeZone: string; unit: "day" | "week" },
+) {
   if (scope.projectIds.length === 0) return [];
   return round(
-    await db.$queryRaw<{ week: string; projectId: string; minutes: number }[]>`
-      SELECT to_char(date_trunc('week', e."startedAt" AT TIME ZONE ${scope.timeZone}), 'YYYY-MM-DD') AS week,
+    await db.$queryRaw<{ bucket: string; projectId: string; minutes: number }[]>`
+      SELECT to_char(date_trunc(${scope.unit}, e."startedAt" AT TIME ZONE ${scope.timeZone}), 'YYYY-MM-DD') AS bucket,
              e."projectId" AS "projectId",
              ${minutes(scope.now)} AS minutes
       FROM "TimeEntry" e

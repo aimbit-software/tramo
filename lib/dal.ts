@@ -4,14 +4,15 @@ import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
 
-import { accessStatus, isAdmin } from "@/lib/access/permissions";
+import { accessStatus, isAdmin, projectPersona } from "@/lib/access/permissions";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 
 /**
  * The data access layer: the ONLY place the app reads a session or decides
- * access. Pages call these at the top; never check access in a layout, since
- * layouts don't re-render on client-side navigation.
+ * access. Pages call these at the top; never guard anything in a layout, since
+ * layouts don't re-render on client-side navigation (the (app) layout only
+ * reads the session to draw the header).
  */
 
 /** One session read per request, from the cookie cache. For display only. */
@@ -75,3 +76,20 @@ export async function requireAdmin() {
   if (!context.isAdmin) notFound();
   return context;
 }
+
+/**
+ * How this person takes part in the workspace's active projects: their persona
+ * (tracker, observer, unassigned), which shapes the home, the week and the
+ * tour, and the projects they observe. Once per request, whoever asks.
+ */
+export const getProjectAccess = cache(async (userId: string, workspaceId: string) => {
+  const memberships = await prisma.projectMember.findMany({
+    where: { userId, project: { workspaceId, archivedAt: null } },
+    orderBy: { project: { name: "asc" } },
+    select: { role: true, project: { select: { id: true, name: true, color: true } } },
+  });
+  return {
+    persona: projectPersona(memberships.map((membership) => membership.role)),
+    observed: memberships.filter((membership) => membership.role === "VIEWER").map((membership) => membership.project),
+  };
+});

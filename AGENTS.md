@@ -46,7 +46,7 @@ Follow these rules for every change. They're short on purpose. The reasoning liv
 
 - Modules that must never reach the browser start with `import "server-only"`.
 - Server Actions treat every argument as untrusted input and validate it first.
-- Access checks live in one place, the data access layer (arrives with auth). Never check access in a layout.
+- Access checks live in one place, the data access layer (`lib/dal.ts`), and every page runs its own. Never guard anything in a layout: layouts don't re-render on client-side navigation. The `(app)` layout only reads the session to draw the app chrome.
 
 ## Tests
 

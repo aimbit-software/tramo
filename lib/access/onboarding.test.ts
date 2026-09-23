@@ -26,6 +26,37 @@ async function membershipsOf(userId: string) {
   });
 }
 
+async function projectsOf(userId: string) {
+  return db.prisma.projectMember.findMany({
+    where: { userId },
+    select: { projectId: true, role: true },
+    orderBy: { project: { name: "asc" } },
+  });
+}
+
+/** Ana opens the workspace, then invites Dario to two projects, one per role. */
+async function inviteDarioToProjects() {
+  const ana = await createUser(db, "ana@test.dev");
+  await reconcileAccess(db.prisma, ana, ADMINS);
+  const workspace = await db.prisma.workspace.findFirstOrThrow();
+  const web = await db.prisma.project.create({ data: { workspaceId: workspace.id, name: "Web", color: "blue" } });
+  const app = await db.prisma.project.create({ data: { workspaceId: workspace.id, name: "App", color: "orange" } });
+  await db.prisma.invitation.create({
+    data: {
+      workspaceId: workspace.id,
+      email: "dario@test.dev",
+      role: "MEMBER",
+      projects: {
+        create: [
+          { projectId: web.id, role: "TRACKER" },
+          { projectId: app.id, role: "VIEWER" },
+        ],
+      },
+    },
+  });
+  return { web, app };
+}
+
 describe("reconcileAccess", () => {
   it("lets the first bootstrap admin create the workspace", async () => {
     const ana = await createUser(db, "Ana@Test.dev");
@@ -96,6 +127,36 @@ describe("reconcileAccess", () => {
 
     expect(await membershipsOf(eva.id)).toEqual([
       expect.objectContaining({ role: "MEMBER", status: "ACTIVE" }),
+    ]);
+  });
+
+  it("puts an invited person straight into the projects picked for them", async () => {
+    const { web, app } = await inviteDarioToProjects();
+
+    const dario = await createUser(db, "Dario@Test.dev");
+    await reconcileAccess(db.prisma, dario, ADMINS);
+
+    expect(await projectsOf(dario.id)).toEqual([
+      { projectId: app.id, role: "VIEWER" },
+      { projectId: web.id, role: "TRACKER" },
+    ]);
+  });
+
+  it("applies the invited projects once, so later changes by an admin stick", async () => {
+    const { web, app } = await inviteDarioToProjects();
+    const dario = await createUser(db, "dario@test.dev");
+    await reconcileAccess(db.prisma, dario, ADMINS);
+
+    // An admin moves Dario from observer to tracker, then Dario signs in again.
+    await db.prisma.projectMember.update({
+      where: { projectId_userId: { projectId: app.id, userId: dario.id } },
+      data: { role: "TRACKER" },
+    });
+    await reconcileAccess(db.prisma, dario, ADMINS);
+
+    expect(await projectsOf(dario.id)).toEqual([
+      { projectId: app.id, role: "TRACKER" },
+      { projectId: web.id, role: "TRACKER" },
     ]);
   });
 

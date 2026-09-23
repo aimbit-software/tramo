@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 
 import { Dropdown } from "@/components/common/dropdown";
+import { useAnchoredPopover } from "@/components/common/use-anchored-popover";
 import {
   addMonths,
   formatDateInput,
@@ -103,6 +104,10 @@ export function DateField({
     activeCell.current?.focus();
   }, [open, focused]);
 
+  // The calendar opens in the top layer, so a dialog can't clip it.
+  const calendar = useAnchoredPopover<HTMLDivElement>({ open, anchor: root });
+
+  // Opening moves focus into the grid, on the focused day.
   useLayoutEffect(() => {
     if (open) activeCell.current?.focus();
   }, [open]);
@@ -185,16 +190,21 @@ export function DateField({
 
       {open && (
         <div
+          ref={calendar}
+          // Shown and placed by useAnchoredPopover.
+          popover="manual"
           role="dialog"
           aria-label={label}
-          // Escape closes from anywhere in the dialog. The guard is for the
+          // Escape closes from anywhere in the calendar. The guard is for the
           // month and year dropdowns, which handle their own Escape first.
           onKeyDown={(event) => {
             if (event.key !== "Escape" || event.defaultPrevented) return;
             event.preventDefault();
             close(true);
           }}
-          className="panel menu-pop absolute top-full left-0 z-30 mt-2 w-80 p-4 shadow-lg shadow-black/20"
+          // Undo the browser's popover defaults (centered, bordered, scrolling)
+          // for our own panel; top/left are set by useAnchoredPopover.
+          className="panel menu-pop fixed inset-auto m-0 w-80 max-w-[calc(100vw-1rem)] overflow-visible border-0 p-4 text-ink shadow-lg shadow-black/25"
         >
           <div className="flex items-center justify-between gap-1">
             <button

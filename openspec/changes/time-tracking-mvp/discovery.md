@@ -128,7 +128,7 @@ Additions this app needs that Fragua doesn't have:
 
 - The preference is stored in the user's account, so it follows them across devices. It's also mirrored in a cookie so the server renders the right theme with no flash.
 - Theme state lives on `<html>` as `data-palette="salvia|indigo|lima|ambar"` plus `data-theme="dark|light"`. This mirrors Fragua's attribute-plus-pre-hydration-script approach.
-- Default for new users: Salvia, dark.
+- Default for new users: Lima, dark (it was Salvia until the first week of use).
 - The theme picker is itself a custom control: an accessible radio group of swatches.
 
 Token structure mirrors Fragua. All palettes pass WCAG AA (4.5:1) for ink, ink-muted, and ink-dim on surface and raised, for accent on ground and surface, for on-accent on accent, and for warn on surface, in both modes. Neutrals are tinted toward each accent hue, Radix-style.
@@ -175,7 +175,7 @@ These override any recommendation in `exploration.md` that conflicts with them.
 | Drag and drop | **dnd-kit**, the one justified behavior-only dependency. Every drag action also has a single-pointer alternative (tap a user chip to open a custom project and role picker), per WCAG 2.5.7 |
 | Forgotten-timer threshold | **8 hours** |
 | Editing past entries | **No time limit.** Everyone can edit their own entries anytime, and admins can edit anyone's. Every manual creation or edit is flagged |
-| Manual time input | **Smart free-text field.** It accepts "14:30", "1h30", "90m" and similar, with a live preview of how it was parsed. Restyled text input with a pure parse/format function and a shared Zod schema |
+| Manual time input | **Time selectors** (changed from a smart free-text field after the first week of use: typing "18:00 o 1h30" didn't convince the owner). Start and end are picked from lists on a quarter-hour grid, like a calendar; each end option shows the resulting duration, an end before the start means the next day, and changing the start keeps the duration. Typing still jumps to a time ("930", "18"). The server keeps parsing "HH:MM", so the contract didn't change |
 | Multiple workspaces | **Allowed by the data model from day 1.** A user can belong to several workspaces. The workspace switcher UI stays hidden until a user has more than one |
 
 **Defaults set by the orchestrator** (the owner can correct them during the proposal review):

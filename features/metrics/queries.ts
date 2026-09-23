@@ -1,7 +1,8 @@
 import "server-only";
 
-import { minutesByPerson, minutesByProject, minutesByWeek, topTasks } from "@/features/metrics/aggregate";
+import { minutesByPeriod, minutesByPerson, minutesByProject, topTasks } from "@/features/metrics/aggregate";
 import { resolveRange } from "@/features/metrics/range";
+import { visibleProjectsWhere } from "@/lib/access/permissions";
 import { prisma } from "@/lib/db";
 
 /** Past this many projects, the rest fold into "Other": the palette has eight slots, never a ninth. */
@@ -14,7 +15,7 @@ const MAX_SERIES = 7;
  */
 function visibleProjects(userId: string, workspaceId: string, isAdmin: boolean) {
   return prisma.project.findMany({
-    where: { workspaceId, ...(isAdmin ? {} : { members: { some: { userId } } }) },
+    where: visibleProjectsWhere({ workspaceId, userId, isAdmin }),
     orderBy: [{ archivedAt: { sort: "asc", nulls: "first" } }, { name: "asc" }],
     select: { id: true, name: true, color: true, archivedAt: true },
   });
@@ -37,11 +38,11 @@ export async function getMetrics(input: {
     typeof input.projectParam === "string" && projectById.has(input.projectParam) ? input.projectParam : null;
   const scope = { projectIds: selected ? [selected] : [...projectById.keys()], start: range.start, end: range.end, now };
 
-  const [byPerson, byProjectRows, tasks, weekRows] = await Promise.all([
+  const [byPerson, byProjectRows, tasks, periodRows] = await Promise.all([
     minutesByPerson(prisma, scope),
     minutesByProject(prisma, scope),
     topTasks(prisma, scope, 10),
-    minutesByWeek(prisma, { ...scope, timeZone: input.timeZone }),
+    minutesByPeriod(prisma, { ...scope, timeZone: input.timeZone, unit: range.unit }),
   ]);
 
   const byProject = byProjectRows.flatMap((row) => {
@@ -49,22 +50,22 @@ export async function getMetrics(input: {
     return project ? [{ id: project.id, name: project.name, color: project.color, minutes: row.minutes }] : [];
   });
 
-  // Weekly series: the top projects keep their own color, the tail folds into one.
+  // Series per day or week: the top projects keep their own color, the tail folds into one.
   const main = byProject.slice(0, MAX_SERIES);
   const mainIds = new Set(main.map((project) => project.id));
-  const weekIndex = new Map(range.weeks.map((week, index) => [week, index]));
+  const bucketIndex = new Map(range.buckets.map((bucket, index) => [bucket, index]));
   type Series = { key: string; name: string | null; color: string | null; values: number[] };
   const series: Series[] = main.map((project) => ({
     key: project.id,
     name: project.name,
     color: project.color,
-    values: range.weeks.map(() => 0),
+    values: range.buckets.map(() => 0),
   }));
   // name null = "Other", labeled by the client in the viewer's language.
-  const other: Series = { key: "other", name: null, color: null, values: range.weeks.map(() => 0) };
+  const other: Series = { key: "other", name: null, color: null, values: range.buckets.map(() => 0) };
 
-  for (const row of weekRows) {
-    const index = weekIndex.get(row.week);
+  for (const row of periodRows) {
+    const index = bucketIndex.get(row.bucket);
     if (index === undefined) continue;
     const target = mainIds.has(row.projectId) ? series.find((item) => item.key === row.projectId) : other;
     if (target) target.values[index] = (target.values[index] ?? 0) + row.minutes;

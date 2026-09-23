@@ -32,6 +32,11 @@ model User {
   palette   String?
   themeMode String?
 
+  // Where the person left the guided tour (features/guide/tour.ts). Null means
+  // they never touched it, so it starts on its own on the home page; past the
+  // last step means finished.
+  tourStep Int?
+
   sessions           Session[]
   accounts           Account[]
   memberships        WorkspaceMember[]
@@ -151,8 +156,24 @@ model Invitation {
   createdAt   DateTime      @default(now())
   acceptedAt  DateTime?
 
+  projects InvitationProject[]
+
   @@unique([workspaceId, email])
   @@index([email])
+}
+
+// A project picked on the invitation. When the invitation is accepted, each
+// row becomes a ProjectMember with this role, so the person lands straight in
+// their projects. Applied once: later changes on the board are never undone.
+model InvitationProject {
+  invitationId String
+  invitation   Invitation  @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  projectId    String
+  project      Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  role         ProjectRole @default(TRACKER)
+
+  @@id([invitationId, projectId])
+  @@index([projectId])
 }
 
 // =============================================================================
@@ -172,6 +193,7 @@ model Project {
   updatedAt   DateTime  @updatedAt
 
   members     ProjectMember[]
+  invitations InvitationProject[]
   timeEntries TimeEntry[]
 
   @@unique([workspaceId, name])

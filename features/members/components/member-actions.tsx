@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useState, useTransition } from "react";
+import { useOptimistic, useState, useTransition } from "react";
 
 import { ConfirmButton } from "@/components/common/confirm-dialog";
 import { RadioGroup } from "@/components/common/radio-group";
@@ -21,14 +21,18 @@ const PRIMARY =
 const GHOST =
   "rounded-tile px-3 py-1.5 font-display text-sm text-ink-muted transition-colors duration-150 ease-signature hover:bg-raised hover:text-ink aria-disabled:cursor-wait aria-disabled:opacity-60 motion-reduce:transition-none";
 
-/** Runs an action, keeping its error key for display. */
+/**
+ * Runs an action, keeping its error key for display. `optimistic` runs first,
+ * inside the same transition, to show the outcome before the server answers.
+ */
 function useAction() {
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  function run(action: () => Promise<ActionResult>) {
+  function run(action: () => Promise<ActionResult>, optimistic?: () => void) {
     setError(null);
     startTransition(async () => {
+      optimistic?.();
       const result = await action();
       if (result?.error) setError(result.error);
     });
@@ -89,14 +93,21 @@ export function ActiveMemberActions({
 }) {
   const t = useTranslations("members");
   const { error, run } = useAction();
+  // The new role shows at once; a refusal (last admin) puts the old one back.
+  const [shownRole, setShownRole] = useOptimistic(role);
 
   return (
     <div className="flex flex-wrap items-center justify-end gap-2">
       <RadioGroup
         label={t("active.roleLabel", { name })}
-        value={role}
+        value={shownRole}
         options={WORKSPACE_ROLES.map((value) => ({ value, label: t(`roles.${value}`) }))}
-        onChange={(next) => run(() => setMemberRoleAction(memberId, next))}
+        onChange={(next) =>
+          run(
+            () => setMemberRoleAction(memberId, next),
+            () => setShownRole(next),
+          )
+        }
         className="inline-flex gap-1 rounded-tile bg-raised p-1"
         optionClassName={(checked) =>
           `rounded-[6px] px-2.5 py-1 text-xs transition-colors duration-150 ease-signature motion-reduce:transition-none ${

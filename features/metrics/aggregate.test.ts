@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import { minutesByPerson, minutesByProject, minutesByWeek, topTasks } from "@/features/metrics/aggregate";
+import { minutesByPeriod, minutesByPerson, minutesByProject, topTasks } from "@/features/metrics/aggregate";
 import { createTestDb, createUser, type TestDb } from "@/lib/testing/db";
 
 const AR = "America/Argentina/Buenos_Aires";
@@ -78,10 +78,19 @@ describe("metrics aggregation (real Postgres)", () => {
   });
 
   it("buckets by local week (Monday) per project", async () => {
-    expect(await minutesByWeek(db.prisma, { ...scope(), timeZone: AR })).toEqual([
-      { week: "2026-09-14", projectId: projectA, minutes: 120 },
-      { week: "2026-09-21", projectId: projectA, minutes: 120 },
-      { week: "2026-09-21", projectId: projectB, minutes: 30 },
+    expect(await minutesByPeriod(db.prisma, { ...scope(), timeZone: AR, unit: "week" })).toEqual([
+      { bucket: "2026-09-14", projectId: projectA, minutes: 120 },
+      { bucket: "2026-09-21", projectId: projectA, minutes: 120 },
+      { bucket: "2026-09-21", projectId: projectB, minutes: 30 },
+    ]);
+  });
+
+  it("buckets by local day per project", async () => {
+    expect(await minutesByPeriod(db.prisma, { ...scope(), timeZone: AR, unit: "day" })).toEqual([
+      { bucket: "2026-09-15", projectId: projectA, minutes: 120 },
+      { bucket: "2026-09-22", projectId: projectA, minutes: 60 },
+      { bucket: "2026-09-22", projectId: projectB, minutes: 30 },
+      { bucket: "2026-09-24", projectId: projectA, minutes: 60 },
     ]);
   });
 

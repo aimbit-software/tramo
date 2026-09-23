@@ -6,13 +6,19 @@ import { useState } from "react";
 
 import { formatHours } from "@/lib/duration";
 
-/** A null name is the "Other" bucket that folds the tail of projects. */
-export type WeeklySeries = { key: string; name: string | null; color: string | null; values: number[] };
+/** A null name is the "Other" series that folds the tail of projects. */
+export type PeriodSeries = { key: string; name: string | null; color: string | null; values: number[] };
 
-type WeeklyStackProps = {
-  /** Already formatted on the server ("21 sep"). */
-  weekLabels: string[];
-  series: WeeklySeries[];
+type PeriodStackProps = {
+  /** One per column, already formatted on the server ("21 sept", "lun 21"). */
+  labels: string[];
+  series: PeriodSeries[];
+  /** Accessible name of the chart and its table. */
+  caption: string;
+  /** Header of the table's first column: what one column is ("Semana", "Día"). */
+  bucketHeader: string;
+  /** The column that gets the one direct label: today, or this week. Defaults to the last. */
+  current?: number;
 };
 
 const WIDTH = 640;
@@ -38,17 +44,17 @@ function topRoundedRect(x: number, y: number, width: number, height: number, rad
 }
 
 /**
- * Hours per week, stacked by project. Hover or keyboard focus on a week shows
- * its breakdown; the same numbers are always available in the table below
- * (tooltips enhance, never gate). The legend is always shown: two or more
- * series never rely on color alone.
+ * Hours per day or per week, stacked by project. Hover or keyboard focus on a
+ * column shows its breakdown; the same numbers are always available in the
+ * table below (tooltips enhance, never gate). The legend is always shown: two
+ * or more series never rely on color alone.
  */
-export function WeeklyStack({ weekLabels, series: rawSeries }: WeeklyStackProps) {
-  const t = useTranslations("metrics.weekly");
+export function PeriodStack({ labels: columnLabels, series: rawSeries, caption, bucketHeader, current }: PeriodStackProps) {
+  const t = useTranslations("metrics.chart");
   const series = rawSeries.map((item) => ({ ...item, name: item.name ?? t("other") }));
   const labels = {
-    caption: t("caption"),
-    week: t("week"),
+    caption,
+    bucket: bucketHeader,
     total: t("total"),
     showTable: t("showTable"),
     hours: (value: number) => t("tick", { hours: value }),
@@ -56,15 +62,16 @@ export function WeeklyStack({ weekLabels, series: rawSeries }: WeeklyStackProps)
   const [active, setActive] = useState<number | null>(null);
   const [tableOpen, setTableOpen] = useState(false);
 
-  const totals = weekLabels.map((_, index) => series.reduce((sum, item) => sum + (item.values[index] ?? 0), 0));
+  const totals = columnLabels.map((_, index) => series.reduce((sum, item) => sum + (item.values[index] ?? 0), 0));
   const maxHours = niceMaxHours(Math.max(...totals, 0));
   const plotWidth = WIDTH - PAD.left - PAD.right;
   const plotHeight = HEIGHT - PAD.top - PAD.bottom;
-  const band = plotWidth / Math.max(1, weekLabels.length);
+  const band = plotWidth / Math.max(1, columnLabels.length);
   const barWidth = Math.min(24, band * 0.6);
+  const highlight = Math.min(band, barWidth + 32);
   const y = (minutes: number) => (minutes / 60 / maxHours) * plotHeight;
   const ticks = [0, maxHours / 2, maxHours];
-  const lastIndex = weekLabels.length - 1;
+  const labeled = current ?? columnLabels.length - 1;
 
   return (
     <div className="flex flex-col gap-4">
@@ -108,7 +115,7 @@ export function WeeklyStack({ weekLabels, series: rawSeries }: WeeklyStackProps)
             );
           })}
 
-          {weekLabels.map((weekLabel, index) => {
+          {columnLabels.map((columnLabel, index) => {
             const center = PAD.left + band * index + band / 2;
             const x = center - barWidth / 2;
             let cumulative = 0;
@@ -116,27 +123,31 @@ export function WeeklyStack({ weekLabels, series: rawSeries }: WeeklyStackProps)
 
             return (
               <g
-                key={weekLabel}
+                key={columnLabel}
                 tabIndex={0}
                 role="img"
-                aria-label={`${weekLabel}: ${formatHours(totals[index] ?? 0)}`}
+                aria-label={`${columnLabel}: ${formatHours(totals[index] ?? 0)}`}
                 onMouseEnter={() => setActive(index)}
                 onMouseLeave={() => setActive(null)}
                 onFocus={() => setActive(index)}
                 onBlur={() => setActive(null)}
-                className="outline-none focus-visible:[&>rect:first-child]:stroke-accent"
+                className="group/column outline-none"
               >
                 {/* The hit area is the whole band, far bigger than the mark. */}
+                <rect x={PAD.left + band * index} y={PAD.top} width={band} height={plotHeight} fill="transparent" />
+                {/* What hover and keyboard focus light up: a column hugging the
+                    bar, so a wide band never frames the whole chart. */}
                 <rect
-                  x={PAD.left + band * index}
-                  y={PAD.top}
-                  width={band}
-                  height={plotHeight}
-                  fill={active === index ? "var(--color-ink)" : "transparent"}
-                  fillOpacity={active === index ? 0.04 : 0}
+                  x={center - highlight / 2}
+                  y={PAD.top - 4}
+                  width={highlight}
+                  height={plotHeight + 8}
+                  rx={6}
+                  fill="var(--color-ink)"
+                  fillOpacity={active === index ? 0.05 : 0}
                   stroke="transparent"
                   strokeWidth={2}
-                  rx={6}
+                  className="pointer-events-none group-focus-visible/column:stroke-accent"
                 />
                 {visible.map((item, stackIndex) => {
                   const value = item.values[index] ?? 0;
@@ -159,10 +170,10 @@ export function WeeklyStack({ weekLabels, series: rawSeries }: WeeklyStackProps)
                   fontSize={11}
                   fill={active === index ? "var(--color-ink)" : "var(--color-ink-dim)"}
                 >
-                  {weekLabel}
+                  {columnLabel}
                 </text>
-                {/* One direct label, the current week's total: selective, not on every column. */}
-                {index === lastIndex && (totals[index] ?? 0) > 0 && (
+                {/* One direct label, the current column's total: selective, not on every column. */}
+                {index === labeled && (totals[index] ?? 0) > 0 && (
                   <text
                     x={center}
                     y={PAD.top + plotHeight - y(totals[index] ?? 0) - 6}
@@ -187,7 +198,7 @@ export function WeeklyStack({ weekLabels, series: rawSeries }: WeeklyStackProps)
               left: `clamp(0px, calc(${(((PAD.left + band * active + band / 2) / WIDTH) * 100).toFixed(2)}% - 6.5rem), calc(100% - 13rem))`,
             }}
           >
-            <p className="mb-2 font-display text-ink">{weekLabels[active]}</p>
+            <p className="mb-2 font-display text-ink">{columnLabels[active]}</p>
             <ul className="flex flex-col gap-1">
               {series
                 .filter((item) => (item.values[active] ?? 0) > 0)
@@ -228,7 +239,7 @@ export function WeeklyStack({ weekLabels, series: rawSeries }: WeeklyStackProps)
               <thead>
                 <tr className="text-ink-dim">
                   <th scope="col" className="py-2 pr-3 text-left font-normal">
-                    {labels.week}
+                    {labels.bucket}
                   </th>
                   {series.map((item) => (
                     <th key={item.key} scope="col" className="px-2 py-2 text-right font-normal">
@@ -241,10 +252,10 @@ export function WeeklyStack({ weekLabels, series: rawSeries }: WeeklyStackProps)
                 </tr>
               </thead>
               <tbody>
-                {weekLabels.map((weekLabel, index) => (
-                  <tr key={weekLabel} className="hairline-t">
+                {columnLabels.map((columnLabel, index) => (
+                  <tr key={columnLabel} className="hairline-t">
                     <th scope="row" className="py-2 pr-3 text-left font-normal">
-                      {weekLabel}
+                      {columnLabel}
                     </th>
                     {series.map((item) => (
                       <td key={item.key} className="digits px-2 py-2 text-right">

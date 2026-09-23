@@ -19,7 +19,7 @@
 
    Four palettes × two modes, selected by attributes on <html>:
    data-palette="salvia|indigo|lima|ambar" and data-theme="dark|light".
-   The @theme block holds the default (Salvia, dark); the blocks below
+   The @theme block holds the default (Lima, dark); the blocks below
    reassign the same tokens. Neutrals are tinted toward each accent hue.
 
    Every palette passes WCAG AA (4.5:1) for ink / ink-muted / ink-dim on
@@ -29,21 +29,21 @@
    ========================================================================== */
 
 @theme {
-  /* --- Elevation ladder (Salvia, dark) ----------------------------------- */
-  --color-ground: #141816; /* page background        */
-  --color-surface: #1e2320; /* panels, cards          */
-  --color-raised: #282e2a; /* nested panels, inputs  */
-  --color-tile: #3f4641; /* icon tiles, chips      */
+  /* --- Elevation ladder (Lima, dark) ------------------------------------- */
+  --color-ground: #161713; /* page background        */
+  --color-surface: #20211c; /* panels, cards          */
+  --color-raised: #2a2b25; /* nested panels, inputs  */
+  --color-tile: #43443c; /* icon tiles, chips      */
 
   /* --- Text -------------------------------------------------------------- */
-  --color-ink: #f3f6f4;
-  --color-ink-muted: #a1aaa4; /* body copy              */
-  --color-ink-dim: #939c96; /* captions, metadata     */
+  --color-ink: #f7f7f0;
+  --color-ink-muted: #a7a89c; /* body copy              */
+  --color-ink-dim: #98998d; /* captions, metadata     */
 
   /* --- Semantic accent --------------------------------------------------- */
-  --color-accent: #5ee0a0;
-  --color-on-accent: #0c1510;
-  --color-warn: #e5a83c;
+  --color-accent: #c5ef5a;
+  --color-on-accent: #171a0c;
+  --color-warn: #ff9a62;
 
   /* --- Radii ------------------------------------------------------------- */
   --radius-tile: 8px;
@@ -60,12 +60,19 @@
   /* --- Motion -------------------------------------------------------------
      The system's single easing curve. `ease-signature` in class names. */
   --ease-signature: cubic-bezier(0.22, 1, 0.36, 1);
+}
 
-  /* --- Project colors (dark steps) ----------------------------------------
-     Categorical identity for projects in charts and dots. Order and values
-     come from the dataviz reference palette, re-validated on this app's
-     eight surfaces: every check passes in dark mode. Keys match
-     lib/project-colors.ts. Light steps are below, under [data-theme]. */
+/* --- Project colors (dark steps) ------------------------------------------
+   Categorical identity for projects in charts and dots. Order and values
+   come from the dataviz reference palette, re-validated on this app's eight
+   surfaces: every check passes in dark mode. Keys match lib/project-colors.ts.
+   Light steps are below, under [data-theme].
+
+   `static` because they're read through var() in inline styles (a project's
+   dot, a chart's fill), never through a utility class. Tailwind only emits the
+   theme variables some class uses, so without it these vanished from the CSS
+   and every project painted black in dark mode. */
+@theme static {
   --color-project-blue: #3987e5;
   --color-project-orange: #d95926;
   --color-project-aqua: #199e70;
@@ -121,8 +128,7 @@
    element carrying both attributes (a swatch in the theme picker) renders
    in that theme, whatever <html> says. */
 
-/* Salvia: mint on greenish greys. The dark pair repeats the @theme defaults
-   so it can be scoped inside another theme. */
+/* Salvia: mint on greenish greys. */
 [data-palette="salvia"][data-theme="dark"] {
   --color-ground: #141816;
   --color-surface: #1e2320;
@@ -177,7 +183,8 @@
 }
 
 /* Lima: acid lime on olive greys. Warn moves to coral here: amber sits too
-   close to lime to tell apart. */
+   close to lime to tell apart. The dark pair repeats the @theme defaults so
+   it can be scoped inside another theme. */
 [data-palette="lima"][data-theme="dark"] {
   --color-ground: #161713;
   --color-surface: #20211c;

@@ -10,3 +10,15 @@ export function toSearchKey(value: string) {
     .replace(/\s+/g, " ")
     .trim();
 }
+
+/**
+ * Type-ahead for a list: the first option whose label, or one of its keywords,
+ * starts with what was typed (compared as search keys). -1 when none does.
+ */
+export function typeaheadIndex(options: readonly { label: string; keywords?: readonly string[] }[], typed: string) {
+  const key = toSearchKey(typed);
+  if (!key) return -1;
+  return options.findIndex((option) =>
+    [option.label, ...(option.keywords ?? [])].some((text) => toSearchKey(text).startsWith(key)),
+  );
+}

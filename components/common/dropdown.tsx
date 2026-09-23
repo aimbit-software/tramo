@@ -3,9 +3,18 @@
 import { Check, ChevronDown } from "lucide-react";
 import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 
-import { toSearchKey } from "@/lib/search";
+import { useAnchoredPopover } from "@/components/common/use-anchored-popover";
+import { typeaheadIndex } from "@/lib/search";
 
-export type DropdownOption = { value: string; label: string; icon?: ReactNode };
+export type DropdownOption = {
+  value: string;
+  label: string;
+  icon?: ReactNode;
+  /** Secondary text at the end of the option ("1 h 30 min"). Not shown on the trigger. */
+  hint?: string;
+  /** More ways to reach the option by typing ("930" for 09:30). */
+  keywords?: string[];
+};
 
 type DropdownProps = {
   /** Accessible name of the control; also names the list. */
@@ -21,6 +30,8 @@ type DropdownProps = {
   "aria-invalid"?: true | undefined;
   "aria-describedby"?: string | undefined;
   className?: string;
+  /** Numbers that get compared (times): tabular figures. */
+  numeric?: boolean;
 };
 
 const OPEN_KEYS = new Set(["ArrowDown", "ArrowUp", "Enter", " "]);
@@ -33,6 +44,9 @@ const OPEN_KEYS = new Set(["ArrowDown", "ArrowUp", "Enter", " "]);
  * Focus stays on the trigger while the menu is open (`aria-activedescendant`
  * points at the active option). Arrows move, Home/End jump, Enter/Space pick,
  * Escape and Tab close, and typing jumps to the option starting with it.
+ *
+ * The list opens in the top layer (useAnchoredPopover), so a dialog can't
+ * clip it.
  */
 export function Dropdown({
   label,
@@ -45,6 +59,7 @@ export function Dropdown({
   "aria-invalid": invalid,
   "aria-describedby": describedBy,
   className = "",
+  numeric = false,
 }: DropdownProps) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
@@ -53,6 +68,7 @@ export function Dropdown({
   const rootRef = useRef<HTMLSpanElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const typeahead = useRef({ buffer: "", time: 0 });
+  const listRef = useAnchoredPopover<HTMLUListElement>({ open, anchor: triggerRef, matchWidth: true, gap: 4 });
 
   const selected = options.find((option) => option.value === value);
   const optionId = (index: number) => `${idBase}-option-${index}`;
@@ -81,8 +97,7 @@ export function Dropdown({
     const now = Date.now();
     entry.buffer = now - entry.time < 500 ? entry.buffer + char : char;
     entry.time = now;
-    const buffer = toSearchKey(entry.buffer);
-    const index = options.findIndex((option) => toSearchKey(option.label).startsWith(buffer));
+    const index = typeaheadIndex(options, entry.buffer);
     if (index !== -1) setActive(index);
   }
 
@@ -174,7 +189,7 @@ export function Dropdown({
       >
         <span className="flex min-w-0 items-center gap-2">
           {selected?.icon}
-          <span className="truncate">{selected ? selected.label : (placeholder ?? "")}</span>
+          <span className={`truncate ${numeric ? "digits" : ""}`}>{selected ? selected.label : (placeholder ?? "")}</span>
         </span>
         <ChevronDown
           aria-hidden
@@ -186,10 +201,13 @@ export function Dropdown({
 
       {open && (
         <ul
+          ref={listRef}
           id={listId}
           role="listbox"
           aria-label={label}
-          className="menu-pop absolute inset-x-0 top-full z-20 mt-1 max-h-72 overflow-y-auto rounded-tile bg-raised p-1 shadow-lg shadow-black/20"
+          // Shown and placed by useAnchoredPopover.
+          popover="manual"
+          className="menu-pop fixed inset-auto m-0 max-h-72 w-max max-w-[calc(100vw-1rem)] overflow-y-auto rounded-tile border-0 bg-raised p-1 text-ink shadow-lg shadow-black/20"
         >
           {options.map((option, index) => (
             <li
@@ -207,9 +225,15 @@ export function Dropdown({
             >
               <span className="flex min-w-0 items-center gap-2">
                 {option.icon}
-                <span className="truncate">{option.label}</span>
+                <span className={`truncate ${numeric ? "digits" : ""}`}>{option.label}</span>
               </span>
-              {option.value === value && <Check aria-hidden className="icon size-3.5 flex-none text-accent" />}
+              <span className="flex flex-none items-center gap-2">
+                {option.hint && <span className="text-xs text-ink-dim">{option.hint}</span>}
+                <Check
+                  aria-hidden
+                  className={`icon size-3.5 text-accent ${option.value === value ? "" : "invisible"}`}
+                />
+              </span>
             </li>
           ))}
         </ul>

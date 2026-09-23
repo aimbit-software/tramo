@@ -155,7 +155,7 @@ export function TimerBar({ projects, running, suggestions, serverNow }: TimerBar
   };
 
   return (
-    <section aria-label={t("title")} className="panel grain flex flex-col gap-4 p-4 sm:p-5">
+    <section aria-label={t("title")} data-tour="timer" className="panel grain flex flex-col gap-4 p-4 sm:p-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
         <Dropdown
           label={t("project")}
@@ -205,6 +205,7 @@ export function TimerBar({ projects, running, suggestions, serverNow }: TimerBar
           {pip.supported && (
             <button
               type="button"
+              data-tour="timer-pop-out"
               aria-label={pip.pipWindow ? t("closePopOut") : t("popOut")}
               aria-pressed={pip.pipWindow !== null}
               onClick={() => (pip.pipWindow ? pip.close() : pip.open({ width: 360, height: 128 }))}

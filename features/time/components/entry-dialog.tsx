@@ -11,7 +11,9 @@ import { Modal } from "@/components/common/modal";
 import { createEntryAction, updateEntryAction } from "@/features/time/entry-actions";
 import { buildInterval } from "@/features/time/interval";
 import { DESCRIPTION_MAX } from "@/features/time/schema";
+import { defaultBlock, endOptions, startOptions, timeKeywords, toClock } from "@/features/time/time-options";
 import { focusFirstInvalid, type FieldErrors } from "@/lib/form";
+import { parseClockTime } from "@/lib/time-input";
 import { zonedDateKey, zonedMinutesOfDay } from "@/lib/zoned";
 
 export type EntryDialogProject = { id: string; name: string; color: string };
@@ -34,17 +36,16 @@ type EntryDialogProps = {
   timeZone: string;
 };
 
-const hhmm = (minutes: number) =>
-  `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`;
-
 function initialValues(entry: EditableEntry | undefined, projects: EntryDialogProject[], timeZone: string) {
   if (!entry) {
+    const now = new Date();
+    const block = defaultBlock(zonedMinutesOfDay(now, timeZone));
     return {
       projectId: projects[0]?.id ?? "",
       description: "",
-      date: zonedDateKey(new Date(), timeZone),
-      start: "",
-      end: "",
+      date: zonedDateKey(now, timeZone),
+      start: toClock(block.start),
+      end: toClock(block.end),
     };
   }
   const startedAt = new Date(entry.startedAt);
@@ -53,15 +54,16 @@ function initialValues(entry: EditableEntry | undefined, projects: EntryDialogPr
     projectId: entry.projectId,
     description: entry.description,
     date: zonedDateKey(startedAt, timeZone),
-    start: hhmm(zonedMinutesOfDay(startedAt, timeZone)),
-    end: hhmm(zonedMinutesOfDay(endedAt, timeZone)),
+    start: toClock(zonedMinutesOfDay(startedAt, timeZone)),
+    end: toClock(zonedMinutesOfDay(endedAt, timeZone)),
   };
 }
 
 /**
- * Add or fix a block by hand. The end field takes a time ("18:30") or a
- * duration ("1h30"); the line under it shows how it was understood before
- * saving. Every block saved here is flagged as manual or edited.
+ * Add or fix a block by hand. Start and end are picked from lists on a
+ * quarter-hour grid, like a calendar: each end says how long the block lasts,
+ * and an end before the start means the next day. Changing the start keeps
+ * the duration. Every block saved here is flagged as manual or edited.
  */
 export function EntryDialog(props: EntryDialogProps) {
   const t = useTranslations("entries");
@@ -81,6 +83,21 @@ function EntryForm({ onClose, entry, projects, suggestions, timeZone }: EntryDia
   const [pending, startTransition] = useTransition();
 
   const set = (field: keyof typeof values) => (value: string) => setValues((current) => ({ ...current, [field]: value }));
+
+  const startMinutes = parseClockTime(values.start);
+  const endMinutes = parseClockTime(values.end);
+
+  // A new start moves the end with it: the block keeps its duration.
+  function changeStart(start: string) {
+    setValues((current) => {
+      const from = parseClockTime(current.start);
+      const to = parseClockTime(current.end);
+      const next = parseClockTime(start);
+      if (from === null || to === null || next === null) return { ...current, start };
+      const duration = (to - from + 24 * 60) % (24 * 60) || 60;
+      return { ...current, start, end: toClock((next + duration) % (24 * 60)) };
+    });
+  }
 
   const preview =
     values.start.trim() && values.end.trim()
@@ -190,28 +207,50 @@ function EntryForm({ onClose, entry, projects, suggestions, timeZone }: EntryDia
       <div className="grid grid-cols-2 gap-3">
         <Field label={t("start")} error={errorText(errors.start)} required>
           {(fieldProps) => (
-            <input
-              {...fieldProps}
+            <Dropdown
+              id={fieldProps.id}
+              aria-invalid={fieldProps["aria-invalid"]}
+              aria-describedby={fieldProps["aria-describedby"]}
+              label={t("start")}
               name="start"
               value={values.start}
-              onChange={(event) => set("start")(event.target.value)}
-              inputMode="numeric"
-              autoComplete="off"
-              placeholder={t("startPlaceholder")}
-              className={`${FIELD} digits`}
+              onChange={changeStart}
+              placeholder={t("pickTime")}
+              numeric
+              className="w-full"
+              options={startOptions(startMinutes).map((minutes) => ({
+                value: toClock(minutes),
+                label: toClock(minutes),
+                keywords: timeKeywords(minutes),
+              }))}
             />
           )}
         </Field>
         <Field label={t("end")} error={errorText(errors.end)} required>
           {(fieldProps) => (
-            <input
-              {...fieldProps}
+            <Dropdown
+              id={fieldProps.id}
+              aria-invalid={fieldProps["aria-invalid"]}
+              aria-describedby={fieldProps["aria-describedby"]}
+              label={t("end")}
               name="end"
               value={values.end}
-              onChange={(event) => set("end")(event.target.value)}
-              autoComplete="off"
-              placeholder={t("endPlaceholder")}
-              className={`${FIELD} digits`}
+              onChange={set("end")}
+              placeholder={t("pickTime")}
+              numeric
+              className="w-full"
+              options={
+                startMinutes === null
+                  ? []
+                  : endOptions(startMinutes, endMinutes).map((option) => ({
+                      value: toClock(option.minutes),
+                      label: toClock(option.minutes),
+                      keywords: timeKeywords(option.minutes),
+                      hint: option.nextDay
+                        ? t("nextDayHint", { duration: describeDuration(option.duration) })
+                        : describeDuration(option.duration),
+                    }))
+              }
             />
           )}
         </Field>
