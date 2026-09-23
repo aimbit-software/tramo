@@ -24,6 +24,27 @@ describe("resolveRange", () => {
     expect(range.start.toISOString()).toBe("2026-08-31T03:00:00.000Z");
   });
 
+  it("reads one week day by day", () => {
+    const range = resolveRange("week", AR, now);
+    expect(range.unit).toBe("day");
+    expect(range.buckets).toEqual([
+      "2026-09-21",
+      "2026-09-22",
+      "2026-09-23",
+      "2026-09-24",
+      "2026-09-25",
+      "2026-09-26",
+      "2026-09-27",
+    ]);
+  });
+
+  it("reads longer ranges week by week", () => {
+    const range = resolveRange("12w", AR, now);
+    expect(range.unit).toBe("week");
+    expect(range.buckets).toEqual(range.weeks);
+    expect(range.buckets).toHaveLength(12);
+  });
+
   it("falls back to four weeks for anything unknown", () => {
     expect(resolveRange("forever", AR, now).key).toBe("4w");
     expect(resolveRange(undefined, AR, now).key).toBe("4w");

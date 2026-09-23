@@ -229,14 +229,21 @@
         "12w": "12 semanas"
       }
     },
-    "weekly": {
-      "title": "Semana a semana",
-      "caption": "Horas por semana y por proyecto",
-      "week": "Semana",
+    "chart": {
       "total": "Total",
       "other": "Otros",
       "tick": "{hours} h",
       "showTable": "Ver como tabla"
+    },
+    "weekly": {
+      "title": "Semana a semana",
+      "caption": "Horas por semana y por proyecto",
+      "bucket": "Semana"
+    },
+    "daily": {
+      "title": "Día a día",
+      "caption": "Horas por día y por proyecto",
+      "bucket": "Día"
     },
     "byPerson": {
       "title": "Horas por persona",

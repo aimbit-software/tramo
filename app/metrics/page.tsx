@@ -5,12 +5,12 @@ import { RefreshOnFocus } from "@/components/common/refresh-on-focus";
 import { AppHeader } from "@/components/global/app-header";
 import { BarTable } from "@/features/metrics/components/bar-table";
 import { MetricsFilters } from "@/features/metrics/components/metrics-filters";
-import { WeeklyStack } from "@/features/metrics/components/weekly-stack";
+import { PeriodStack } from "@/features/metrics/components/period-stack";
 import { getMetrics } from "@/features/metrics/queries";
 import { DEFAULT_TIME_ZONE } from "@/i18n/config";
 import { requireMember } from "@/lib/dal";
 import { formatHours } from "@/lib/duration";
-import { zonedInstant } from "@/lib/zoned";
+import { zonedDateKey, zonedInstant } from "@/lib/zoned";
 
 function Card({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -31,8 +31,14 @@ export default async function MetricsPage({ searchParams }: PageProps<"/metrics"
     getMetrics({ userId: user.id, workspaceId: workspace.id, isAdmin, timeZone, rangeParam, projectParam }),
   ]);
 
-  const weekLabels = metrics.range.weeks.map((week) =>
-    format.dateTime(zonedInstant(week, 12 * 60, timeZone), { day: "numeric", month: "short" }),
+  // One week reads day by day ("lun 21"), longer ranges week by week ("21 sept").
+  const byDay = metrics.range.unit === "day";
+  const period = byDay ? "daily" : "weekly";
+  const columnLabels = metrics.range.buckets.map((bucket) =>
+    format.dateTime(
+      zonedInstant(bucket, 12 * 60, timeZone),
+      byDay ? { weekday: "short", day: "numeric" } : { day: "numeric", month: "short" },
+    ),
   );
   const selectedProject = metrics.projects.find((project) => project.id === metrics.selected);
   const hasData = metrics.total > 0;
@@ -68,8 +74,14 @@ export default async function MetricsPage({ searchParams }: PageProps<"/metrics"
               <p className="panel grain p-5 text-sm text-ink-muted">{t("empty")}</p>
             ) : (
               <>
-                <Card title={t("weekly.title")}>
-                  <WeeklyStack weekLabels={weekLabels} series={metrics.series} />
+                <Card title={t(`${period}.title`)}>
+                  <PeriodStack
+                    labels={columnLabels}
+                    series={metrics.series}
+                    caption={t(`${period}.caption`)}
+                    bucketHeader={t(`${period}.bucket`)}
+                    current={byDay ? metrics.range.buckets.indexOf(zonedDateKey(new Date(), timeZone)) : undefined}
+                  />
                 </Card>
 
                 <div className="grid gap-6 lg:grid-cols-2">
