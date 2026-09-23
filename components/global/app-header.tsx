@@ -1,8 +1,8 @@
 import { LogOut } from "lucide-react";
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 import { Avatar } from "@/components/common/avatar";
+import { AppNav, type NavLink } from "@/components/global/app-nav";
 import { signOut } from "@/features/auth/actions";
 
 type AppHeaderProps = {
@@ -12,49 +12,39 @@ type AppHeaderProps = {
   isAdmin?: boolean;
 };
 
-const NAV_LINK =
-  "rounded-pill px-3 py-1.5 text-sm text-ink-muted transition-colors duration-150 ease-signature hover:bg-raised hover:text-ink motion-reduce:transition-none";
-
+/** The app chrome: links for this person, plus who's signed in and the way out. */
 export async function AppHeader({ userName, workspaceName, isAdmin = false }: AppHeaderProps) {
   const t = await getTranslations("nav");
 
-  return (
-    <header className="sticky top-3 z-10 mx-auto w-full max-w-5xl px-3">
-      <div className="flex items-center gap-3 rounded-pill bg-surface/80 px-4 py-2 shadow-lg shadow-black/20 backdrop-blur">
-        <Link href="/" className="font-display text-sm font-medium">
-          {t("appName")}
-        </Link>
-        <span className="hidden truncate text-sm text-ink-dim sm:inline">{workspaceName}</span>
+  const links: NavLink[] = [
+    { href: "/", label: t("home") },
+    { href: "/week", label: t("week") },
+    { href: "/metrics", label: t("metrics") },
+    ...(isAdmin ? [{ href: "/admin/members" as const, label: t("admin"), match: "/admin" }] : []),
+    { href: "/settings", label: t("settings") },
+  ];
 
-        <nav aria-label={t("label")} className="ml-auto flex items-center gap-1">
-          <Link href="/week" className={NAV_LINK}>
-            {t("week")}
-          </Link>
-          <Link href="/metrics" className={NAV_LINK}>
-            {t("metrics")}
-          </Link>
-          {isAdmin && (
-            <Link href="/admin/members" className={NAV_LINK}>
-              {t("admin")}
-            </Link>
-          )}
-          <Link href="/settings" className={NAV_LINK}>
-            {t("settings")}
-          </Link>
-          <span className="ml-1">
+  return (
+    <AppNav
+      links={links}
+      workspaceName={workspaceName}
+      actions={
+        <>
+          <span className="flex min-w-0 items-center gap-2">
             <Avatar name={userName} />
+            <span className="truncate text-sm md:hidden">{userName}</span>
           </span>
           <form action={signOut}>
             <button
               type="submit"
               aria-label={t("signOut")}
-              className="flex size-8 items-center justify-center rounded-full text-ink-muted transition-colors duration-150 ease-signature hover:bg-raised hover:text-ink motion-reduce:transition-none"
+              className="flex size-10 items-center justify-center rounded-full text-ink-muted transition-colors duration-150 ease-signature hover:bg-raised hover:text-ink motion-reduce:transition-none"
             >
               <LogOut className="icon size-4" aria-hidden />
             </button>
           </form>
-        </nav>
-      </div>
-    </header>
+        </>
+      }
+    />
   );
 }

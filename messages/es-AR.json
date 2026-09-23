@@ -10,6 +10,10 @@
   "nav": {
     "appName": "Horas",
     "label": "Navegación principal",
+    "home": "Inicio",
+    "menu": "Menú",
+    "openMenu": "Abrir el menú",
+    "closeMenu": "Cerrar el menú",
     "week": "Semana",
     "metrics": "Métricas",
     "admin": "Admin",
