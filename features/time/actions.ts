@@ -3,7 +3,7 @@
 import { refresh } from "next/cache";
 
 import { startTimerSchema } from "@/features/time/schema";
-import { startTimer, stopTimer } from "@/features/time/timer";
+import { finishTimer, pauseTimer, resumeTimer, startTimer } from "@/features/time/timer";
 import { requireMember } from "@/lib/dal";
 import { prisma } from "@/lib/db";
 import type { ActionResult } from "@/lib/form";
@@ -28,9 +28,23 @@ export async function startTimerAction(projectId: string, description: string): 
   return result.ok ? { ok: true } : { error: result.reason };
 }
 
-export async function stopTimerAction(): Promise<ActionResult> {
+export async function pauseTimerAction(): Promise<ActionResult> {
   const { user } = await requireMember();
-  await stopTimer(prisma, { userId: user.id, now: new Date() });
+  await pauseTimer(prisma, { userId: user.id, now: new Date() });
+  refresh();
+  return { ok: true };
+}
+
+export async function resumeTimerAction(): Promise<ActionResult> {
+  const { user, workspace } = await requireMember();
+  const result = await resumeTimer(prisma, { userId: user.id, workspaceId: workspace.id, now: new Date() });
+  refresh();
+  return result.ok ? { ok: true } : { error: result.reason };
+}
+
+export async function finishTimerAction(): Promise<ActionResult> {
+  const { user } = await requireMember();
+  await finishTimer(prisma, { userId: user.id, now: new Date() });
   refresh();
   return { ok: true };
 }

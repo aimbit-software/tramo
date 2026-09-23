@@ -204,7 +204,7 @@ export function DateField({
           }}
           // Undo the browser's popover defaults (centered, bordered, scrolling)
           // for our own panel; top/left are set by useAnchoredPopover.
-          className="panel menu-pop fixed inset-auto m-0 w-80 max-w-[calc(100vw-1rem)] overflow-visible border-0 p-4 text-ink shadow-lg shadow-black/25"
+          className="panel menu-pop fixed inset-auto m-0 w-80 max-w-[calc(100vw-1rem)] overflow-visible p-4 text-ink float-edge"
         >
           <div className="flex items-center justify-between gap-1">
             <button

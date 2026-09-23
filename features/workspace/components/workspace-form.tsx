@@ -55,7 +55,7 @@ export function WorkspaceForm({ name }: { name: string }) {
         <button
           type="submit"
           aria-disabled={pending}
-          className="rounded-tile bg-accent px-4 py-2.5 font-display text-sm font-medium text-on-accent transition-opacity duration-150 ease-signature hover:opacity-90 aria-disabled:cursor-wait aria-disabled:opacity-60 motion-reduce:transition-none"
+          className="rounded-tile bg-accent pressable px-4 py-2.5 font-display text-sm font-medium text-on-accent duration-150 ease-signature hover:opacity-90 aria-disabled:cursor-wait aria-disabled:opacity-60 motion-reduce:transition-none"
         >
           {pending ? t("saving") : t("save")}
         </button>

@@ -35,7 +35,7 @@ export async function EntryRow({ entry, showDay = false, projects, suggestions, 
     <li className="flex items-center gap-3 py-2.5 pr-2 pl-4 not-first:hairline-t">
       <span
         aria-hidden
-        className="size-2.5 flex-none rounded-full"
+        className="size-2.5 flex-none"
         style={{ backgroundColor: `var(--color-project-${entry.project.color})` }}
       />
       <div className="flex min-w-0 flex-1 flex-col">

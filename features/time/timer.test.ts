@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import { recentDescriptions, startTimer, stopTimer } from "@/features/time/timer";
+import { finishTimer, pauseTimer, recentDescriptions, resumeTimer, startTimer } from "@/features/time/timer";
 import { createTestDb, createUser, type TestDb } from "@/lib/testing/db";
 
 let db: TestDb;
@@ -109,19 +109,101 @@ describe("startTimer", () => {
   });
 });
 
-describe("stopTimer", () => {
-  it("closes the running entry", async () => {
-    await startTimer(db.prisma, { userId, workspaceId, projectId: projectA, description: "", now: at("2026-09-23T12:00:00Z") });
+const session = () => db.prisma.timerSession.findUnique({ where: { userId } });
+const start = (projectId: string, description: string, iso: string) =>
+  startTimer(db.prisma, { userId, workspaceId, projectId, description, now: at(iso) });
 
-    await stopTimer(db.prisma, { userId, now: at("2026-09-23T13:15:00Z") });
+describe("the timer's session", () => {
+  it("starts a task with nothing done yet", async () => {
+    await start(projectA, "Landing", "2026-09-23T12:00:00Z");
+
+    expect(await session()).toMatchObject({ projectId: projectA, description: "Landing", doneSeconds: 0, pausedAt: null });
+  });
+
+  it("pauses: closes the running block and keeps what it added up", async () => {
+    await start(projectA, "Landing", "2026-09-23T12:00:00Z");
+
+    expect(await pauseTimer(db.prisma, { userId, now: at("2026-09-23T12:15:30Z") })).toEqual({ ok: true });
 
     expect(await running()).toBeNull();
+    expect(await session()).toMatchObject({ doneSeconds: 930, pausedAt: at("2026-09-23T12:15:30Z") });
+  });
+
+  it("resumes the same task in a new block, and keeps adding up", async () => {
+    await start(projectA, "Landing", "2026-09-23T12:00:00Z");
+    await pauseTimer(db.prisma, { userId, now: at("2026-09-23T12:10:00Z") });
+
+    expect(await resumeTimer(db.prisma, { userId, workspaceId, now: at("2026-09-23T12:30:00Z") })).toEqual({ ok: true });
+    await pauseTimer(db.prisma, { userId, now: at("2026-09-23T12:35:00Z") });
+
+    const blocks = await db.prisma.timeEntry.findMany({ where: { userId }, orderBy: { startedAt: "asc" } });
+    expect(blocks.map((block) => [block.projectId, block.description])).toEqual([
+      [projectA, "Landing"],
+      [projectA, "Landing"],
+    ]);
+    expect(await session()).toMatchObject({ doneSeconds: 900 });
+  });
+
+  it("finishes: closes the running block and forgets the task", async () => {
+    await start(projectA, "Landing", "2026-09-23T12:00:00Z");
+
+    expect(await finishTimer(db.prisma, { userId, now: at("2026-09-23T13:15:00Z") })).toEqual({ ok: true });
+
+    expect(await running()).toBeNull();
+    expect(await session()).toBeNull();
     const entry = await db.prisma.timeEntry.findFirstOrThrow({ where: { userId } });
     expect(entry.endedAt).toEqual(at("2026-09-23T13:15:00Z"));
   });
 
-  it("is a no-op without a running timer", async () => {
-    expect(await stopTimer(db.prisma, { userId, now: at("2026-09-23T12:00:00Z") })).toEqual({ ok: true });
+  it("finishes a paused task too", async () => {
+    await start(projectA, "Landing", "2026-09-23T12:00:00Z");
+    await pauseTimer(db.prisma, { userId, now: at("2026-09-23T12:10:00Z") });
+
+    await finishTimer(db.prisma, { userId, now: at("2026-09-23T12:20:00Z") });
+
+    expect(await session()).toBeNull();
+    expect(await db.prisma.timeEntry.count({ where: { userId } })).toBe(1);
+  });
+
+  it("starts over when a different task starts", async () => {
+    await start(projectA, "Landing", "2026-09-23T12:00:00Z");
+    await pauseTimer(db.prisma, { userId, now: at("2026-09-23T12:10:00Z") });
+
+    await start(projectB, "Deploy", "2026-09-23T12:20:00Z");
+
+    expect(await session()).toMatchObject({ projectId: projectB, description: "Deploy", doneSeconds: 0, pausedAt: null });
+  });
+
+  it("can't resume what isn't paused, and can't resume where the person no longer tracks", async () => {
+    expect(await resumeTimer(db.prisma, { userId, workspaceId, now: at("2026-09-23T12:00:00Z") })).toEqual({
+      ok: false,
+      reason: "nothingPaused",
+    });
+
+    await start(projectA, "Landing", "2026-09-23T12:00:00Z");
+    await pauseTimer(db.prisma, { userId, now: at("2026-09-23T12:10:00Z") });
+    await db.prisma.projectMember.update({
+      where: { projectId_userId: { projectId: projectA, userId } },
+      data: { role: "VIEWER" },
+    });
+
+    expect(await resumeTimer(db.prisma, { userId, workspaceId, now: at("2026-09-23T12:20:00Z") })).toEqual({
+      ok: false,
+      reason: "cannotTrack",
+    });
+  });
+
+  it("takes a double click on pause, resume or finish in stride", async () => {
+    await start(projectA, "Landing", "2026-09-23T12:00:00Z");
+    await pauseTimer(db.prisma, { userId, now: at("2026-09-23T12:10:00Z") });
+    await pauseTimer(db.prisma, { userId, now: at("2026-09-23T12:10:01Z") });
+    await resumeTimer(db.prisma, { userId, workspaceId, now: at("2026-09-23T12:11:00Z") });
+    await resumeTimer(db.prisma, { userId, workspaceId, now: at("2026-09-23T12:11:01Z") });
+
+    expect(await db.prisma.timeEntry.count({ where: { userId } })).toBe(2);
+    expect(await session()).toMatchObject({ doneSeconds: 600, pausedAt: null });
+    expect(await finishTimer(db.prisma, { userId, now: at("2026-09-23T12:12:00Z") })).toEqual({ ok: true });
+    expect(await finishTimer(db.prisma, { userId, now: at("2026-09-23T12:12:01Z") })).toEqual({ ok: true });
   });
 });
 

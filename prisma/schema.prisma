@@ -43,6 +43,7 @@ model User {
   projectMemberships ProjectMember[]
   timeEntries        TimeEntry[]
   invitationsSent    Invitation[]      @relation("InvitedBy")
+  timerSession       TimerSession?
 }
 
 model Session {
@@ -192,9 +193,10 @@ model Project {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  members     ProjectMember[]
-  invitations InvitationProject[]
-  timeEntries TimeEntry[]
+  members       ProjectMember[]
+  invitations   InvitationProject[]
+  timeEntries   TimeEntry[]
+  timerSessions TimerSession[]
 
   @@unique([workspaceId, name])
   @@index([workspaceId, archivedAt])
@@ -246,4 +248,24 @@ model TimeEntry {
   @@unique([userId], where: raw("\"endedAt\" IS NULL"), map: "TimeEntry_one_running_per_user")
   @@index([userId, startedAt])
   @@index([projectId, startedAt])
+}
+
+// The timer's task across pauses: one per person. Pausing closes the running
+// block, as always; the session remembers the task and the seconds its blocks
+// already added up, so the clock resumes from there instead of from zero,
+// until the person finishes the task. The blocks remain the truth for every
+// total and metric: this only drives the clock.
+model TimerSession {
+  userId      String    @id
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectId   String
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  description String    @default("")
+  // Seconds from the blocks this task already closed.
+  doneSeconds Int       @default(0)
+  // Set while paused: when the last block closed.
+  pausedAt    DateTime? @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt
+
+  @@index([projectId])
 }

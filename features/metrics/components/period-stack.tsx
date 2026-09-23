@@ -25,7 +25,7 @@ const WIDTH = 640;
 const HEIGHT = 240;
 const PAD = { top: 20, right: 12, bottom: 28, left: 44 };
 const GAP = 2; // the surface gap between stacked segments
-const RADIUS = 4;
+const RADIUS = 0; // square data-ends: the brutalist system has no round corners
 
 const fill = (color: string | null) => (color ? `var(--color-project-${color})` : "var(--color-ink-dim)");
 
@@ -79,7 +79,7 @@ export function PeriodStack({ labels: columnLabels, series: rawSeries, caption, 
       <ul className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-ink-muted">
         {series.map((item) => (
           <li key={item.key} className="flex items-center gap-1.5">
-            <span aria-hidden className="size-2.5 rounded-[3px]" style={{ backgroundColor: fill(item.color) }} />
+            <span aria-hidden className="size-2.5" style={{ backgroundColor: fill(item.color) }} />
             {item.name}
           </li>
         ))}
@@ -142,7 +142,6 @@ export function PeriodStack({ labels: columnLabels, series: rawSeries, caption, 
                   y={PAD.top - 4}
                   width={highlight}
                   height={plotHeight + 8}
-                  rx={6}
                   fill="var(--color-ink)"
                   fillOpacity={active === index ? 0.05 : 0}
                   stroke="transparent"
@@ -193,7 +192,7 @@ export function PeriodStack({ labels: columnLabels, series: rawSeries, caption, 
         {active !== null && (
           <div
             role="status"
-            className="menu-pop pointer-events-none absolute top-0 z-10 w-52 rounded-tile bg-raised p-3 text-xs shadow-lg shadow-black/25"
+            className="menu-pop pointer-events-none absolute top-0 z-10 w-52 rounded-tile bg-raised p-3 text-xs float-edge"
             style={{
               left: `clamp(0px, calc(${(((PAD.left + band * active + band / 2) / WIDTH) * 100).toFixed(2)}% - 6.5rem), calc(100% - 13rem))`,
             }}
@@ -205,7 +204,7 @@ export function PeriodStack({ labels: columnLabels, series: rawSeries, caption, 
                 .reverse()
                 .map((item) => (
                   <li key={item.key} className="flex items-center gap-2 text-ink-muted">
-                    <span aria-hidden className="size-2 flex-none rounded-[2px]" style={{ backgroundColor: fill(item.color) }} />
+                    <span aria-hidden className="size-2 flex-none" style={{ backgroundColor: fill(item.color) }} />
                     <span className="min-w-0 flex-1 truncate">{item.name}</span>
                     <span className="digits text-ink">{formatHours(item.values[active] ?? 0)}</span>
                   </li>

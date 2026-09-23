@@ -1,14 +1,14 @@
 {
   "app": {
-    "name": "Horas",
-    "description": "Registro de horas por proyecto, simple y ordenado."
+    "name": "Tramo",
+    "description": "Tu trabajo, tramo a tramo: las horas de cada proyecto, simples y ordenadas."
   },
   "common": {
     "cancel": "Cancelar",
     "processing": "Procesando…"
   },
   "nav": {
-    "appName": "Horas",
+    "appName": "Tramo",
     "label": "Navegación principal",
     "home": "Inicio",
     "menu": "Menú",
@@ -184,8 +184,8 @@
     }
   },
   "signIn": {
-    "title": "Horas",
-    "subtitle": "Registrá en qué se va el tiempo de cada proyecto.",
+    "title": "Tramo",
+    "subtitle": "Tu trabajo, tramo a tramo. Registrá en qué se va el tiempo de cada proyecto.",
     "continueWithGoogle": "Continuar con Google",
     "redirecting": "Redirigiendo…",
     "errors": {
@@ -273,7 +273,7 @@
     "total": "Total",
     "project": "Proyecto",
     "caption": "Horas por proyecto y por día, semana del {week}",
-    "blocks": "Registros",
+    "blocks": "Tramos",
     "empty": "No hay horas registradas en esta semana.",
     "whose": "De quién es la semana",
     "mine": "Mías",
@@ -281,7 +281,7 @@
     "teamTotal": "Total del equipo",
     "person": "Persona",
     "teamCaption": "Horas por persona y por día, semana del {week}",
-    "teamBlocks": "Registros del equipo",
+    "teamBlocks": "Tramos del equipo",
     "teamEmpty": "Nadie registró horas en esta semana."
   },
   "observer": {
@@ -307,7 +307,7 @@
   "entries": {
     "add": "Agregar horas",
     "addTitle": "Agregar horas",
-    "editTitle": "Editar registro",
+    "editTitle": "Editar tramo",
     "project": "Proyecto",
     "description": "Tarea",
     "descriptionPlaceholder": "¿En qué trabajaste?",
@@ -326,7 +326,7 @@
     "saving": "Guardando…",
     "editLabel": "Editar {entry}",
     "deleteLabel": "Borrar {entry}",
-    "deleteTitle": "¿Borrar este registro?",
+    "deleteTitle": "¿Borrar este tramo?",
     "deleteBody": "Se borra {entry} y sus horas dejan de contar en las métricas. No se puede deshacer.",
     "deleteConfirm": "Borrar",
     "errors": {
@@ -337,11 +337,11 @@
       "tooShort": "El bloque tiene que durar al menos un minuto.",
       "tooLong": "Un bloque puede durar hasta 24 horas.",
       "future": "No se pueden cargar horas en el futuro.",
-      "overlap": "Se superpone con otro registro tuyo. Revisá los horarios.",
+      "overlap": "Se superpone con otro tramo tuyo. Revisá los horarios.",
       "cannotTrack": "No podés registrar horas en ese proyecto.",
-      "forbidden": "Solo podés editar tus propios registros.",
-      "running": "Ese registro está corriendo. Pausalo desde el timer para editarlo.",
-      "notFound": "Ese registro ya no existe. Recargá la página.",
+      "forbidden": "Solo podés editar tus propios tramos.",
+      "running": "Ese tramo está corriendo. Pausalo desde el timer para editarlo.",
+      "notFound": "Ese tramo ya no existe. Recargá la página.",
       "generic": "Algo salió mal. Probá de nuevo."
     }
   },
@@ -353,7 +353,6 @@
     "elapsed": "Tiempo transcurrido",
     "idle": "Elegí un proyecto y dale play.",
     "start": "Iniciar el timer",
-    "stop": "Pausar el timer",
     "switch": "Cambiar el timer a esta tarea",
     "popOut": "Abrir el timer en una ventana flotante",
     "closePopOut": "Cerrar la ventana flotante",
@@ -367,10 +366,10 @@
       "title": "¿Te olvidaste el timer?",
       "body": "Lleva {hours, plural, one {# hora} other {# horas}} corriendo en {project}.",
       "keep": "Sigo trabajando",
-      "stop": "Pararlo ahora"
+      "stop": "Terminarla ahora"
     },
     "recent": {
-      "title": "Últimos registros",
+      "title": "Últimos tramos",
       "empty": "Todavía no registraste horas. Elegí un proyecto y dale play.",
       "noDescription": "Sin descripción",
       "edited": "editado",
@@ -381,7 +380,17 @@
       "cannotTrack": "No podés registrar horas en ese proyecto.",
       "conflict": "Se inició otro timer al mismo tiempo en otro dispositivo. Ya actualizamos la pantalla.",
       "invalid": "Revisá el proyecto y la descripción.",
-      "generic": "Algo salió mal. Probá de nuevo."
+      "generic": "Algo salió mal. Probá de nuevo.",
+      "nothingPaused": "No hay ninguna tarea en pausa. Recargá la página."
+    },
+    "pause": "Pausar",
+    "resume": "Reanudar",
+    "finish": "Terminar la tarea",
+    "paused": "En pausa",
+    "units": {
+      "hours": "Horas",
+      "minutes": "Minutos",
+      "seconds": "Segundos"
     }
   },
   "settings": {
@@ -404,7 +413,7 @@
   },
   "help": {
     "button": "Ayuda",
-    "title": "Cómo se usa Horas",
+    "title": "Cómo se usa Tramo",
     "intro": "Un tour corto te muestra qué tocar en cada pantalla. Podés saltearlo cuando quieras y retomarlo desde acá, donde lo dejaste.",
     "steps": "Qué vas a ver",
     "leftHere": "Lo dejaste acá",
@@ -439,15 +448,15 @@
       },
       "timer": {
         "title": "Elegí, escribí y dale play",
-        "body": "Elegí el proyecto, escribí en qué vas a trabajar y tocá play. Lo pausás y lo retomás cuando quieras; sigue corriendo aunque cierres la pestaña."
+        "body": "Elegí el proyecto, escribí en qué vas a trabajar y dale play. Pausalo y reanudalo cuando quieras: el reloj sigue desde donde quedó. Con el cuadrado terminás la tarea."
       },
       "popOut": {
         "title": "El reloj, siempre a la vista",
         "body": "Abrilo en una ventanita que queda arriba de todo, para pausarlo sin volver a esta pestaña. Funciona en Chrome y Edge de escritorio."
       },
       "recent": {
-        "title": "Tus últimos registros",
-        "body": "Acá quedan tus bloques de trabajo. Con el lápiz corregís uno; con el tacho lo borrás."
+        "title": "Tus últimos tramos",
+        "body": "Acá quedan tus tramos de trabajo. Con el lápiz corregís uno; con el tacho lo borrás."
       },
       "weekAdd": {
         "title": "¿Te olvidaste de darle play?",

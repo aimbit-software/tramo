@@ -18,7 +18,7 @@ export default async function Loading() {
             <Skeleton className="h-9 w-40" />
             <Skeleton className="h-3.5 w-48" />
           </div>
-          <Skeleton className="ml-auto size-14 rounded-full" />
+          <Skeleton className="ml-auto size-14" />
         </div>
       </section>
       <div className="flex flex-col gap-3">

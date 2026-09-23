@@ -32,7 +32,7 @@ export async function WeekView({ data, timeZone, tabs }: { data: WeekData; timeZ
 
       <section className="panel-accent flex items-center justify-between p-5">
         <h2 className="text-sm text-ink-muted">{t("total")}</h2>
-        <span className="digits text-2xl text-accent">{formatHours(buckets.total)}</span>
+        <span className="poster text-7xl text-accent">{formatHours(buckets.total)}</span>
       </section>
 
       {entries.length > 0 && (
@@ -70,7 +70,7 @@ export async function WeekView({ data, timeZone, tabs }: { data: WeekData; timeZ
                       <span className="flex items-center gap-2">
                         <span
                           aria-hidden
-                          className="size-2.5 flex-none rounded-full"
+                          className="size-2.5 flex-none"
                           style={{ backgroundColor: `var(--color-project-${project.color})` }}
                         />
                         <span className="truncate">{project.name}</span>

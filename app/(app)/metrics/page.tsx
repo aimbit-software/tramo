@@ -47,7 +47,7 @@ export default async function MetricsPage({ searchParams }: PageProps<"/metrics"
       <RefreshOnFocus />
       <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-10">
         <header className="flex flex-col gap-1">
-          <h1 className="font-display text-2xl font-medium">{t("title")}</h1>
+          <h1 className="poster text-6xl uppercase sm:text-7xl">{t("title")}</h1>
           <p className="text-sm text-ink-muted">{isAdmin ? t("subtitleAdmin") : t("subtitleMember")}</p>
         </header>
 
@@ -62,7 +62,7 @@ export default async function MetricsPage({ searchParams }: PageProps<"/metrics"
               <h2 className="text-sm text-ink-muted">
                 {selectedProject ? t("totalFor", { project: selectedProject.name }) : t("total")}
               </h2>
-              <p className="font-display text-5xl font-medium text-accent">{formatHours(metrics.total)}</p>
+              <p className="poster text-8xl text-accent sm:text-9xl">{formatHours(metrics.total)}</p>
               <p className="text-xs text-ink-dim">
                 {t("summary", { people: metrics.byPerson.length, projects: metrics.byProject.length })}
               </p>

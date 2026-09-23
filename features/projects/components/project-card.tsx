@@ -45,7 +45,7 @@ export function ProjectCard({ project, people, onAssign, onRemove }: ProjectCard
       <header className="flex items-center gap-3">
         <span
           aria-hidden
-          className="size-3 flex-none rounded-full"
+          className="size-3 flex-none"
           style={{ backgroundColor: `var(--color-project-${project.color})` }}
         />
         <h3 className="truncate font-display text-sm font-medium">{project.name}</h3>
@@ -67,7 +67,7 @@ export function ProjectCard({ project, people, onAssign, onRemove }: ProjectCard
                 value={member.role}
                 options={PROJECT_ROLES.map((role) => ({ value: role, label: t(`roles.${role}`) }))}
                 onChange={(role) => onAssign(project.id, member.userId, role)}
-                className="inline-flex flex-none gap-0.5 rounded-[6px] bg-surface p-0.5"
+                className="inline-flex flex-none gap-0.5 bg-surface p-0.5"
                 optionClassName={SEGMENT}
                 renderOption={(option) => option.label}
               />
@@ -75,7 +75,7 @@ export function ProjectCard({ project, people, onAssign, onRemove }: ProjectCard
                 type="button"
                 aria-label={t("card.remove", { name: member.name })}
                 onClick={() => onRemove(project.id, member.userId)}
-                className="flex size-7 flex-none items-center justify-center rounded-full text-ink-dim transition-colors duration-150 ease-signature hover:bg-tile hover:text-ink motion-reduce:transition-none"
+                className="flex size-7 flex-none items-center justify-center text-ink-dim transition-colors duration-150 ease-signature hover:bg-tile hover:text-ink motion-reduce:transition-none"
               >
                 <X className="icon size-4" aria-hidden />
               </button>

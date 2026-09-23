@@ -13,7 +13,7 @@ export function Avatar({ name, size = "md" }: { name: string; size?: keyof typeo
   return (
     <span
       aria-hidden
-      className={`flex flex-none items-center justify-center rounded-full bg-tile font-display ${SIZES[size]}`}
+      className={`flex flex-none items-center justify-center bg-tile font-display ${SIZES[size]}`}
     >
       {initials(name)}
     </span>
