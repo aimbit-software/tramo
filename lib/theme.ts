@@ -14,7 +14,7 @@ export type Palette = (typeof PALETTES)[number];
 export type Mode = (typeof MODES)[number];
 export type Theme = { palette: Palette; mode: Mode };
 
-export const DEFAULT_THEME: Theme = { palette: "salvia", mode: "dark" };
+export const DEFAULT_THEME: Theme = { palette: "lima", mode: "dark" };
 
 export const THEME_COOKIES = { palette: "palette", mode: "mode" } as const;
 

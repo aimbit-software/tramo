@@ -128,7 +128,7 @@ Additions this app needs that Fragua doesn't have:
 
 - The preference is stored in the user's account, so it follows them across devices. It's also mirrored in a cookie so the server renders the right theme with no flash.
 - Theme state lives on `<html>` as `data-palette="salvia|indigo|lima|ambar"` plus `data-theme="dark|light"`. This mirrors Fragua's attribute-plus-pre-hydration-script approach.
-- Default for new users: Salvia, dark.
+- Default for new users: Lima, dark (it was Salvia until the first week of use).
 - The theme picker is itself a custom control: an accessible radio group of swatches.
 
 Token structure mirrors Fragua. All palettes pass WCAG AA (4.5:1) for ink, ink-muted, and ink-dim on surface and raised, for accent on ground and surface, for on-accent on accent, and for warn on surface, in both modes. Neutrals are tinted toward each accent hue, Radix-style.

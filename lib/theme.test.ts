@@ -15,8 +15,8 @@ describe("theme catalog", () => {
     expect(MODES).toEqual(["dark", "light"]);
   });
 
-  it("defaults to salvia in dark mode", () => {
-    expect(DEFAULT_THEME).toEqual({ palette: "salvia", mode: "dark" });
+  it("defaults to lima in dark mode", () => {
+    expect(DEFAULT_THEME).toEqual({ palette: "lima", mode: "dark" });
   });
 });
 
@@ -74,7 +74,7 @@ describe("resolveTheme", () => {
       mode: "dark",
     });
     expect(resolveTheme({ palette: "<script>", mode: "light" })).toEqual({
-      palette: "salvia",
+      palette: "lima",
       mode: "light",
     });
   });

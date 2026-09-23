@@ -27,7 +27,7 @@ test("ignores tampered theme cookies", async ({ page, context, baseURL }) => {
 
   await page.goto("/sign-in");
 
-  await expect(page.locator("html")).toHaveAttribute("data-palette", "salvia");
+  await expect(page.locator("html")).toHaveAttribute("data-palette", "lima");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
 });
 
