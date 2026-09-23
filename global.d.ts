@@ -8,3 +8,23 @@ declare module "next-intl" {
     Messages: typeof messages;
   }
 }
+
+// Document Picture-in-Picture (Chrome/Edge 116+, Firefox 151+), used by the
+// floating timer. Not in TypeScript's DOM lib yet.
+declare global {
+  interface DocumentPictureInPictureOptions {
+    width?: number;
+    height?: number;
+    disallowReturnToOpener?: boolean;
+    preferInitialWindowPlacement?: boolean;
+  }
+
+  interface DocumentPictureInPicture extends EventTarget {
+    readonly window: Window | null;
+    requestWindow(options?: DocumentPictureInPictureOptions): Promise<Window>;
+  }
+
+  interface Window {
+    readonly documentPictureInPicture?: DocumentPictureInPicture;
+  }
+}

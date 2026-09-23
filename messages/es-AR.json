@@ -179,11 +179,42 @@
     "requestAgain": "Pedir acceso",
     "signOut": "Cerrar sesión"
   },
-  "home": {
-    "greeting": "Hola, {name}",
-    "roleAdmin": "Admin",
-    "roleMember": "Miembro",
-    "comingSoon": "Acá va a vivir el timer. Llega en la próxima etapa."
+  "timer": {
+    "title": "Timer",
+    "project": "Proyecto",
+    "description": "¿En qué estás trabajando?",
+    "descriptionPlaceholder": "¿En qué estás trabajando?",
+    "elapsed": "Tiempo transcurrido",
+    "idle": "Elegí un proyecto y dale play.",
+    "start": "Iniciar el timer",
+    "stop": "Pausar el timer",
+    "switch": "Cambiar el timer a esta tarea",
+    "popOut": "Abrir el timer en una ventana flotante",
+    "closePopOut": "Cerrar la ventana flotante",
+    "noProjects": {
+      "title": "Todavía no tenés proyectos para registrar",
+      "member": "Pedile a un admin que te asigne a un proyecto para empezar a registrar horas.",
+      "admin": "Creá un proyecto y asignate para empezar a registrar horas.",
+      "adminCta": "Ir a proyectos"
+    },
+    "forgotten": {
+      "title": "¿Te olvidaste el timer?",
+      "body": "Lleva {hours, plural, one {# hora} other {# horas}} corriendo en {project}.",
+      "keep": "Sigo trabajando",
+      "stop": "Pararlo ahora"
+    },
+    "recent": {
+      "title": "Últimos registros",
+      "empty": "Todavía no registraste horas. Elegí un proyecto y dale play.",
+      "noDescription": "Sin descripción",
+      "edited": "editado"
+    },
+    "errors": {
+      "cannotTrack": "No podés registrar horas en ese proyecto.",
+      "conflict": "Se inició otro timer al mismo tiempo en otro dispositivo. Ya actualizamos la pantalla.",
+      "invalid": "Revisá el proyecto y la descripción.",
+      "generic": "Algo salió mal. Probá de nuevo."
+    }
   },
   "settings": {
     "title": "Ajustes",
