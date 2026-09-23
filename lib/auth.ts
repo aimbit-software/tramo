@@ -29,6 +29,9 @@ export const auth = betterAuth({
       // so pages don't query for it; `input: false` keeps clients from
       // writing it through Better Auth's endpoints.
       timeZone: { type: "string", required: false, input: false },
+      // The saved theme (Settings), so a new device renders it without a flash.
+      palette: { type: "string", required: false, input: false },
+      themeMode: { type: "string", required: false, input: false },
     },
   },
   databaseHooks: {
