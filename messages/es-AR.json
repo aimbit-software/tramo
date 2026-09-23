@@ -11,6 +11,7 @@
     "appName": "Horas",
     "label": "Navegación principal",
     "week": "Semana",
+    "metrics": "Métricas",
     "admin": "Admin",
     "settings": "Ajustes",
     "signOut": "Cerrar sesión"
@@ -179,6 +180,53 @@
     },
     "requestAgain": "Pedir acceso",
     "signOut": "Cerrar sesión"
+  },
+  "metrics": {
+    "title": "Métricas",
+    "subtitleAdmin": "Horas de todo el espacio de trabajo.",
+    "subtitleMember": "Horas de todas las personas en los proyectos donde participás.",
+    "noProjects": "Todavía no participás de ningún proyecto. Cuando un admin te asigne, vas a ver sus métricas acá.",
+    "empty": "No hay horas registradas en este período.",
+    "total": "Total del período",
+    "totalFor": "Total del período en {project}",
+    "summary": "{people, plural, one {# persona} other {# personas}} · {projects, plural, one {# proyecto} other {# proyectos}}",
+    "hours": "Horas",
+    "filters": {
+      "range": "Período",
+      "project": "Proyecto",
+      "allProjects": "Todos los proyectos",
+      "archived": "{name} (archivado)",
+      "ranges": {
+        "week": "Esta semana",
+        "4w": "4 semanas",
+        "12w": "12 semanas"
+      }
+    },
+    "weekly": {
+      "title": "Semana a semana",
+      "caption": "Horas por semana y por proyecto",
+      "week": "Semana",
+      "total": "Total",
+      "other": "Otros",
+      "tick": "{hours} h",
+      "showTable": "Ver como tabla"
+    },
+    "byPerson": {
+      "title": "Horas por persona",
+      "caption": "Horas por persona en el período",
+      "name": "Persona"
+    },
+    "byProject": {
+      "title": "Horas por proyecto",
+      "caption": "Horas por proyecto en el período",
+      "name": "Proyecto"
+    },
+    "tasks": {
+      "title": "Tareas que más tiempo llevan",
+      "caption": "Las tareas con más horas en el período",
+      "name": "Tarea",
+      "empty": "Todavía no hay tareas con descripción en este período."
+    }
   },
   "week": {
     "thisWeek": "Esta semana",

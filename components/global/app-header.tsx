@@ -30,6 +30,9 @@ export async function AppHeader({ userName, workspaceName, isAdmin = false }: Ap
           <Link href="/week" className={NAV_LINK}>
             {t("week")}
           </Link>
+          <Link href="/metrics" className={NAV_LINK}>
+            {t("metrics")}
+          </Link>
           {isAdmin && (
             <Link href="/admin/members" className={NAV_LINK}>
               {t("admin")}
