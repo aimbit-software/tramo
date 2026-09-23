@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 
 import { Dropdown } from "@/components/common/dropdown";
+import { useAnchoredPopover } from "@/components/common/use-anchored-popover";
 import {
   addMonths,
   formatDateInput,
@@ -56,7 +57,6 @@ export function DateField({
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
   const activeCell = useRef<HTMLButtonElement>(null);
-  const calendar = useRef<HTMLDivElement>(null);
 
   const selected = fromIsoDate(value);
   const [text, setText] = useState(selected ? formatDateInput(selected) : "");
@@ -104,39 +104,12 @@ export function DateField({
     activeCell.current?.focus();
   }, [open, focused]);
 
-  // The calendar opens in the TOP LAYER (Popover API), so no ancestor can clip
-  // it: a modal <dialog> gets `overflow: auto` from the browser and used to
-  // cut it off. Being fixed-positioned, it's placed next to the field by hand:
-  // below it, or above when it doesn't fit, and kept inside the viewport.
+  // The calendar opens in the top layer, so a dialog can't clip it.
+  const calendar = useAnchoredPopover<HTMLDivElement>({ open, anchor: root });
+
+  // Opening moves focus into the grid, on the focused day.
   useLayoutEffect(() => {
-    const panel = calendar.current;
-    if (!open || !panel) return;
-
-    function place() {
-      const anchor = root.current?.getBoundingClientRect();
-      if (!anchor || !panel) return;
-      const box = panel.getBoundingClientRect();
-      const margin = 8;
-      let top = anchor.bottom + margin;
-      if (top + box.height > window.innerHeight - margin) {
-        const above = anchor.top - box.height - margin;
-        top = above >= margin ? above : Math.max(margin, window.innerHeight - box.height - margin);
-      }
-      const left = Math.min(Math.max(margin, anchor.left), window.innerWidth - box.width - margin);
-      panel.style.top = `${top}px`;
-      panel.style.left = `${Math.max(margin, left)}px`;
-    }
-
-    panel.showPopover();
-    place();
-    activeCell.current?.focus();
-    window.addEventListener("resize", place);
-    // Capture: any scrolling container (the dialog itself) moves the field.
-    window.addEventListener("scroll", place, true);
-    return () => {
-      window.removeEventListener("resize", place);
-      window.removeEventListener("scroll", place, true);
-    };
+    if (open) activeCell.current?.focus();
   }, [open]);
 
   function onGridKeyDown(event: KeyboardEvent<HTMLDivElement>) {
@@ -218,8 +191,7 @@ export function DateField({
       {open && (
         <div
           ref={calendar}
-          // Manual: opening, closing, Escape and outside clicks stay ours, so
-          // Escape here never closes the modal the field lives in.
+          // Shown and placed by useAnchoredPopover.
           popover="manual"
           role="dialog"
           aria-label={label}
@@ -231,7 +203,7 @@ export function DateField({
             close(true);
           }}
           // Undo the browser's popover defaults (centered, bordered, scrolling)
-          // for our own panel; top/left are set by the layout effect above.
+          // for our own panel; top/left are set by useAnchoredPopover.
           className="panel menu-pop fixed inset-auto m-0 w-80 max-w-[calc(100vw-1rem)] overflow-visible border-0 p-4 text-ink shadow-lg shadow-black/25"
         >
           <div className="flex items-center justify-between gap-1">
