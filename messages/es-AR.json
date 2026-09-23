@@ -19,7 +19,23 @@
   "adminNav": {
     "label": "Administración",
     "members": "Miembros",
-    "projects": "Proyectos"
+    "projects": "Proyectos",
+    "workspace": "Espacio"
+  },
+  "workspace": {
+    "title": "Espacio de trabajo",
+    "subtitle": "El nombre que ven todos arriba, en la barra de navegación.",
+    "name": "Nombre del espacio",
+    "hint": "Por ejemplo, el nombre de tu empresa o equipo.",
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "saved": "Nombre guardado.",
+    "errors": {
+      "nameRequired": "Poné un nombre.",
+      "nameTooLong": "Máximo 60 caracteres.",
+      "notFound": "El espacio ya no existe. Recargá la página.",
+      "generic": "Algo salió mal. Probá de nuevo."
+    }
   },
   "projects": {
     "title": "Proyectos",

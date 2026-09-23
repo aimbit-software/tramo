@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 const ITEMS = [
   { key: "members", href: "/admin/members" },
   { key: "projects", href: "/admin/projects" },
+  { key: "workspace", href: "/admin/workspace" },
 ] as const;
 
 /** Tabs between the admin sections. */
