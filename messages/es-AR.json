@@ -1,0 +1,30 @@
+{
+  "app": {
+    "name": "Horas",
+    "description": "Registro de horas por proyecto, simple y ordenado."
+  },
+  "home": {
+    "eyebrow": "VISTA PREVIA",
+    "title": "¿En qué estás trabajando?",
+    "notice": "Esta pantalla muestra el sistema de diseño y se reemplaza en la próxima etapa.",
+    "mockProject": "Proyecto demo",
+    "mockTask": "Diseño de la landing",
+    "pause": "Pausar timer",
+    "thisWeek": "Esta semana",
+    "weekTotal": "32 h 15 min"
+  },
+  "theme": {
+    "palette": "Paleta",
+    "mode": "Modo",
+    "palettes": {
+      "salvia": "Salvia",
+      "indigo": "Índigo",
+      "lima": "Lima",
+      "ambar": "Ámbar"
+    },
+    "modes": {
+      "dark": "Oscuro",
+      "light": "Claro"
+    }
+  }
+}
