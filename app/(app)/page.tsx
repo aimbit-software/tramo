@@ -3,7 +3,6 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 import { RefreshOnFocus } from "@/components/common/refresh-on-focus";
-import { AppHeader } from "@/components/global/app-header";
 import { RecentEntries } from "@/features/time/components/recent-entries";
 import { TimerBar } from "@/features/time/components/timer-bar";
 import { getTimerPageData } from "@/features/time/queries";
@@ -17,7 +16,6 @@ export default async function HomePage() {
 
   return (
     <>
-      <AppHeader userName={user.name} workspaceName={workspace.name} isAdmin={isAdmin} />
       <RefreshOnFocus />
       <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-10">
         <h1 className="sr-only">{t("title")}</h1>

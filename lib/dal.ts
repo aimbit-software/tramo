@@ -10,8 +10,9 @@ import { prisma } from "@/lib/db";
 
 /**
  * The data access layer: the ONLY place the app reads a session or decides
- * access. Pages call these at the top; never check access in a layout, since
- * layouts don't re-render on client-side navigation.
+ * access. Pages call these at the top; never guard anything in a layout, since
+ * layouts don't re-render on client-side navigation (the (app) layout only
+ * reads the session to draw the header).
  */
 
 /** One session read per request, from the cookie cache. For display only. */

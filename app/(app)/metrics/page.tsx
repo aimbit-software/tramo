@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import { getFormatter, getTranslations } from "next-intl/server";
 
 import { RefreshOnFocus } from "@/components/common/refresh-on-focus";
-import { AppHeader } from "@/components/global/app-header";
 import { BarTable } from "@/features/metrics/components/bar-table";
 import { MetricsFilters } from "@/features/metrics/components/metrics-filters";
 import { PeriodStack } from "@/features/metrics/components/period-stack";
@@ -45,7 +44,6 @@ export default async function MetricsPage({ searchParams }: PageProps<"/metrics"
 
   return (
     <>
-      <AppHeader userName={user.name} workspaceName={workspace.name} isAdmin={isAdmin} />
       <RefreshOnFocus />
       <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-10">
         <header className="flex flex-col gap-1">
