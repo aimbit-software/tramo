@@ -24,12 +24,18 @@ export function LogoMark({ className = "h-10" }: { className?: string }) {
   );
 }
 
-/** The mark and the name, set in the poster face. */
-export function Logo({ name, size = "md" }: { name: string; size?: "md" | "lg" }) {
+const SIZES = {
+  sm: { mark: "h-8", name: "text-2xl", gap: "gap-2" },
+  lg: { mark: "h-16", name: "text-6xl", gap: "gap-3" },
+};
+
+/** The mark and the name, set in the poster face: small in the nav, large on sign-in. */
+export function Logo({ name, size }: { name: string; size: keyof typeof SIZES }) {
+  const { mark, name: nameSize, gap } = SIZES[size];
   return (
-    <span className="inline-flex items-center gap-2.5">
-      <LogoMark className={size === "lg" ? "h-16" : "h-10"} />
-      <span className={`poster uppercase ${size === "lg" ? "text-6xl" : "text-3xl"}`}>{name}</span>
+    <span className={`inline-flex items-center ${gap}`}>
+      <LogoMark className={mark} />
+      <span className={`poster uppercase ${nameSize}`}>{name}</span>
     </span>
   );
 }

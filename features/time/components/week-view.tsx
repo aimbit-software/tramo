@@ -70,7 +70,7 @@ export async function WeekView({ data, timeZone, tabs }: { data: WeekData; timeZ
                       <span className="flex items-center gap-2">
                         <span
                           aria-hidden
-                          className="size-2.5 flex-none"
+                          className="size-2.5 flex-none rounded-full"
                           style={{ backgroundColor: `var(--color-project-${project.color})` }}
                         />
                         <span className="truncate">{project.name}</span>

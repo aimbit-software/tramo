@@ -17,7 +17,7 @@ import type { ActionResult } from "@/lib/form";
 type Role = (typeof WORKSPACE_ROLES)[number];
 
 const PRIMARY =
-  "rounded-tile bg-accent pressable px-3 py-1.5 font-display text-sm font-medium text-on-accent duration-150 ease-signature hover:opacity-90 aria-disabled:cursor-wait aria-disabled:opacity-60 motion-reduce:transition-none";
+  "rounded-tile bg-accent px-3 py-1.5 font-display text-sm font-medium text-on-accent transition-opacity duration-150 ease-signature hover:opacity-90 aria-disabled:cursor-wait aria-disabled:opacity-60 motion-reduce:transition-none";
 const GHOST =
   "rounded-tile px-3 py-1.5 font-display text-sm text-ink-muted transition-colors duration-150 ease-signature hover:bg-raised hover:text-ink aria-disabled:cursor-wait aria-disabled:opacity-60 motion-reduce:transition-none";
 
@@ -110,7 +110,7 @@ export function ActiveMemberActions({
         }
         className="inline-flex gap-1 rounded-tile bg-raised p-1"
         optionClassName={(checked) =>
-          `px-2.5 py-1 text-xs transition-colors duration-150 ease-signature motion-reduce:transition-none ${
+          `rounded-[6px] px-2.5 py-1 text-xs transition-colors duration-150 ease-signature motion-reduce:transition-none ${
             checked ? "bg-tile text-ink" : "text-ink-muted hover:text-ink"
           }`
         }

@@ -30,7 +30,7 @@ export async function ObserverHome({ projects }: { projects: ObservedProject[] }
           <li key={project.id} className="inline-flex items-center gap-1.5 rounded-pill bg-tile px-2.5 py-1 text-xs">
             <span
               aria-hidden
-              className="size-2 flex-none"
+              className="size-2 flex-none rounded-full"
               style={{ backgroundColor: `var(--color-project-${project.color})` }}
             />
             {project.name}
@@ -40,7 +40,7 @@ export async function ObserverHome({ projects }: { projects: ObservedProject[] }
       <div className="flex flex-wrap gap-2">
         <Link
           href="/week"
-          className="rounded-tile bg-accent pressable px-4 py-2.5 font-display text-sm font-medium text-on-accent duration-150 ease-signature hover:opacity-90 motion-reduce:transition-none"
+          className="rounded-tile bg-accent px-4 py-2.5 font-display text-sm font-medium text-on-accent transition-opacity duration-150 ease-signature hover:opacity-90 motion-reduce:transition-none"
         >
           {t("teamWeek")}
         </Link>

@@ -62,9 +62,9 @@ export function ThemeSwitcher({ initial }: { initial: Theme }) {
                 data-palette={option.value}
                 data-theme={theme.mode}
                 aria-hidden
-                className="flex size-6 flex-none items-center justify-center bg-ground"
+                className="flex size-6 flex-none items-center justify-center rounded-full bg-ground"
               >
-                <span className="size-3 bg-accent" />
+                <span className="size-3 rounded-full bg-accent" />
               </span>
               <span>{option.label}</span>
               {checkMark(checked)}
@@ -90,9 +90,9 @@ export function ThemeSwitcher({ initial }: { initial: Theme }) {
                 data-palette={theme.palette}
                 data-theme={option.value}
                 aria-hidden
-                className="flex size-6 flex-none items-center justify-center bg-surface"
+                className="flex size-6 flex-none items-center justify-center rounded-full bg-surface"
               >
-                <span className="size-3 bg-ink" />
+                <span className="size-3 rounded-full bg-ink" />
               </span>
               <span>{option.label}</span>
               {checkMark(checked)}

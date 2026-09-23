@@ -16,18 +16,17 @@
 /* ==========================================================================
    Design tokens
 
-   Ported from Fragua's system and pushed brutalist, for Tramo's identity:
+   Ported from Fragua's system, with its two rules, plus Tramo's own third:
 
-   1. Surfaces step on the elevation ladder (ground → surface → raised →
-      tile) AND show their structure: every corner is square (the radius
-      tokens are 0) and a 1px rule draws each panel, like a plan's grid. What
-      floats or presses gets a hard offset shadow, never a soft one.
-   2. Type does the shouting: Big Shoulders (`poster`), ultra-condensed and
-      heavy, for titles and the big numbers; Plex Mono (`font-display`) for
-      nav, buttons and labels; Plex Sans for reading.
-   3. One accent, used as solid blocks, always through the semantic tokens
+   1. Surfaces are separated by LUMINANCE, never by strokes. Every panel is a
+      step on the elevation ladder (ground → surface → raised → tile). Reach
+      for `border` only when a shape needs an outline (a focus ring).
+   2. One accent, used sparingly, always through the semantic tokens
       (`accent`, `on-accent`). `warn` is a different hue on purpose: accent
       means "look here", warn means "something needs attention".
+   3. The brutalism lives in the type, and only there: Big Shoulders
+      (`poster`) shouts the titles and the big numbers. Shapes stay soft:
+      rounded corners, soft shadows, no rules.
 
    Four palettes × two modes, selected by attributes on <html>:
    data-palette="salvia|indigo|lima|ambar" and data-theme="dark|light".
@@ -57,27 +56,21 @@
   --color-on-accent: #171a0c;
   --color-warn: #ff9a62;
 
-  /* --- Radii -------------------------------------------------------------
-     Every corner is square. The tokens stay, so each component keeps saying
-     what kind of shape it is. */
-  --radius-tile: 0px;
-  --radius-panel: 0px;
-  --radius-pill: 0px;
-
-  /* --- Structure -----------------------------------------------------------
-     The line that draws panels and splits rows, and the edge of hard
-     shadows. Derived from ink, so every palette and mode gets its own. */
-  --color-rule: color-mix(in oklab, var(--color-ink) 22%, transparent);
-  --color-edge: var(--color-ink);
+  /* --- Radii ------------------------------------------------------------- */
+  --radius-tile: 8px;
+  --radius-panel: 16px;
+  --radius-pill: 32px;
 
   /* --- Type ---------------------------------------------------------------
-     Three roles: `poster` (Big Shoulders, ultra-condensed and heavy) for
-     titles, the big numbers and the wordmark; `display` (Plex Mono) for nav,
-     buttons, labels and table numbers; `sans` (Plex Sans) for what you read.
-     See app/layout.tsx. */
+     Two voices. `poster` (Big Shoulders, ultra-condensed and heavy) shouts
+     the titles, the big numbers and the wordmark. Geist speaks the rest:
+     `display` carries nav, buttons, labels and numbers, `sans` what you read.
+     The two roles share the family today; they stay apart so a component
+     says what its text is, and changing a role's face is one line here. See
+     app/layout.tsx. */
   --font-poster: var(--font-big-shoulders), "Arial Narrow", sans-serif;
-  --font-display: var(--font-plex-mono), ui-monospace, monospace;
-  --font-sans: var(--font-plex-sans), system-ui, sans-serif;
+  --font-display: var(--font-geist), system-ui, sans-serif;
+  --font-sans: var(--font-geist), system-ui, sans-serif;
 
   /* --- Motion -------------------------------------------------------------
      The system's single easing curve. `ease-signature` in class names. */
@@ -294,25 +287,28 @@
 }
 
 /* ==========================================================================
-   Surfaces — square, and drawn with a rule
+   Surfaces — borderless by construction
    ========================================================================== */
 
 @utility panel {
   background-color: var(--color-surface);
-  border: 1px solid var(--color-rule);
   border-radius: var(--radius-panel);
 }
 
-/* The headline panel of a page: a flat accent tint drawn in the accent, with
-   a thick bar on its left edge. Derived from the active palette, so every
-   theme gets its own. Pair with nothing: the grain is its first layer. */
+/* Accent-tinted panel, the quiet one. Derived from the active palette, so
+   every theme gets its own tint without new tokens. Pair with nothing: the
+   grain is already its first layer. */
 @utility panel-accent {
-  border: 1px solid color-mix(in oklab, var(--color-accent) 55%, transparent);
-  border-left: 6px solid var(--color-accent);
   border-radius: var(--radius-panel);
-  background-color: color-mix(in oklab, var(--color-accent) 12%, var(--color-surface));
-  background-image: var(--noise);
-  background-size: var(--noise-tile) var(--noise-tile);
+  background-image:
+    var(--noise),
+    linear-gradient(
+      to right,
+      color-mix(in oklab, var(--color-accent) 10%, var(--color-surface)),
+      color-mix(in oklab, var(--color-accent) 16%, var(--color-surface))
+    );
+  background-size: var(--noise-tile) var(--noise-tile), auto;
+  background-repeat: repeat, no-repeat;
 }
 
 /* Floating action bar that follows a long form. */
@@ -320,33 +316,10 @@
   position: sticky;
   bottom: 1.5rem;
   background-color: var(--color-surface);
-  border: 1px solid var(--color-edge);
   border-radius: var(--radius-panel);
-  box-shadow: 4px 4px 0 0 var(--color-edge);
-}
-
-/* What floats over the page (menus, calendars, tooltips, tour cards): an
-   edge and a hard shadow, like a card laid on top. */
-@utility float-edge {
-  border: 1px solid var(--color-edge);
-  box-shadow: 4px 4px 0 0 var(--color-edge);
-}
-
-/* A button that presses: a hard shadow it sinks into when clicked. */
-@utility pressable {
-  box-shadow: 3px 3px 0 0 var(--color-edge);
-  transition-property: translate, box-shadow, opacity;
-  transition-duration: 120ms;
-  transition-timing-function: var(--ease-signature);
-
-  &:active:not([aria-disabled="true"]) {
-    translate: 3px 3px;
-    box-shadow: 0 0 0 0 var(--color-edge);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
+  box-shadow:
+    0 10px 15px -3px --alpha(#000 / 20%),
+    0 4px 6px -4px --alpha(#000 / 20%);
 }
 
 /* The logo's hexagon: Fragua's badge, so the two marks read as one family. A
@@ -366,7 +339,7 @@
   mask-repeat: no-repeat;
 }
 
-/* Icon tile: the small square that carries a glyph. */
+/* Icon tile: the small rounded square that carries a glyph. */
 @utility tile {
   display: inline-flex;
   align-items: center;
@@ -381,13 +354,13 @@
    Details
    ========================================================================== */
 
-/* A 1px rule between rows that costs no layout and no border. */
+/* A 1px rule that costs no layout and no border. */
 @utility hairline-b {
-  box-shadow: 0 1px 0 0 var(--color-rule);
+  box-shadow: 0 1px 0 0 --alpha(var(--color-ink) / 10%);
 }
 
 @utility hairline-t {
-  box-shadow: inset 0 1px 0 0 var(--color-rule);
+  box-shadow: inset 0 1px 0 0 --alpha(var(--color-ink) / 8%);
 }
 
 /* Lucide's default 2px stroke reads chunky on these grounds; the whole system
@@ -397,8 +370,8 @@
   flex: none;
 }
 
-/* Numbers that get compared — tables, durations, chart ticks — sit in mono
-   with tabular figures, so columns align and digits don't jitter. */
+/* Numbers that get compared — tables, durations, chart ticks — sit in
+   tabular figures, so columns align and digits don't jitter. */
 @utility digits {
   font-family: var(--font-display);
   font-variant-numeric: tabular-nums;
@@ -406,7 +379,7 @@
 
 /* Titles and the big numbers, poster-style: ultra-condensed, heavy, tight.
    Big Shoulders has no tabular figures, so a number that ticks gives every
-   digit its own cell (see components/common/numeral.tsx). */
+   digit its own cell (see features/time/components/clock-tiles.tsx). */
 @utility poster {
   font-family: var(--font-poster);
   font-weight: 900;
@@ -457,6 +430,7 @@
   :focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
+    border-radius: 2px;
   }
 
   ::selection {

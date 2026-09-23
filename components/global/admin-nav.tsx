@@ -18,7 +18,7 @@ export async function AdminNav({ current }: { current: (typeof ITEMS)[number]["k
           key={item.key}
           href={item.href}
           aria-current={current === item.key ? "page" : undefined}
-          className="px-3 py-1.5 font-display text-sm text-ink-muted transition-colors duration-150 ease-signature hover:text-ink aria-[current=page]:bg-tile aria-[current=page]:text-ink motion-reduce:transition-none"
+          className="rounded-[6px] px-3 py-1.5 font-display text-sm text-ink-muted transition-colors duration-150 ease-signature hover:text-ink aria-[current=page]:bg-tile aria-[current=page]:text-ink motion-reduce:transition-none"
         >
           {t(item.key)}
         </Link>

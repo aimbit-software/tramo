@@ -34,7 +34,7 @@ function PersonChip({ person, lifted = false }: { person: BoardPerson; lifted?: 
   return (
     <span
       className={`flex items-center gap-2 rounded-pill bg-raised py-1 pr-3 pl-1 text-sm ${
-        lifted ? "float-edge" : ""
+        lifted ? "shadow-lg shadow-black/30" : ""
       }`}
     >
       <Avatar name={person.name} size="sm" />
@@ -195,7 +195,7 @@ export function ProjectsBoard({ projects, people }: { projects: BoardProjectStat
                 <li key={project.id} className="flex items-center gap-3 px-4 py-3 not-first:hairline-t">
                   <span
                     aria-hidden
-                    className="size-3 flex-none opacity-60"
+                    className="size-3 flex-none rounded-full opacity-60"
                     style={{ backgroundColor: `var(--color-project-${project.color})` }}
                   />
                   <span className="min-w-0 flex-1 truncate text-sm text-ink-muted">{project.name}</span>

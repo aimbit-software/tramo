@@ -109,7 +109,7 @@ export default async function MembersPage() {
                       <li key={project.id} className="inline-flex items-center gap-1.5 rounded-pill bg-tile px-2.5 py-1 text-xs">
                         <span
                           aria-hidden
-                          className="size-2 flex-none"
+                          className="size-2 flex-none rounded-full"
                           style={{ backgroundColor: `var(--color-project-${project.color})` }}
                         />
                         {t("invitations.projectAs", { project: project.name, role: tProjectRoles(role) })}

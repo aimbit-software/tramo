@@ -149,7 +149,7 @@ export function Autocomplete({
           id={listId}
           role="listbox"
           aria-label={label}
-          className="menu-pop absolute inset-x-0 top-full z-20 mt-1 max-h-72 overflow-y-auto rounded-tile bg-raised p-1 float-edge"
+          className="menu-pop absolute inset-x-0 top-full z-20 mt-1 max-h-72 overflow-y-auto rounded-tile bg-raised p-1 shadow-lg shadow-black/20"
         >
           {shown.map((suggestion, index) => (
             <li

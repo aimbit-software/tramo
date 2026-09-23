@@ -34,15 +34,15 @@ Follow these rules for every change. They're short on purpose. The reasoning liv
 - **No UI component library** (no shadcn, Radix, MUI…), no `cn()`/clsx, no animation library.
 - **No browser-styled controls.** Native `select`, date/time/number/range/color/file/checkbox/radio inputs, `title` tooltips and `alert/confirm/prompt` are replaced by our own components that follow the WAI-ARIA APG patterns (`components/common/radio-group.tsx` is the reference). Unstyled primitives are fine underneath: `<dialog>`, the Popover API, `button`, text `input`.
 - **Tokens only:**
-  - Use the semantic classes: `bg-ground`/`surface`/`raised`/`tile`, `text-ink`/`ink-muted`/`ink-dim`, `accent`, `on-accent`, `warn`, `border-rule`/`border-edge`. Never raw colors.
+  - Use the semantic classes: `bg-ground`/`surface`/`raised`/`tile`, `text-ink`/`ink-muted`/`ink-dim`, `accent`, `on-accent`, `warn`. Never raw colors.
+  - Surfaces separate by luminance, not borders.
   - `grain` goes on every surface.
-- **Brutalist, on purpose (Tramo's identity):**
-  - Square corners everywhere: the radius tokens are 0. Never add `rounded-full` or arbitrary radii.
-  - `panel` draws a 1px rule; `panel-accent` is the headline panel. Floating things use `float-edge`, primary buttons `pressable` (hard offset shadows, never soft ones).
-  - Type roles: `poster` (Big Shoulders) for titles and big numbers; `font-display` (Plex Mono, often uppercase with `tracking-widest`) for nav, buttons and labels; Plex Sans for reading.
+- **Brutalist type, soft shapes (Tramo's identity):**
+  - The brutalism lives in the type only: `poster` (Big Shoulders) for titles and big numbers. Everything else is Geist: `font-display` for nav, buttons and labels, the body for reading.
+  - Shapes stay soft: the radius tokens, soft shadows, no rules and no hard offset shadows.
   - A number that ticks in the `poster` face goes in fixed `1ch` cells per digit (see `ClockTiles`): the face has no tabular figures.
 - **Themes:** 4 palettes × dark/light, set by `data-palette` and `data-theme` on `<html>` (see `lib/theme.ts`). Any element carrying both attributes renders in that theme.
-- **Numbers** that tick or get compared use the `digits` utility (mono + tabular figures).
+- **Numbers** that tick or get compared use the `digits` utility (tabular figures).
 - **Icons:** lucide-react with the `icon` class. Never hand-tune stroke width, except in the logo mark (`components/global/logo.tsx`), which is a drawing, not an icon.
 - **Motion:** use `ease-signature`, and pair every transition with `motion-reduce:transition-none`.
 

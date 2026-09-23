@@ -135,13 +135,13 @@ export function TourOverlay({ step, index, total, waitForTarget, onNext, onBack,
       <div
         ref={spot}
         aria-hidden
-        className="pointer-events-none fixed outline-2 outline-accent data-[hole=false]:outline-transparent"
+        className="pointer-events-none fixed rounded-[12px] outline-2 outline-accent data-[hole=false]:outline-transparent"
         style={{ boxShadow: "0 0 0 200vmax color-mix(in oklab, var(--color-ground) 72%, transparent)" }}
       />
 
       <div
         ref={card}
-        className="panel grain invisible fixed w-[min(22rem,calc(100vw-2rem))] p-5 float-edge"
+        className="panel grain invisible fixed w-[min(22rem,calc(100vw-2rem))] p-5 shadow-lg shadow-black/30"
       >
         {/* Keyed by step: each new step gently pops in. */}
         <div key={index} className="menu-pop">
@@ -176,7 +176,7 @@ export function TourOverlay({ step, index, total, waitForTarget, onNext, onBack,
               ref={nextButton}
               type="button"
               onClick={onNext}
-              className="rounded-tile bg-accent pressable px-4 py-2 font-display text-sm font-medium text-on-accent duration-150 ease-signature hover:opacity-90 motion-reduce:transition-none"
+              className="rounded-tile bg-accent px-4 py-2 font-display text-sm font-medium text-on-accent transition-opacity duration-150 ease-signature hover:opacity-90 motion-reduce:transition-none"
             >
               {last ? t("done") : t("next")}
             </button>
