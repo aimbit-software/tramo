@@ -56,6 +56,7 @@ export function DateField({
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
   const activeCell = useRef<HTMLButtonElement>(null);
+  const calendar = useRef<HTMLDivElement>(null);
 
   const selected = fromIsoDate(value);
   const [text, setText] = useState(selected ? formatDateInput(selected) : "");
@@ -103,8 +104,39 @@ export function DateField({
     activeCell.current?.focus();
   }, [open, focused]);
 
+  // The calendar opens in the TOP LAYER (Popover API), so no ancestor can clip
+  // it: a modal <dialog> gets `overflow: auto` from the browser and used to
+  // cut it off. Being fixed-positioned, it's placed next to the field by hand:
+  // below it, or above when it doesn't fit, and kept inside the viewport.
   useLayoutEffect(() => {
-    if (open) activeCell.current?.focus();
+    const panel = calendar.current;
+    if (!open || !panel) return;
+
+    function place() {
+      const anchor = root.current?.getBoundingClientRect();
+      if (!anchor || !panel) return;
+      const box = panel.getBoundingClientRect();
+      const margin = 8;
+      let top = anchor.bottom + margin;
+      if (top + box.height > window.innerHeight - margin) {
+        const above = anchor.top - box.height - margin;
+        top = above >= margin ? above : Math.max(margin, window.innerHeight - box.height - margin);
+      }
+      const left = Math.min(Math.max(margin, anchor.left), window.innerWidth - box.width - margin);
+      panel.style.top = `${top}px`;
+      panel.style.left = `${Math.max(margin, left)}px`;
+    }
+
+    panel.showPopover();
+    place();
+    activeCell.current?.focus();
+    window.addEventListener("resize", place);
+    // Capture: any scrolling container (the dialog itself) moves the field.
+    window.addEventListener("scroll", place, true);
+    return () => {
+      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", place, true);
+    };
   }, [open]);
 
   function onGridKeyDown(event: KeyboardEvent<HTMLDivElement>) {
@@ -185,16 +217,22 @@ export function DateField({
 
       {open && (
         <div
+          ref={calendar}
+          // Manual: opening, closing, Escape and outside clicks stay ours, so
+          // Escape here never closes the modal the field lives in.
+          popover="manual"
           role="dialog"
           aria-label={label}
-          // Escape closes from anywhere in the dialog. The guard is for the
+          // Escape closes from anywhere in the calendar. The guard is for the
           // month and year dropdowns, which handle their own Escape first.
           onKeyDown={(event) => {
             if (event.key !== "Escape" || event.defaultPrevented) return;
             event.preventDefault();
             close(true);
           }}
-          className="panel menu-pop absolute top-full left-0 z-30 mt-2 w-80 p-4 shadow-lg shadow-black/20"
+          // Undo the browser's popover defaults (centered, bordered, scrolling)
+          // for our own panel; top/left are set by the layout effect above.
+          className="panel menu-pop fixed inset-auto m-0 w-80 max-w-[calc(100vw-1rem)] overflow-visible border-0 p-4 text-ink shadow-lg shadow-black/25"
         >
           <div className="flex items-center justify-between gap-1">
             <button
