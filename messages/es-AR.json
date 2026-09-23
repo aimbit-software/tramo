@@ -18,7 +18,8 @@
     "metrics": "Métricas",
     "admin": "Admin",
     "settings": "Ajustes",
-    "signOut": "Cerrar sesión"
+    "signOut": "Cerrar sesión",
+    "loading": "Cargando…"
   },
   "adminNav": {
     "label": "Administración",

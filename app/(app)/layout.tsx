@@ -1,6 +1,7 @@
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 
 import { AppHeader } from "@/components/global/app-header";
+import { NavigationProgress } from "@/components/global/navigation-progress";
 import { isAdmin } from "@/lib/access/permissions";
 import { getAccess } from "@/lib/dal";
 
@@ -20,6 +21,10 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
 
   return (
     <>
+      {/* It reads the URL's search params, which want a Suspense boundary. */}
+      <Suspense fallback={null}>
+        <NavigationProgress />
+      </Suspense>
       <AppHeader userName={access.user.name} workspaceName={member.workspace.name} isAdmin={isAdmin(member)} />
       {children}
     </>

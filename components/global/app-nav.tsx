@@ -2,7 +2,7 @@
 
 import { Menu, X } from "lucide-react";
 import type { Route } from "next";
-import Link from "next/link";
+import Link, { useLinkStatus } from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useRef, useState, type PointerEvent, type ReactNode } from "react";
@@ -19,6 +19,25 @@ export type NavLink = {
 const DRAG_START = 8;
 const CLOSE_SHARE = 0.3;
 const CLOSE_SPEED = 0.5;
+
+/**
+ * A desktop link's text and its dot: lit for the current page, and pulsing on
+ * the link being opened, from the click until the page arrives.
+ */
+function NavLinkLabel({ label, active }: { label: string; active: boolean }) {
+  const { pending } = useLinkStatus();
+  return (
+    <>
+      {label}
+      <span
+        aria-hidden
+        className={`absolute bottom-0.5 left-1/2 size-1 -translate-x-1/2 rounded-full bg-accent transition-opacity motion-reduce:transition-none ${
+          pending ? "animate-pulse opacity-100 motion-reduce:animate-none" : active ? "opacity-100" : "opacity-0"
+        }`}
+      />
+    </>
+  );
+}
 
 type AppNavProps = {
   links: NavLink[];
@@ -147,11 +166,11 @@ export function AppNav({ links, workspaceName, actions }: AppNavProps) {
                   aria-current={active ? "page" : undefined}
                   onMouseEnter={(event) => highlightLink(event.currentTarget)}
                   onFocus={(event) => highlightLink(event.currentTarget)}
-                  className={`relative block px-3 py-2 font-display text-sm transition-colors duration-150 ease-signature group-hover/nav:text-ink-dim hover:text-ink! focus-visible:text-ink! after:absolute after:bottom-0.5 after:left-1/2 after:size-1 after:-translate-x-1/2 after:rounded-full after:bg-accent after:transition-opacity motion-reduce:transition-none ${
-                    active ? "text-ink after:opacity-100" : "text-ink-muted after:opacity-0"
+                  className={`relative block px-3 py-2 font-display text-sm transition-colors duration-150 ease-signature group-hover/nav:text-ink-dim hover:text-ink! focus-visible:text-ink! motion-reduce:transition-none ${
+                    active ? "text-ink" : "text-ink-muted"
                   }`}
                 >
-                  {link.label}
+                  <NavLinkLabel label={link.label} active={active} />
                 </Link>
               </li>
             );
