@@ -41,6 +41,7 @@ Follow these rules for every change. They're short on purpose. The reasoning liv
   - The brutalism lives in the type only: `poster` (Big Shoulders) for titles and big numbers. Everything else is Geist: `font-display` for nav, buttons and labels, the body for reading.
   - Shapes stay soft: the radius tokens, soft shadows, no rules and no hard offset shadows.
   - A number that ticks in the `poster` face goes in fixed `1ch` cells per digit (see `ClockTiles`): the face has no tabular figures.
+  - The timer's buttons wear the logo's hexagon (`components/common/hex-button.tsx`). It's drawn, not masked, so its focus ring still shows.
 - **Themes:** 4 palettes × dark/light, set by `data-palette` and `data-theme` on `<html>` (see `lib/theme.ts`). Any element carrying both attributes renders in that theme.
 - **Numbers** that tick or get compared use the `digits` utility (tabular figures).
 - **Icons:** lucide-react with the `icon` class. Never hand-tune stroke width, except in the logo mark (`components/global/logo.tsx`), which is a drawing, not an icon.
