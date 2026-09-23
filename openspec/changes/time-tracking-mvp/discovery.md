@@ -194,7 +194,7 @@ These override any recommendation in `exploration.md` that conflicts with them.
 ## Brand and look (decided 2026-09-24)
 
 - **Name: Tramo.** Tagline: *Tu trabajo, tramo a tramo.* Each block of work is a *tramo*, and the UI calls them so. Chosen from four candidates (Temple, Tramo, Destajo, Concreto); Lapso and Gnomon were dropped because time-tracking apps already use them.
-- **Logo:** Lucide's hourglass inside Lucide's hexagon, on a solid block of the theme's accent, so it changes with the palette. The favicon is the same drawing per theme (`/brand-icon/<palette>-<mode>`), and follows the theme live.
+- **Logo:** Lucide's hourglass on a hexagon of the theme's accent, so it changes with the palette. The hexagon is Fragua's badge (pointy-top, corner fillets of r = 0.32 R), at the owner's request, so the two marks read as one family; the hourglass takes `on-accent`, since white would vanish on a light accent like Lima's. The favicon is the same drawing per theme (`/brand-icon/<palette>-<mode>`, versioned so a new drawing beats a year of caching), and follows the theme live.
 - **Brutalist direction** (owner's request, with award-winning references: the Awwwards brutalism collection and its honorable mentions such as *Brutalism* by MAGWAI and *Brutally Human* by BeCurious; Gumroad's neo-brutalist redesign as the product-UI reference; NN/g's guidance on keeping neobrutalism usable):
   - square corners everywhere, a visible 1px rule on every panel, hard offset shadows on what floats or presses;
   - poster numbers: Big Shoulders (ultra-condensed, heavy) for titles and the big numbers, after the owner's reference of number posters; Plex Mono for labels and buttons, Plex Sans for reading;

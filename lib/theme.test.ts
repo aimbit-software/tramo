@@ -4,6 +4,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 import {
+  BRAND_ICON_VERSION,
   brandIconHref,
   DEFAULT_THEME,
   MODES,
@@ -106,7 +107,7 @@ describe("THEME_ACCENTS", () => {
 });
 
 describe("brandIconHref", () => {
-  it("points at the favicon drawn for the theme", () => {
-    expect(brandIconHref({ palette: "lima", mode: "dark" })).toBe("/brand-icon/lima-dark");
+  it("points at the favicon drawn for the theme, versioned so a new drawing beats the cache", () => {
+    expect(brandIconHref({ palette: "lima", mode: "dark" })).toBe(`/brand-icon/lima-dark?v=${BRAND_ICON_VERSION}`);
   });
 });

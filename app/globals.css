@@ -349,6 +349,23 @@
   }
 }
 
+/* The logo's hexagon: Fragua's badge, so the two marks read as one family. A
+   regular pointy-top hexagon with circular corner fillets of r = 0.32 R, in a
+   viewBox that is the rounded shape's exact bounds, so `contain` fills the box
+   edge to edge and `aspect-ratio` keeps it honest. Masked over currentColor,
+   so `text-accent` paints it in every theme. The favicon draws the same path
+   (lib/brand-icon.ts); a test keeps them equal. */
+@utility logo-badge {
+  display: inline-grid;
+  place-items: center;
+  aspect-ratio: 86.6 / 95.05;
+  background-color: currentColor;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 86.60 95.05'%3E%3Cpath d='M35.30 2.14A16 16 0 0 1 51.30 2.14L78.60 17.91A16 16 0 0 1 86.60 31.76L86.60 63.29A16 16 0 0 1 78.60 77.14L51.30 92.91A16 16 0 0 1 35.30 92.91L8.00 77.14A16 16 0 0 1 -0.00 63.29L0.00 31.76A16 16 0 0 1 8.00 17.91Z'/%3E%3C/svg%3E");
+  mask-size: contain;
+  mask-position: center;
+  mask-repeat: no-repeat;
+}
+
 /* Icon tile: the small square that carries a glyph. */
 @utility tile {
   display: inline-flex;

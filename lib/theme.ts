@@ -29,9 +29,15 @@ export const THEME_ACCENTS: Record<Palette, Record<Mode, { accent: string; onAcc
   ambar: { dark: { accent: "#ffb547", onAccent: "#1c1405" }, light: { accent: "#95560a", onAccent: "#ffffff" } },
 };
 
+/**
+ * Bump when the favicon's drawing changes. Browsers keep it for a year (it's
+ * served as immutable), so only a new URL makes them fetch the new one.
+ */
+export const BRAND_ICON_VERSION = 2;
+
 /** The favicon drawn for a theme (app/brand-icon/[theme]/route.ts). */
 export function brandIconHref(theme: Theme) {
-  return `/brand-icon/${theme.palette}-${theme.mode}`;
+  return `/brand-icon/${theme.palette}-${theme.mode}?v=${BRAND_ICON_VERSION}`;
 }
 
 /** One year: the preference should outlive any session. */
