@@ -17,7 +17,7 @@ export function HelpButton() {
       onClick={openHelp}
       aria-label={t("button")}
       aria-haspopup="dialog"
-      className="flex size-10 items-center justify-center text-ink-muted transition-colors duration-150 ease-signature hover:bg-raised hover:text-ink motion-reduce:transition-none"
+      className="flex size-10 items-center justify-center rounded-full text-ink-muted transition-colors duration-150 ease-signature hover:bg-raised hover:text-ink motion-reduce:transition-none"
     >
       <CircleHelp className="icon size-4" aria-hidden />
     </button>

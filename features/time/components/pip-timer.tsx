@@ -3,6 +3,7 @@
 import { Pause, Play, Square } from "lucide-react";
 import type { ReactNode } from "react";
 
+import { HexButton } from "@/components/common/hex-button";
 import { ClockTiles, type ClockState } from "@/features/time/components/clock-tiles";
 
 type Action = { label: string; disabled: boolean; onClick: () => void };
@@ -47,25 +48,25 @@ export function PipTimer({ ms, state, clockLabel, units, detail, primary, finish
       </div>
 
       <div className="flex flex-none items-center gap-[3vmin]">
-        <button
-          type="button"
+        <HexButton
+          tone="accent"
           onClick={primary.onClick}
           aria-disabled={primary.disabled}
           aria-label={primary.label}
-          className="pressable flex size-[min(26vw,20vh)] flex-none items-center justify-center bg-accent text-on-accent aria-disabled:cursor-wait aria-disabled:opacity-60 flat:size-[min(18vw,55vh)]"
+          className="size-[min(26vw,20vh)] flat:size-[min(18vw,55vh)]"
         >
           <PrimaryIcon className="icon size-[42%]" aria-hidden />
-        </button>
+        </HexButton>
         {finish && (
-          <button
-            type="button"
+          <HexButton
+            tone="tile"
             onClick={finish.onClick}
             aria-disabled={finish.disabled}
             aria-label={finish.label}
-            className="flex size-[min(17vw,13vh)] flex-none items-center justify-center border-2 border-edge text-ink transition-colors duration-150 ease-signature hover:bg-raised aria-disabled:cursor-wait aria-disabled:opacity-60 motion-reduce:transition-none flat:size-[min(12vw,36vh)]"
+            className="size-[min(17vw,13vh)] flat:size-[min(12vw,36vh)]"
           >
             <Square className="icon size-[38%]" aria-hidden />
-          </button>
+          </HexButton>
         )}
       </div>
     </div>

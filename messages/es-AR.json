@@ -401,10 +401,14 @@
     "palette": "Paleta",
     "mode": "Modo",
     "palettes": {
-      "salvia": "Salvia",
-      "indigo": "Índigo",
       "lima": "Lima",
-      "ambar": "Ámbar"
+      "salvia": "Salvia",
+      "cielo": "Cielo",
+      "indigo": "Índigo",
+      "orquidea": "Orquídea",
+      "coral": "Coral",
+      "ambar": "Ámbar",
+      "grafito": "Grafito"
     },
     "modes": {
       "dark": "Oscuro",

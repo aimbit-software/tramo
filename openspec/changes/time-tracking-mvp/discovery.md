@@ -126,10 +126,11 @@ Additions this app needs that Fragua doesn't have:
 
 ### Themes
 
-**Decided:** the app ships several themes and each user picks their own. There are 4 palettes (Salvia, Índigo, Lima, Ámbar), each with a dark and a light mode.
+**Decided:** the app ships several themes and each user picks their own. There are 8 palettes, each with a dark and a light mode: it launched with 4 (Salvia, Índigo, Lima, Ámbar), and the owner asked for more options, a grey one among them, which added Cielo, Orquídea, Coral and Grafito (the grey one). The picker shows them in hue order.
 
 - The preference is stored in the user's account, so it follows them across devices. It's also mirrored in a cookie so the server renders the right theme with no flash.
-- Theme state lives on `<html>` as `data-palette="salvia|indigo|lima|ambar"` plus `data-theme="dark|light"`. This mirrors Fragua's attribute-plus-pre-hydration-script approach.
+- Theme state lives on `<html>` as `data-palette="lima|salvia|cielo|indigo|orquidea|coral|ambar|grafito"` plus `data-theme="dark|light"`. This mirrors Fragua's attribute-plus-pre-hydration-script approach.
+- Every palette climbs one lightness ladder, measured in OKLCH on the first four, so a palette changes hue, never contrast. A unit test holds every palette to WCAG AA.
 - Default for new users: Lima, dark (it was Salvia until the first week of use).
 - The theme picker is itself a custom control: an accessible radio group of swatches.
 
@@ -194,8 +195,8 @@ These override any recommendation in `exploration.md` that conflicts with them.
 ## Brand and look (decided 2026-09-24)
 
 - **Name: Tramo.** Tagline: *Tu trabajo, tramo a tramo.* Each block of work is a *tramo*, and the UI calls them so. Chosen from four candidates (Temple, Tramo, Destajo, Concreto); Lapso and Gnomon were dropped because time-tracking apps already use them.
-- **Logo:** Lucide's hourglass inside Lucide's hexagon, on a solid block of the theme's accent, so it changes with the palette. The favicon is the same drawing per theme (`/brand-icon/<palette>-<mode>`), and follows the theme live.
-- **Brutalist direction** (owner's request, with award-winning references: the Awwwards brutalism collection and its honorable mentions such as *Brutalism* by MAGWAI and *Brutally Human* by BeCurious; Gumroad's neo-brutalist redesign as the product-UI reference; NN/g's guidance on keeping neobrutalism usable):
-  - square corners everywhere, a visible 1px rule on every panel, hard offset shadows on what floats or presses;
-  - poster numbers: Big Shoulders (ultra-condensed, heavy) for titles and the big numbers, after the owner's reference of number posters; Plex Mono for labels and buttons, Plex Sans for reading;
-  - the accent used as solid blocks (the logo, the clock, primary buttons), and Lucide icons in the navigation.
+- **Logo:** Lucide's hourglass on a hexagon of the theme's accent, so it changes with the palette. The hexagon is Fragua's badge (pointy-top, corner fillets of r = 0.32 R), at the owner's request, so the two marks read as one family; the hourglass takes `on-accent`, since white would vanish on a light accent like Lima's. The favicon is the same drawing per theme (`/brand-icon/<palette>-<mode>`, versioned so a new drawing beats a year of caching), and follows the theme live.
+- **Brutalist type, soft shapes** (owner's request, with award-winning references: the Awwwards brutalism collection and its honorable mentions such as *Brutalism* by MAGWAI and *Brutally Human* by BeCurious, plus the owner's reference of number posters). The brutalism lives in the typography only. A first pass also squared every corner, drew a 1px rule on every panel and gave floating things hard offset shadows; the owner rejected it, so the shapes went back to Fragua's soft system: rounded radii, luminance instead of borders, soft shadows, the floating pill navbar.
+  - Poster numbers: Big Shoulders (ultra-condensed, heavy) for titles and the big numbers. The clock's digits are stretched to 125% of their height, in rounded tiles of the accent.
+  - Geist (Vercel's typeface) for everything else, replacing IBM Plex: the owner found Plex Mono's typewriter look dated and asked for something modern and technical. Geist is today's default for technical interfaces, in the Swiss tradition, and has tabular figures for numbers that must align.
+  - The timer's buttons wear the logo's hexagon.

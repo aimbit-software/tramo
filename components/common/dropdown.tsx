@@ -207,7 +207,7 @@ export function Dropdown({
           aria-label={label}
           // Shown and placed by useAnchoredPopover.
           popover="manual"
-          className="menu-pop fixed inset-auto m-0 max-h-72 w-max max-w-[calc(100vw-1rem)] overflow-y-auto rounded-tile bg-raised p-1 text-ink float-edge"
+          className="menu-pop fixed inset-auto m-0 max-h-72 w-max max-w-[calc(100vw-1rem)] overflow-y-auto rounded-tile border-0 bg-raised p-1 text-ink shadow-lg shadow-black/20"
         >
           {options.map((option, index) => (
             <li

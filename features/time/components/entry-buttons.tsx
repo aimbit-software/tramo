@@ -41,7 +41,7 @@ export function AddEntryButton(props: Shared) {
 }
 
 const ICON_BUTTON =
-  "flex size-8 items-center justify-center text-ink-dim transition-colors duration-150 ease-signature hover:bg-raised hover:text-ink motion-reduce:transition-none";
+  "flex size-8 items-center justify-center rounded-full text-ink-dim transition-colors duration-150 ease-signature hover:bg-raised hover:text-ink motion-reduce:transition-none";
 
 /** Edit and delete for one block. */
 export function EntryRowActions({ entry, label, ...shared }: Shared & { entry: EditableEntry; label: string }) {

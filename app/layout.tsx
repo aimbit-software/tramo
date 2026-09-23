@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Big_Shoulders, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import { Big_Shoulders, Geist } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 
@@ -8,21 +8,14 @@ import { brandIconHref } from "@/lib/theme";
 
 import "./globals.css";
 
-// IBM Plex Sans (body) and IBM Plex Mono (labels, buttons, table numbers): two
-// members of one superfamily, so they harmonize by construction. Only the two
-// weights the system uses ship — an unused weight isn't reserved, it's paid
-// for on every visit. next/font self-hosts them at build time.
-const plexSans = IBM_Plex_Sans({
-  variable: "--font-plex-sans",
+// Geist: everything that isn't a poster — nav, buttons, labels, numbers and
+// reading. Vercel's typeface for interfaces, in the Swiss tradition: modern
+// and technical without a typewriter's slab serifs. Its figures come in a
+// tabular set too, for the `digits` utility. Variable, so one file covers
+// every weight. next/font self-hosts it at build time.
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
-  weight: ["400", "500"],
-  display: "swap",
-});
-
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-plex-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
   display: "swap",
 });
 
@@ -59,7 +52,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       lang={locale}
       data-palette={theme.palette}
       data-theme={theme.mode}
-      className={`${plexSans.variable} ${plexMono.variable} ${bigShoulders.variable} h-full antialiased`}
+      className={`${geist.variable} ${bigShoulders.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider>{children}</NextIntlClientProvider>

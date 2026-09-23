@@ -15,7 +15,7 @@ type ProjectRole = InvitedProject["role"];
 export type InvitableProject = { id: string; name: string; color: string };
 
 const segment = (checked: boolean) =>
-  `px-3 py-1.5 text-sm transition-colors duration-150 ease-signature motion-reduce:transition-none ${
+  `rounded-[6px] px-3 py-1.5 text-sm transition-colors duration-150 ease-signature motion-reduce:transition-none ${
     checked ? "bg-tile text-ink" : "text-ink-muted hover:text-ink"
   }`;
 
@@ -132,7 +132,7 @@ export function InviteForm({ projects }: { projects: InvitableProject[] }) {
                 <span className="flex min-w-0 items-center gap-2 text-sm">
                   <span
                     aria-hidden
-                    className="size-2.5 flex-none"
+                    className="size-2.5 flex-none rounded-full"
                     style={{ backgroundColor: `var(--color-project-${project.color})` }}
                   />
                   <span className="truncate">{project.name}</span>
@@ -156,7 +156,7 @@ export function InviteForm({ projects }: { projects: InvitableProject[] }) {
         <button
           type="submit"
           aria-disabled={pending}
-          className="rounded-tile bg-accent pressable px-4 py-2.5 font-display text-sm font-medium text-on-accent duration-150 ease-signature hover:opacity-90 aria-disabled:cursor-wait aria-disabled:opacity-60 motion-reduce:transition-none"
+          className="rounded-tile bg-accent px-4 py-2.5 font-display text-sm font-medium text-on-accent transition-opacity duration-150 ease-signature hover:opacity-90 aria-disabled:cursor-wait aria-disabled:opacity-60 motion-reduce:transition-none"
         >
           {pending ? t("invite.submitting") : t("invite.submit")}
         </button>

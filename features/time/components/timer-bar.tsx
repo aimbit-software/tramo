@@ -8,6 +8,7 @@ import { createPortal } from "react-dom";
 import { Autocomplete } from "@/components/common/autocomplete";
 import { Dropdown } from "@/components/common/dropdown";
 import { FIELD } from "@/components/common/field";
+import { HexButton } from "@/components/common/hex-button";
 import { Modal } from "@/components/common/modal";
 import { finishTimerAction, pauseTimerAction, resumeTimerAction, startTimerAction } from "@/features/time/actions";
 import { ClockTiles } from "@/features/time/components/clock-tiles";
@@ -26,7 +27,13 @@ type TimerBarProps = {
 };
 
 function ProjectDot({ color, className = "size-2.5" }: { color: string; className?: string }) {
-  return <span aria-hidden className={`flex-none ${className}`} style={{ backgroundColor: `var(--color-project-${color})` }} />;
+  return (
+    <span
+      aria-hidden
+      className={`flex-none rounded-full ${className}`}
+      style={{ backgroundColor: `var(--color-project-${color})` }}
+    />
+  );
 }
 
 type Action = { label: string; disabled: boolean; onClick: () => void };
@@ -36,29 +43,17 @@ type Action = { label: string; disabled: boolean; onClick: () => void };
 function PrimaryButton({ showsPause, label, disabled, onClick }: Action & { showsPause: boolean }) {
   const Icon = showsPause ? Pause : Play;
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-disabled={disabled}
-      aria-label={label}
-      className="pressable flex size-16 flex-none items-center justify-center bg-accent text-on-accent aria-disabled:cursor-wait aria-disabled:opacity-60"
-    >
+    <HexButton tone="accent" onClick={onClick} aria-disabled={disabled} aria-label={label} className="size-16">
       <Icon className="icon size-7" aria-hidden />
-    </button>
+    </HexButton>
   );
 }
 
 function FinishButton({ label, disabled, onClick }: Action) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-disabled={disabled}
-      aria-label={label}
-      className="flex size-12 flex-none items-center justify-center border-2 border-edge text-ink transition-colors duration-150 ease-signature hover:bg-raised aria-disabled:cursor-wait aria-disabled:opacity-60 motion-reduce:transition-none"
-    >
+    <HexButton tone="tile" onClick={onClick} aria-disabled={disabled} aria-label={label} className="size-12">
       <Square className="icon size-5" aria-hidden />
-    </button>
+    </HexButton>
   );
 }
 
@@ -241,16 +236,16 @@ export function TimerBar({ projects, timer, suggestions, serverNow }: TimerBarPr
 
         <div className="ml-auto flex items-center gap-2 pb-6">
           {pip.supported && (
-            <button
-              type="button"
+            <HexButton
+              tone="ghost"
               data-tour="timer-pop-out"
               aria-label={pip.pipWindow ? t("closePopOut") : t("popOut")}
               aria-pressed={pip.pipWindow !== null}
               onClick={() => (pip.pipWindow ? pip.close() : pip.open({ width: 280, height: 320 }))}
-              className="flex size-12 items-center justify-center text-ink-muted transition-colors duration-150 ease-signature hover:bg-raised hover:text-ink aria-pressed:bg-raised aria-pressed:text-accent motion-reduce:transition-none"
+              className="size-12"
             >
               <PictureInPicture2 className="icon size-5" aria-hidden />
-            </button>
+            </HexButton>
           )}
           {finishAction && <FinishButton {...finishAction} />}
           <PrimaryButton {...primaryAction} />
@@ -286,7 +281,7 @@ export function TimerBar({ projects, timer, suggestions, serverNow }: TimerBarPr
               setForgottenDismissed(true);
               finish();
             }}
-            className="rounded-tile bg-accent pressable px-4 py-2.5 font-display text-sm font-medium text-on-accent"
+            className="rounded-tile bg-accent px-4 py-2.5 font-display text-sm font-medium text-on-accent transition-opacity duration-150 ease-signature hover:opacity-90 motion-reduce:transition-none"
           >
             {t("forgotten.stop")}
           </button>

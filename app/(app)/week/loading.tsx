@@ -14,8 +14,8 @@ export default async function Loading() {
           <Skeleton className="h-7 w-56" />
         </div>
         <div className="ml-auto flex gap-1">
-          <Skeleton className="size-9" />
-          <Skeleton className="size-9" />
+          <Skeleton className="size-9 rounded-full" />
+          <Skeleton className="size-9 rounded-full" />
         </div>
       </header>
       <section aria-hidden className="panel-accent flex items-center justify-between p-5">

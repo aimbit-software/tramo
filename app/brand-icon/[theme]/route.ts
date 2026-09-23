@@ -2,7 +2,8 @@ import { brandIconSvg } from "@/lib/brand-icon";
 import { isMode, isPalette, MODES, PALETTES, THEME_ACCENTS } from "@/lib/theme";
 
 // The favicon, one per theme (`lima-dark`, `salvia-light`…), so the tab wears
-// the person's palette. All eight are drawn at build time; anything else 404s.
+// the person's palette. Every palette and mode is drawn at build time;
+// anything else 404s.
 export const dynamicParams = false;
 
 export function generateStaticParams() {

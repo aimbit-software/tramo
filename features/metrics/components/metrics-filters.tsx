@@ -55,7 +55,7 @@ export function MetricsFilters({ range, project, projects }: MetricsFiltersProps
         onChange={(value) => go({ range: value })}
         className="inline-flex w-fit gap-1 rounded-tile bg-surface p-1"
         optionClassName={(checked) =>
-          `px-3 py-1.5 font-display text-sm transition-colors duration-150 ease-signature motion-reduce:transition-none ${
+          `rounded-[6px] px-3 py-1.5 font-display text-sm transition-colors duration-150 ease-signature motion-reduce:transition-none ${
             checked ? "bg-tile text-ink" : "text-ink-muted hover:text-ink"
           }`
         }
@@ -73,7 +73,7 @@ export function MetricsFilters({ range, project, projects }: MetricsFiltersProps
             icon: (
               <span
                 aria-hidden
-                className="size-2.5 flex-none"
+                className="size-2.5 flex-none rounded-full"
                 style={{ backgroundColor: `var(--color-project-${item.color})` }}
               />
             ),

@@ -14,18 +14,23 @@ type ClockTilesProps = {
   unitClassName?: string;
 };
 
-// Solid accent while running, outlined while paused, quiet when idle.
+// Solid accent while running, a soft accent tint while paused, quiet when idle.
 const TILE: Record<ClockState, string> = {
   running: "bg-accent text-on-accent",
-  paused: "bg-surface text-accent outline-2 -outline-offset-2 outline-accent",
+  paused: "bg-accent/15 text-accent",
   idle: "bg-tile text-ink",
 };
 
 /**
  * The clock as three blocks, hours, minutes and seconds, each named below:
- * the poster face in solid tiles of the theme's accent. The poster face has
+ * the poster face in rounded tiles of the theme's accent. The poster face has
  * no tabular figures, so every digit gets its own 1ch cell and nothing jumps
  * as the seconds tick.
+ *
+ * The digits are stretched to 125% of their height, poster-style. A scale
+ * doesn't move layout, so the tile's padding makes the room: the stretched
+ * ink overflows the 0.85em line box by 0.1em on top and 0.075em below, and
+ * each side keeps about 0.09em of breathing room past that.
  */
 export function ClockTiles({ ms, state, label, units, className = "text-7xl", unitClassName = "" }: ClockTilesProps) {
   const parts = clockParts(ms);
@@ -39,9 +44,9 @@ export function ClockTiles({ ms, state, label, units, className = "text-7xl", un
     <div role="timer" aria-label={`${label}: ${parts.hours}:${parts.minutes}:${parts.seconds}`} className={`flex gap-[0.12em] ${className}`}>
       {blocks.map(([unit, value]) => (
         <div key={unit} aria-hidden className="flex flex-col items-center gap-[0.1em]">
-          <span className={`poster flex px-[0.12em] pt-[0.08em] pb-[0.04em] ${TILE[state]}`}>
+          <span className={`poster flex rounded-[0.1em] px-[0.12em] pt-[0.19em] pb-[0.165em] ${TILE[state]}`}>
             {value.split("").map((digit, index) => (
-              <span key={index} className="inline-block w-[1ch] text-center">
+              <span key={index} className="inline-block w-[1ch] scale-y-125 text-center">
                 {digit}
               </span>
             ))}

@@ -1,17 +1,17 @@
 # Tramo: time tracking for small teams
 
-*Tu trabajo, tramo a tramo.* A web app to track how much time each person spends on each project: a timer that floats over your other apps, weekly views, and metrics. It's built for a small team running several projects in parallel, with a brutalist look: square blocks, visible structure and poster-sized numbers.
+*Tu trabajo, tramo a tramo.* A web app to track how much time each person spends on each project: a timer that floats over your other apps, weekly views, and metrics. It's built for a small team running several projects in parallel. The type is brutalist, with poster-sized titles and numbers; the rest is soft, rounded and borderless.
 
 ## What it does
 
 | Where | What you get |
 | --- | --- |
-| **Home** (`/`) | The timer: pick a project, describe the task (autocomplete from your past tasks), press play. Pause and resume keep the task's clock going from where it was; the square finishes the task. The clock reads in blocks (hours, minutes, seconds). A floating always-on-top window, upright unless it's very flat, where the browser supports it (Chrome, Edge, Firefox on desktop). An 8-hour "did you forget it?" prompt. Your latest blocks, editable. Observers get their projects and this week's hours per person instead |
+| **Home** (`/`) | The timer: pick a project, describe the task (autocomplete from your past tasks), press play. Pause and resume keep the task's clock going from where it was; the stop button finishes the task. The clock reads in tall blocks (hours, minutes, seconds), and its buttons wear the logo's hexagon. A floating always-on-top window, upright unless it's very flat, where the browser supports it (Chrome, Edge, Firefox on desktop). An 8-hour "did you forget it?" prompt. Your latest blocks, editable. Observers get their projects and this week's hours per person instead |
 | **Week** (`/week`) | Your week in your time zone: total, a projects × days table, and every block by day. Add time you forgot to track (start and end picked from quarter-hour lists); fix or delete your own blocks. **Equipo** shows the team's week: every block in your projects, with who logged it |
 | **Metrics** (`/metrics`) | For a range and an optional project: the total, hours per person, per project and per task, and week over week. Admins see everything; members see the projects they belong to |
 | **Admin → Members** | Invite by Google email (optionally with the projects the person joins, as tracker or viewer), approve or reject access requests, switch roles |
 | **Admin → Projects** | Create, rename, recolor and archive projects; drag people onto them or use "Assign" |
-| **Settings** | Four palettes × dark and light, saved to your account. The logo and the browser tab's icon take the palette's accent |
+| **Settings** | Eight palettes (Lima, Salvia, Cielo, Índigo, Orquídea, Coral, Ámbar and Grafito, the grey one) × dark and light, saved to your account. The logo and the browser tab's icon take the palette's accent |
 | **Help** (the ? in the header) | A guided tour that points at what to touch on each screen. It starts on the first visit, can be skipped and resumed where it was left, and adapts to trackers, observers and admins |
 
 The rules that keep hours honest: one running timer per person, no overlapping blocks for the same person, no blocks in the future, and every manual creation or edit is flagged.

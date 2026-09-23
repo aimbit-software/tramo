@@ -25,7 +25,7 @@ async function TeamEntryRow({ entry }: { entry: TeamEntry }) {
           <span aria-hidden>·</span>
           <span
             aria-hidden
-            className="size-2 flex-none"
+            className="size-2 flex-none rounded-full"
             style={{ backgroundColor: `var(--color-project-${entry.project.color})` }}
           />
           <span className="truncate">{entry.project.name}</span>

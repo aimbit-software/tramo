@@ -16,28 +16,30 @@
 /* ==========================================================================
    Design tokens
 
-   Ported from Fragua's system and pushed brutalist, for Tramo's identity:
+   Ported from Fragua's system, with its two rules, plus Tramo's own third:
 
-   1. Surfaces step on the elevation ladder (ground → surface → raised →
-      tile) AND show their structure: every corner is square (the radius
-      tokens are 0) and a 1px rule draws each panel, like a plan's grid. What
-      floats or presses gets a hard offset shadow, never a soft one.
-   2. Type does the shouting: Big Shoulders (`poster`), ultra-condensed and
-      heavy, for titles and the big numbers; Plex Mono (`font-display`) for
-      nav, buttons and labels; Plex Sans for reading.
-   3. One accent, used as solid blocks, always through the semantic tokens
+   1. Surfaces are separated by LUMINANCE, never by strokes. Every panel is a
+      step on the elevation ladder (ground → surface → raised → tile). Reach
+      for `border` only when a shape needs an outline (a focus ring).
+   2. One accent, used sparingly, always through the semantic tokens
       (`accent`, `on-accent`). `warn` is a different hue on purpose: accent
       means "look here", warn means "something needs attention".
+   3. The brutalism lives in the type, and only there: Big Shoulders
+      (`poster`) shouts the titles and the big numbers. Shapes stay soft:
+      rounded corners, soft shadows, no rules.
 
-   Four palettes × two modes, selected by attributes on <html>:
-   data-palette="salvia|indigo|lima|ambar" and data-theme="dark|light".
-   The @theme block holds the default (Lima, dark); the blocks below
-   reassign the same tokens. Neutrals are tinted toward each accent hue.
+   Eight palettes × two modes, selected by attributes on <html>:
+   data-palette="lima|salvia|cielo|indigo|orquidea|coral|ambar|grafito" and
+   data-theme="dark|light". The @theme block holds the default (Lima, dark);
+   the blocks below reassign the same tokens. Neutrals are tinted toward each
+   accent hue, except Grafito's: it's the grey one. Every palette climbs the
+   same lightness ladder (in OKLCH), so a palette changes hue, never contrast.
 
    Every palette passes WCAG AA (4.5:1) for ink / ink-muted / ink-dim on
    surface and raised, accent on ground and surface, on-accent on accent, and
    warn on surface, in both modes. Ratios were measured on the raw tokens; the
    grain shifts composited values by ~1% — re-measure if an alpha changes.
+   lib/theme.test.ts checks every pair, so a new palette can't skip this.
    ========================================================================== */
 
 @theme {
@@ -57,27 +59,21 @@
   --color-on-accent: #171a0c;
   --color-warn: #ff9a62;
 
-  /* --- Radii -------------------------------------------------------------
-     Every corner is square. The tokens stay, so each component keeps saying
-     what kind of shape it is. */
-  --radius-tile: 0px;
-  --radius-panel: 0px;
-  --radius-pill: 0px;
-
-  /* --- Structure -----------------------------------------------------------
-     The line that draws panels and splits rows, and the edge of hard
-     shadows. Derived from ink, so every palette and mode gets its own. */
-  --color-rule: color-mix(in oklab, var(--color-ink) 22%, transparent);
-  --color-edge: var(--color-ink);
+  /* --- Radii ------------------------------------------------------------- */
+  --radius-tile: 8px;
+  --radius-panel: 16px;
+  --radius-pill: 32px;
 
   /* --- Type ---------------------------------------------------------------
-     Three roles: `poster` (Big Shoulders, ultra-condensed and heavy) for
-     titles, the big numbers and the wordmark; `display` (Plex Mono) for nav,
-     buttons, labels and table numbers; `sans` (Plex Sans) for what you read.
-     See app/layout.tsx. */
+     Two voices. `poster` (Big Shoulders, ultra-condensed and heavy) shouts
+     the titles, the big numbers and the wordmark. Geist speaks the rest:
+     `display` carries nav, buttons, labels and numbers, `sans` what you read.
+     The two roles share the family today; they stay apart so a component
+     says what its text is, and changing a role's face is one line here. See
+     app/layout.tsx. */
   --font-poster: var(--font-big-shoulders), "Arial Narrow", sans-serif;
-  --font-display: var(--font-plex-mono), ui-monospace, monospace;
-  --font-sans: var(--font-plex-sans), system-ui, sans-serif;
+  --font-display: var(--font-geist), system-ui, sans-serif;
+  --font-sans: var(--font-geist), system-ui, sans-serif;
 
   /* --- Motion -------------------------------------------------------------
      The system's single easing curve. `ease-signature` in class names. */
@@ -86,7 +82,7 @@
 
 /* --- Project colors (dark steps) ------------------------------------------
    Categorical identity for projects in charts and dots. Order and values
-   come from the dataviz reference palette, re-validated on this app's eight
+   come from the dataviz reference palette, re-validated on this app's sixteen
    surfaces: every check passes in dark mode. Keys match lib/project-colors.ts.
    Light steps are below, under [data-theme].
 
@@ -261,6 +257,115 @@
   --color-warn: #b3362a;
 }
 
+/* Cielo: sky blue on bluish greys. */
+[data-palette="cielo"][data-theme="dark"] {
+  --color-ground: #12171a;
+  --color-surface: #1b2125;
+  --color-raised: #252c30;
+  --color-tile: #3b454b;
+  --color-ink: #f2f6f9;
+  --color-ink-muted: #9ea9b0;
+  --color-ink-dim: #8e9aa1;
+  --color-accent: #62caff;
+  --color-on-accent: #041824;
+  --color-warn: #e5a83c;
+}
+
+[data-palette="cielo"][data-theme="light"] {
+  --color-ground: #e7eff4;
+  --color-surface: #f1f6fa;
+  --color-raised: #ffffff;
+  --color-tile: #d8e3ea;
+  --color-ink: #171e22;
+  --color-ink-muted: #4e5b63;
+  --color-ink-dim: #5d6b73;
+  --color-accent: #0068a7;
+  --color-on-accent: #ffffff;
+  --color-warn: #8a5a0f;
+}
+
+/* Orquídea: orchid pink on mauve greys. */
+[data-palette="orquidea"][data-theme="dark"] {
+  --color-ground: #191518;
+  --color-surface: #241e22;
+  --color-raised: #2f292d;
+  --color-tile: #494046;
+  --color-ink: #f8f4f7;
+  --color-ink-muted: #ada3aa;
+  --color-ink-dim: #9f949b;
+  --color-accent: #f187d0;
+  --color-on-accent: #20101a;
+  --color-warn: #e5a83c;
+}
+
+[data-palette="orquidea"][data-theme="light"] {
+  --color-ground: #f3ebf0;
+  --color-surface: #f9f4f7;
+  --color-raised: #ffffff;
+  --color-tile: #e8dee4;
+  --color-ink: #201a1e;
+  --color-ink-muted: #60555c;
+  --color-ink-dim: #71656c;
+  --color-accent: #a32a7a;
+  --color-on-accent: #ffffff;
+  --color-warn: #8a5a0f;
+}
+
+/* Coral: coral on rosy greys. Warn stays amber: the accent owns coral. */
+[data-palette="coral"][data-theme="dark"] {
+  --color-ground: #1a1514;
+  --color-surface: #251f1d;
+  --color-raised: #302927;
+  --color-tile: #4b403f;
+  --color-ink: #f9f4f4;
+  --color-ink-muted: #b0a4a1;
+  --color-ink-dim: #a19592;
+  --color-accent: #ff7f6c;
+  --color-on-accent: #23100d;
+  --color-warn: #e5a83c;
+}
+
+[data-palette="coral"][data-theme="light"] {
+  --color-ground: #f4ebea;
+  --color-surface: #faf4f3;
+  --color-raised: #ffffff;
+  --color-tile: #eadedc;
+  --color-ink: #221a19;
+  --color-ink-muted: #635553;
+  --color-ink-dim: #736562;
+  --color-accent: #b6341f;
+  --color-on-accent: #ffffff;
+  --color-warn: #8a5a0f;
+}
+
+/* Grafito: the grey one. Pure neutrals with a silver accent in the dark and a
+   charcoal one on paper; only warn keeps a hue, so it still stands out. */
+[data-palette="grafito"][data-theme="dark"] {
+  --color-ground: #161616;
+  --color-surface: #202020;
+  --color-raised: #2b2b2b;
+  --color-tile: #434343;
+  --color-ink: #f6f6f6;
+  --color-ink-muted: #a7a7a7;
+  --color-ink-dim: #989898;
+  --color-accent: #d4d4d4;
+  --color-on-accent: #161616;
+  --color-warn: #e5a83c;
+}
+
+[data-palette="grafito"][data-theme="light"] {
+  --color-ground: #eeeeee;
+  --color-surface: #f5f5f5;
+  --color-raised: #ffffff;
+  --color-tile: #e1e1e1;
+  --color-ink: #1c1c1c;
+  --color-ink-muted: #595959;
+  --color-ink-dim: #686868;
+  --color-accent: #333333;
+  --color-on-accent: #ffffff;
+  --color-warn: #8a5a0f;
+}
+
 /* ==========================================================================
    Grain
    ========================================================================== */
@@ -294,25 +399,28 @@
 }
 
 /* ==========================================================================
-   Surfaces — square, and drawn with a rule
+   Surfaces — borderless by construction
    ========================================================================== */
 
 @utility panel {
   background-color: var(--color-surface);
-  border: 1px solid var(--color-rule);
   border-radius: var(--radius-panel);
 }
 
-/* The headline panel of a page: a flat accent tint drawn in the accent, with
-   a thick bar on its left edge. Derived from the active palette, so every
-   theme gets its own. Pair with nothing: the grain is its first layer. */
+/* Accent-tinted panel, the quiet one. Derived from the active palette, so
+   every theme gets its own tint without new tokens. Pair with nothing: the
+   grain is already its first layer. */
 @utility panel-accent {
-  border: 1px solid color-mix(in oklab, var(--color-accent) 55%, transparent);
-  border-left: 6px solid var(--color-accent);
   border-radius: var(--radius-panel);
-  background-color: color-mix(in oklab, var(--color-accent) 12%, var(--color-surface));
-  background-image: var(--noise);
-  background-size: var(--noise-tile) var(--noise-tile);
+  background-image:
+    var(--noise),
+    linear-gradient(
+      to right,
+      color-mix(in oklab, var(--color-accent) 10%, var(--color-surface)),
+      color-mix(in oklab, var(--color-accent) 16%, var(--color-surface))
+    );
+  background-size: var(--noise-tile) var(--noise-tile), auto;
+  background-repeat: repeat, no-repeat;
 }
 
 /* Floating action bar that follows a long form. */
@@ -320,36 +428,30 @@
   position: sticky;
   bottom: 1.5rem;
   background-color: var(--color-surface);
-  border: 1px solid var(--color-edge);
   border-radius: var(--radius-panel);
-  box-shadow: 4px 4px 0 0 var(--color-edge);
+  box-shadow:
+    0 10px 15px -3px --alpha(#000 / 20%),
+    0 4px 6px -4px --alpha(#000 / 20%);
 }
 
-/* What floats over the page (menus, calendars, tooltips, tour cards): an
-   edge and a hard shadow, like a card laid on top. */
-@utility float-edge {
-  border: 1px solid var(--color-edge);
-  box-shadow: 4px 4px 0 0 var(--color-edge);
+/* The logo's hexagon: Fragua's badge, so the two marks read as one family. A
+   regular pointy-top hexagon with circular corner fillets of r = 0.32 R, in a
+   viewBox that is the rounded shape's exact bounds, so `contain` fills the box
+   edge to edge and `aspect-ratio` keeps it honest. Masked over currentColor,
+   so `text-accent` paints it in every theme. The favicon draws the same path
+   (lib/brand-icon.ts); a test keeps them equal. */
+@utility logo-badge {
+  display: inline-grid;
+  place-items: center;
+  aspect-ratio: 86.6 / 95.05;
+  background-color: currentColor;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 86.60 95.05'%3E%3Cpath d='M35.30 2.14A16 16 0 0 1 51.30 2.14L78.60 17.91A16 16 0 0 1 86.60 31.76L86.60 63.29A16 16 0 0 1 78.60 77.14L51.30 92.91A16 16 0 0 1 35.30 92.91L8.00 77.14A16 16 0 0 1 -0.00 63.29L0.00 31.76A16 16 0 0 1 8.00 17.91Z'/%3E%3C/svg%3E");
+  mask-size: contain;
+  mask-position: center;
+  mask-repeat: no-repeat;
 }
 
-/* A button that presses: a hard shadow it sinks into when clicked. */
-@utility pressable {
-  box-shadow: 3px 3px 0 0 var(--color-edge);
-  transition-property: translate, box-shadow, opacity;
-  transition-duration: 120ms;
-  transition-timing-function: var(--ease-signature);
-
-  &:active:not([aria-disabled="true"]) {
-    translate: 3px 3px;
-    box-shadow: 0 0 0 0 var(--color-edge);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
-}
-
-/* Icon tile: the small square that carries a glyph. */
+/* Icon tile: the small rounded square that carries a glyph. */
 @utility tile {
   display: inline-flex;
   align-items: center;
@@ -364,13 +466,13 @@
    Details
    ========================================================================== */
 
-/* A 1px rule between rows that costs no layout and no border. */
+/* A 1px rule that costs no layout and no border. */
 @utility hairline-b {
-  box-shadow: 0 1px 0 0 var(--color-rule);
+  box-shadow: 0 1px 0 0 --alpha(var(--color-ink) / 10%);
 }
 
 @utility hairline-t {
-  box-shadow: inset 0 1px 0 0 var(--color-rule);
+  box-shadow: inset 0 1px 0 0 --alpha(var(--color-ink) / 8%);
 }
 
 /* Lucide's default 2px stroke reads chunky on these grounds; the whole system
@@ -380,8 +482,8 @@
   flex: none;
 }
 
-/* Numbers that get compared — tables, durations, chart ticks — sit in mono
-   with tabular figures, so columns align and digits don't jitter. */
+/* Numbers that get compared — tables, durations, chart ticks — sit in
+   tabular figures, so columns align and digits don't jitter. */
 @utility digits {
   font-family: var(--font-display);
   font-variant-numeric: tabular-nums;
@@ -389,7 +491,7 @@
 
 /* Titles and the big numbers, poster-style: ultra-condensed, heavy, tight.
    Big Shoulders has no tabular figures, so a number that ticks gives every
-   digit its own cell (see components/common/numeral.tsx). */
+   digit its own cell (see features/time/components/clock-tiles.tsx). */
 @utility poster {
   font-family: var(--font-poster);
   font-weight: 900;
@@ -440,6 +542,7 @@
   :focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
+    border-radius: 2px;
   }
 
   ::selection {
