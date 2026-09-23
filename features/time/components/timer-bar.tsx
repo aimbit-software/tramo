@@ -10,6 +10,7 @@ import { Dropdown } from "@/components/common/dropdown";
 import { FIELD } from "@/components/common/field";
 import { Modal } from "@/components/common/modal";
 import { startTimerAction, stopTimerAction } from "@/features/time/actions";
+import { PipTimer } from "@/features/time/components/pip-timer";
 import { useDocumentPip } from "@/features/time/components/use-document-pip";
 import type { TimerPageData } from "@/features/time/queries";
 import { DESCRIPTION_MAX } from "@/features/time/schema";
@@ -38,7 +39,6 @@ const ROUND_BUTTON =
   "flex flex-none items-center justify-center rounded-full transition-[transform,opacity] duration-150 ease-signature hover:scale-105 aria-disabled:cursor-wait aria-disabled:opacity-60 motion-reduce:transition-none motion-reduce:hover:scale-100";
 
 type PrimaryButtonProps = {
-  size: "lg" | "sm";
   showsPause: boolean;
   label: string;
   disabled: boolean;
@@ -47,7 +47,7 @@ type PrimaryButtonProps = {
 
 // Declared outside TimerBar on purpose: the clock re-renders every second, and
 // a component defined inside render would remount each time, dropping focus.
-function PrimaryButton({ size, showsPause, label, disabled, onClick }: PrimaryButtonProps) {
+function PrimaryButton({ showsPause, label, disabled, onClick }: PrimaryButtonProps) {
   const Icon = showsPause ? Pause : Play;
   return (
     <button
@@ -55,9 +55,9 @@ function PrimaryButton({ size, showsPause, label, disabled, onClick }: PrimaryBu
       onClick={onClick}
       aria-disabled={disabled}
       aria-label={label}
-      className={`${ROUND_BUTTON} bg-accent text-on-accent ${size === "lg" ? "size-12" : "size-10"}`}
+      className={`${ROUND_BUTTON} size-12 bg-accent text-on-accent`}
     >
-      <Icon className={`icon ${size === "lg" ? "size-5" : "size-4"}`} aria-hidden />
+      <Icon className="icon size-5" aria-hidden />
     </button>
   );
 }
@@ -214,7 +214,7 @@ export function TimerBar({ projects, running, suggestions, serverNow }: TimerBar
               <PictureInPicture2 className="icon size-5" aria-hidden />
             </button>
           )}
-          <PrimaryButton size="lg" {...primary} />
+          <PrimaryButton {...primary} />
         </div>
       </div>
 
@@ -254,27 +254,24 @@ export function TimerBar({ projects, running, suggestions, serverNow }: TimerBar
 
       {pip.pipWindow &&
         createPortal(
-          <div className="grain flex h-screen items-center gap-3 bg-ground px-4 text-ink">
-            <div className="flex min-w-0 flex-1 flex-col">
-              <span role="timer" aria-label={t("elapsed")} className="digits text-2xl leading-tight">
-                {clock}
-              </span>
-              <span className="flex min-w-0 items-center gap-1.5 text-xs text-ink-dim">
-                {current ? (
-                  <>
-                    <ProjectDot color={current.projectColor} className="size-2" />
-                    <span className="truncate">
-                      {current.projectName}
-                      {current.description ? ` · ${current.description}` : ""}
-                    </span>
-                  </>
-                ) : (
-                  <span className="truncate">{selectedProject?.name ?? t("idle")}</span>
-                )}
-              </span>
-            </div>
-            <PrimaryButton size="sm" {...primary} />
-          </div>,
+          <PipTimer
+            clock={clock}
+            clockLabel={t("elapsed")}
+            button={primary}
+            detail={
+              current ? (
+                <>
+                  <ProjectDot color={current.projectColor} className="size-[0.7em]" />
+                  <span className="truncate">
+                    {current.projectName}
+                    {current.description ? ` · ${current.description}` : ""}
+                  </span>
+                </>
+              ) : (
+                <span className="truncate">{selectedProject?.name ?? t("idle")}</span>
+              )
+            }
+          />,
           pip.pipWindow.document.body,
         )}
     </section>

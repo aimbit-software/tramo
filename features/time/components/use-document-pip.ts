@@ -11,7 +11,8 @@ const subscribeNever = () => () => {};
  * `supported` is false and the button isn't shown.
  *
  * The new document starts empty, so the page's stylesheets, fonts and theme
- * attributes are copied into it when it opens.
+ * attributes are copied into it when it opens, and a theme picked while it's
+ * open follows it there.
  */
 export function useDocumentPip() {
   // False on the server and during hydration, the real answer after.
@@ -28,7 +29,16 @@ export function useDocumentPip() {
 
     const pip = await api.requestWindow(size);
     copyDocumentLook(document, pip.document);
-    pip.addEventListener("pagehide", () => setPipWindow(null), { once: true });
+    const followTheme = new MutationObserver(() => copyRootAttributes(document, pip.document));
+    followTheme.observe(document.documentElement, { attributes: true, attributeFilter: ["class", ...ROOT_ATTRIBUTES] });
+    pip.addEventListener(
+      "pagehide",
+      () => {
+        followTheme.disconnect();
+        setPipWindow(null);
+      },
+      { once: true },
+    );
     setPipWindow(pip);
   }, []);
 
@@ -60,11 +70,18 @@ function copyDocumentLook(from: Document, to: Document) {
     }
   }
 
+  copyRootAttributes(from, to);
+  // The window's content sizes itself to the window: it never scrolls.
+  to.body.className = `${from.body.className} overflow-hidden`;
+}
+
+const ROOT_ATTRIBUTES = ["lang", "data-palette", "data-theme"];
+
+function copyRootAttributes(from: Document, to: Document) {
   const root = from.documentElement;
   to.documentElement.className = root.className;
-  for (const attribute of ["lang", "data-palette", "data-theme"]) {
+  for (const attribute of ROOT_ATTRIBUTES) {
     const value = root.getAttribute(attribute);
     if (value) to.documentElement.setAttribute(attribute, value);
   }
-  to.body.className = from.body.className;
 }
