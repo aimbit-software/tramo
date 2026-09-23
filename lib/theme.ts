@@ -29,9 +29,19 @@ export function isMode(value: unknown): value is Mode {
   return typeof value === "string" && (MODES as readonly string[]).includes(value);
 }
 
-export function resolveTheme(stored: { palette?: string; mode?: string }): Theme {
+type StoredTheme = { palette?: string | null; mode?: string | null };
+
+/**
+ * This browser's cookies win; the account's saved preference fills in on a
+ * device that has none yet; the default covers the rest. Each field on its
+ * own, and anything outside the catalog is ignored.
+ */
+export function resolveTheme(cookies: StoredTheme, account: StoredTheme = {}): Theme {
+  const pick = <T>(check: (value: unknown) => value is T, ...candidates: unknown[]) =>
+    candidates.find((candidate): candidate is T => check(candidate));
+
   return {
-    palette: isPalette(stored.palette) ? stored.palette : DEFAULT_THEME.palette,
-    mode: isMode(stored.mode) ? stored.mode : DEFAULT_THEME.mode,
+    palette: pick(isPalette, cookies.palette, account.palette) ?? DEFAULT_THEME.palette,
+    mode: pick(isMode, cookies.mode, account.mode) ?? DEFAULT_THEME.mode,
   };
 }

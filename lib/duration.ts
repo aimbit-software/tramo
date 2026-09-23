@@ -15,6 +15,12 @@ export function formatClock(ms: number): string {
   return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
 }
 
+/** A total of minutes as h:mm ("2:30", "61:00"): how hour totals are read. */
+export function formatHours(minutes: number): string {
+  const total = Math.max(0, Math.round(minutes));
+  return `${Math.floor(total / 60)}:${pad(total % 60)}`;
+}
+
 export function isForgotten(startedAt: Date, now: Date, thresholdMs = FORGOTTEN_AFTER_MS): boolean {
   return now.getTime() - startedAt.getTime() >= thresholdMs;
 }

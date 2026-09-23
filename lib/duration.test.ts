@@ -1,6 +1,19 @@
 import { describe, expect, it } from "vitest";
 
-import { FORGOTTEN_AFTER_MS, formatClock, isForgotten } from "@/lib/duration";
+import { FORGOTTEN_AFTER_MS, formatClock, formatHours, isForgotten } from "@/lib/duration";
+
+describe("formatHours", () => {
+  it("shows minutes as h:mm, the way totals are read", () => {
+    expect(formatHours(150)).toBe("2:30");
+    expect(formatHours(5)).toBe("0:05");
+    expect(formatHours(0)).toBe("0:00");
+    expect(formatHours(61 * 60)).toBe("61:00");
+  });
+
+  it("rounds to the nearest minute", () => {
+    expect(formatHours(89.6)).toBe("1:30");
+  });
+});
 
 const HOUR = 60 * 60 * 1000;
 

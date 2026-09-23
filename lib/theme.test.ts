@@ -40,6 +40,22 @@ describe("isPalette / isMode", () => {
   });
 });
 
+describe("resolveTheme with an account preference", () => {
+  it("prefers this browser's cookie, field by field", () => {
+    expect(
+      resolveTheme({ palette: "lima" }, { palette: "indigo", mode: "light" }),
+    ).toEqual({ palette: "lima", mode: "light" });
+  });
+
+  it("uses the account preference on a device without cookies", () => {
+    expect(resolveTheme({}, { palette: "ambar", mode: "light" })).toEqual({ palette: "ambar", mode: "light" });
+  });
+
+  it("ignores invalid account values too", () => {
+    expect(resolveTheme({}, { palette: "neon", mode: null })).toEqual(DEFAULT_THEME);
+  });
+});
+
 describe("resolveTheme", () => {
   it("falls back to the default when nothing is stored", () => {
     expect(resolveTheme({})).toEqual(DEFAULT_THEME);

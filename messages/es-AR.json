@@ -10,6 +10,8 @@
   "nav": {
     "appName": "Horas",
     "label": "Navegación principal",
+    "week": "Semana",
+    "metrics": "Métricas",
     "admin": "Admin",
     "settings": "Ajustes",
     "signOut": "Cerrar sesión"
@@ -179,6 +181,117 @@
     "requestAgain": "Pedir acceso",
     "signOut": "Cerrar sesión"
   },
+  "metrics": {
+    "title": "Métricas",
+    "subtitleAdmin": "Horas de todo el espacio de trabajo.",
+    "subtitleMember": "Horas de todas las personas en los proyectos donde participás.",
+    "noProjects": "Todavía no participás de ningún proyecto. Cuando un admin te asigne, vas a ver sus métricas acá.",
+    "empty": "No hay horas registradas en este período.",
+    "total": "Total del período",
+    "totalFor": "Total del período en {project}",
+    "summary": "{people, plural, one {# persona} other {# personas}} · {projects, plural, one {# proyecto} other {# proyectos}}",
+    "hours": "Horas",
+    "filters": {
+      "range": "Período",
+      "project": "Proyecto",
+      "allProjects": "Todos los proyectos",
+      "archived": "{name} (archivado)",
+      "ranges": {
+        "week": "Esta semana",
+        "4w": "4 semanas",
+        "12w": "12 semanas"
+      }
+    },
+    "weekly": {
+      "title": "Semana a semana",
+      "caption": "Horas por semana y por proyecto",
+      "week": "Semana",
+      "total": "Total",
+      "other": "Otros",
+      "tick": "{hours} h",
+      "showTable": "Ver como tabla"
+    },
+    "byPerson": {
+      "title": "Horas por persona",
+      "caption": "Horas por persona en el período",
+      "name": "Persona"
+    },
+    "byProject": {
+      "title": "Horas por proyecto",
+      "caption": "Horas por proyecto en el período",
+      "name": "Proyecto"
+    },
+    "tasks": {
+      "title": "Tareas que más tiempo llevan",
+      "caption": "Las tareas con más horas en el período",
+      "name": "Tarea",
+      "empty": "Todavía no hay tareas con descripción en este período."
+    }
+  },
+  "week": {
+    "thisWeek": "Esta semana",
+    "week": "Semana",
+    "navigation": "Cambiar de semana",
+    "previous": "Semana anterior",
+    "next": "Semana siguiente",
+    "backToThisWeek": "Volver a esta semana",
+    "total": "Total",
+    "project": "Proyecto",
+    "caption": "Horas por proyecto y por día, semana del {week}",
+    "blocks": "Registros",
+    "empty": "No hay horas registradas en esta semana."
+  },
+  "dateField": {
+    "placeholder": "dd/mm/aaaa",
+    "openCalendar": "Abrir el calendario",
+    "closeCalendar": "Cerrar el calendario",
+    "previousMonth": "Mes anterior",
+    "nextMonth": "Mes siguiente",
+    "month": "Mes",
+    "year": "Año",
+    "today": "Hoy"
+  },
+  "entries": {
+    "add": "Agregar horas",
+    "addTitle": "Agregar horas",
+    "editTitle": "Editar registro",
+    "project": "Proyecto",
+    "description": "Tarea",
+    "descriptionPlaceholder": "¿En qué trabajaste?",
+    "date": "Día",
+    "start": "Inicio",
+    "startPlaceholder": "09:30",
+    "end": "Fin o duración",
+    "endPlaceholder": "18:00 o 1h30",
+    "lasts": "Dura {duration}",
+    "nextDay": "termina al día siguiente",
+    "durationMinutes": "{minutes} min",
+    "durationHours": "{hours} h",
+    "durationHoursMinutes": "{hours} h {minutes} min",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "editLabel": "Editar {entry}",
+    "deleteLabel": "Borrar {entry}",
+    "deleteTitle": "¿Borrar este registro?",
+    "deleteBody": "Se borra {entry} y sus horas dejan de contar en las métricas. No se puede deshacer.",
+    "deleteConfirm": "Borrar",
+    "errors": {
+      "projectRequired": "Elegí un proyecto.",
+      "invalidDate": "Escribí un día válido (dd/mm/aaaa).",
+      "invalidStart": "Escribí una hora válida, como 09:30.",
+      "invalidEnd": "Escribí una hora (18:00) o una duración (1h30).",
+      "tooShort": "El bloque tiene que durar al menos un minuto.",
+      "tooLong": "Un bloque puede durar hasta 24 horas.",
+      "future": "No se pueden cargar horas en el futuro.",
+      "overlap": "Se superpone con otro registro tuyo. Revisá los horarios.",
+      "cannotTrack": "No podés registrar horas en ese proyecto.",
+      "forbidden": "Solo podés editar tus propios registros.",
+      "running": "Ese registro está corriendo. Pausalo desde el timer para editarlo.",
+      "notFound": "Ese registro ya no existe. Recargá la página.",
+      "generic": "Algo salió mal. Probá de nuevo."
+    }
+  },
   "timer": {
     "title": "Timer",
     "project": "Proyecto",
@@ -207,7 +320,9 @@
       "title": "Últimos registros",
       "empty": "Todavía no registraste horas. Elegí un proyecto y dale play.",
       "noDescription": "Sin descripción",
-      "edited": "editado"
+      "edited": "editado",
+      "now": "ahora",
+      "running": "En curso"
     },
     "errors": {
       "cannotTrack": "No podés registrar horas en ese proyecto.",
@@ -218,7 +333,7 @@
   },
   "settings": {
     "title": "Ajustes",
-    "themeHint": "Elegí la paleta y el modo. El cambio se aplica al instante y se guarda."
+    "themeHint": "Elegí la paleta y el modo. El cambio se aplica al instante y queda guardado en tu cuenta, así te sigue en cualquier dispositivo."
   },
   "theme": {
     "palette": "Paleta",

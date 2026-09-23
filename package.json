@@ -25,10 +25,12 @@
   },
   "dependencies": {
     "@better-auth/prisma-adapter": "1.7.5",
+    "@date-fns/tz": "1.5.0",
     "@dnd-kit/core": "6.3.1",
     "@prisma/adapter-neon": "7.10.0",
     "@prisma/client": "7.10.0",
     "better-auth": "1.7.5",
+    "date-fns": "4.4.0",
     "lucide-react": "^1.47.0",
     "next": "^16.3.5",
     "next-intl": "^4.14.6",

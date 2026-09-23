@@ -27,6 +27,11 @@ model User {
   // code only: never declare it in Better Auth's additionalFields.
   timeZone String @default("America/Argentina/Buenos_Aires")
 
+  // The theme picked in Settings, so it follows the person to any device.
+  // Null means no choice yet: the default theme applies. Keys match lib/theme.ts.
+  palette   String?
+  themeMode String?
+
   sessions           Session[]
   accounts           Account[]
   memberships        WorkspaceMember[]
